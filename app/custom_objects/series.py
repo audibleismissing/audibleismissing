@@ -5,6 +5,7 @@ class Series:
         self.seriesAsin = None
         self.sequence = None
         self.totalBooksInSeries = None
+        self.totalBooksInLibrary = None
 
     def __iter__(self):
         for series in self.name:
@@ -18,4 +19,5 @@ class Series:
             "seriesAsin": self.seriesAsin,
             "sequence": self.sequence,
             "totalBooksInSeries": self.totalBooksInSeries,
+            "totalBooksInLibrary": self.totalBooksInLibrary,
         }

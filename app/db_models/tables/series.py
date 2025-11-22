@@ -205,6 +205,8 @@ def returnSeriesObj(sql_data) -> Series:
     series.id = sql_data.id
     series.name = sql_data.name
     series.seriesAsin = sql_data.seriesAsin
+    series.totalBooksInSeries = sql_data.totalBooksInSeries
+    series.totalBooksInLibrary = sql_data.totalBooksInLibrary
     if hasattr(sql_data, "sequence"):
         series.sequence = sql_data.sequence
     return series
