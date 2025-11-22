@@ -10,8 +10,8 @@ class SeriesTable(SQLModel, table=True):
     __tablename__ = "series"
 
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
-    name: str
-    seriesAsin: str | None = None
+    name: str = Field(index=True)
+    seriesAsin: str | None = Field(index=True)
     totalBooksInSeries: int | None = None
     totalBooksInLibrary: int | None = None
 

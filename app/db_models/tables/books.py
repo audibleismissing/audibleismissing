@@ -15,14 +15,14 @@ class BooksTable(SQLModel, table=True):
     __tablename__ = "books"
     
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
-    title: str | None
+    title: str | None = Field(index=True)
     subtitle: str | None
     publisher: str | None
     copyright: str | None
     description: str | None
     summary: str | None
     isbn: str | None
-    bookAsin: str | None
+    bookAsin: str | None = Field(index=True)
     region: str | None
     language: str | None
     isExplicit: bool | None
