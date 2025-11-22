@@ -222,3 +222,4 @@ __marimo__/
 settings.toml
 audible_auth
 audibleismissing.sqlite
+audibleismissing.sqlite-journal
