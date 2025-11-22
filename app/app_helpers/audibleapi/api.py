@@ -2,13 +2,12 @@ from typing import Any, Dict
 
 import audible
 
-from classes.custom_objects import Book
-
+from app.custom_objects.book import Book
 
 
 # get book and return book object
 def getBook(auth, asin) -> Book:
-    from functions.audibleapi import returnBookObj
+    from app.app_helpers.audibleapi.helpers import returnBookObj
     
     with audible.Client(auth) as client:
         item = client.get(
