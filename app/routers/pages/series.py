@@ -26,18 +26,6 @@ def page(request: Request):
     )
 
 
-# @router.get('/series/{series_id}', response_class=HTMLResponse, tags=[Tags.page])
-# def details(request: Request, series_id: str):
-#     """Render series details page"""
-
-#     series_books = get_json_from_api(f'http://localhost:8000/api/series/books/{series_id}')
-
-#     return templates.TemplateResponse(
-#         request = request, name='book_list.html', context={"table": series_books}
-#     )
-
-
-
 @router.get('/series/details/{series_id}', response_class=HTMLResponse, tags=[Tags.page])
 def details(request: Request, series_id: str):
     """Render series details page"""

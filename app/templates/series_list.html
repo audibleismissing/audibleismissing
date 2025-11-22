@@ -7,17 +7,15 @@
                 <th data-field="seriesAsin" data-searchable="true" data-sortable="true">ASIN</th>
                 <th data-field="totalBooksInSeries" data-sortable="true">Books in Series</th>
                 <th data-field="totalBooksInLibrary" data-sortable="true">Books in Library</th>
-                <th data-field="details" data-sortable="false">Details</th>
             </tr>
         </thead>
         <tbody>
             {% for item in table %}
             <tr>
-                <td>{{ item.name }}</td>
+                <td><a href='/series/details/{{ item.id }}/'>{{ item.name }}</a></td>
                 <td>{{ item.seriesAsin }}</td>
                 <td>{{ item.totalBooksInSeries }}</td>
                 <td>{{ item.totalBooksInLibrary }}</td>
-                <td><a href='/series/details/{{ item.id }}/'>{{ item.name }}</a></td>
             </tr>
             {% endfor %}
         </tbody>
