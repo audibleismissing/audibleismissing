@@ -188,7 +188,7 @@ def getBooksInSeries(engine: create_engine, search_string) -> list:
 def getAllSeries(engine) -> list:
     """Gets all series"""
     with Session(engine) as session:
-        statement = select(SeriesTable)
+        statement = select(SeriesTable).order_by(SeriesTable.name)
         results = session.exec(statement).all()
 
         series_list = []

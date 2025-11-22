@@ -23,6 +23,13 @@ def createBooksAndSeriesView(sqlite_db) -> None:
                     FROM books
                     INNER JOIN seriesmappings ON books.id = seriesmappings.bookId
                     INNER JOIN series ON seriesmappings.seriesId = series.id
+                    ORDER BY 
+                        seriesname,
+                        CASE 
+                            WHEN seriesmappings.sequence IS NULL THEN 999999999
+                            WHEN seriesmappings.sequence LIKE '%[^0-9]%' THEN 999999998
+                            ELSE CAST(seriesmappings.sequence AS INTEGER)
+                        END;
                 """)
             connection.commit()
     except sqlite3.Error as error:

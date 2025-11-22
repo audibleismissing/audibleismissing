@@ -136,7 +136,7 @@ def doesBookExist(engine, search_string):
 
 def getAllBooks(engine) -> list:
     with Session(engine) as session:
-        statement = select(BooksTable)
+        statement = select(BooksTable).order_by(BooksTable.title)
         results = session.exec(statement).all()
         
         if results:
