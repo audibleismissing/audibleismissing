@@ -27,3 +27,36 @@ def createBooksAndSeriesView(sqlite_db) -> None:
             connection.commit()
     except sqlite3.Error as error:
         print('DB conneciton error occured -', error)
+
+
+def getViewAllBooks(engine, sqlite_path) -> list:
+    with sqlite3.connect(sqlite_path) as conn:
+        """Get all books using the booksandseries view"""
+        cur = conn.cursor()
+        cur.execute('select * from booksandseries')
+        results = cur.fetchall()
+        if results:
+            all_books = []
+            for item in results:
+                # book = returnBookObj(engine, item)
+                all_books.append(item)
+                print(item.sequence)
+
+            return all_books
+        return []
+
+
+def getViewSeriesDetails(sqlite_path, series_id) -> list:
+    """Get all books with series_id using the booksandseries view"""
+    with sqlite3.connect(sqlite_path) as conn:
+        cur = conn.cursor()
+        cur.execute('select * from booksandseries where seriesId = ?', (series_id,))
+        results = cur.fetchall()
+        if results:
+            books = []
+            columns = [desc[0] for desc in cur.description]
+            for row in results:
+                book_dict = dict(zip(columns, row))
+                books.append(book_dict)
+            return books
+        return []
