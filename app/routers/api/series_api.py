@@ -10,7 +10,7 @@ from app.db_models import db_helpers
 from app.app_helpers.fastapi_utils.fastapi_tasks import taskRefreshAbsData
 
 from app.db_models.tables import series as series_table
-
+from app.db_models.views import booksandseries
 
 
 router = api_router.initRouter()
@@ -43,7 +43,8 @@ async def get_series_by_series_id(series_id: str):
     return results
 
 
-# /api/series/{name or seriesAsin}
-# getSeries -> Series
-
-# http://127.0.0.1:8000/series/details/c3bb9a5a-a346-4644-9087-6b1d7ac2998d/
+@router.get('/series/details/{series_id}', tags=[Tags.series])
+async def get_series_details(series_id: str):
+    """Get series details from view."""
+    results = booksandseries.getViewSeriesDetails(settings.sqlite_path, series_id)
+    return results

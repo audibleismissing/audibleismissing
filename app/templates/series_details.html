@@ -1,23 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
+    Series Details: {{ table[0].seriesname }}
     <table id="book-table" data-toggle="table" data-search="true" data-pagination="true" class="table table-striped table-responsive">
         <thead>
             <tr>
                 <th data-field="title" data-searchable="true" data-sortable="true">Title</th>
                 <th data-field="bookAsin" data-searchable="true" data-sortable="true">ASIN</th>
                 <th data-field="releaseDate" data-searchable="true" data-sortable="true">Release Date</th>
-                <th data-field="owned" data-sortable="true">Owned</th>
+                <th data-field="isOwned" data-sortable="true">Owned</th>
                 <th data-field="audibleOverallAvgRating" data-sortable="true">Avg Rating</th>
+                <th data-field="sequence" data-sortable="true">Sequence</th>
             </tr>
         </thead>
         <tbody>
-            {% for book in table %}
+            {% for item in table %}
             <tr>
-                <td>{{ book.title }}</td>
-                <td>{{ book.bookAsin }}</td>
-                <td>{{ book.releaseDate }}</td>
-                <td>{{ book.owned }}</td>
-                <td>{{ book.audibleOverallAvgRating }}</td>
+                <td>{{ item.title }}</td>
+                <td>{{ item.bookAsin }}</td>
+                <td>{{ item.releaseDate }}</td>
+                <td>{{ item.isOwned }}</td>
+                <td>{{ item.audibleOverallAvgRating }}</td>
+                <td>{{ item.sequence }}</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-    <table id="series-table" data-toggle="table" data-search="true" data-pagination="true" class="table table-striped">
+    <table id="series-table" data-toggle="table" data-search="true" data-pagination="true" class="table table-striped table-responsive">
         <thead>
             <tr>
                 <th data-field="name" data-searchable="true" data-sortable="true">Name</th>
@@ -17,7 +17,7 @@
                 <td>{{ item.seriesAsin }}</td>
                 <td>{{ item.totalBooksInSeries }}</td>
                 <td>{{ item.totalBooksInLibrary }}</td>
-                <td><a href='/series/{{ item.id }}/'>{{ item.name }}</a></td>
+                <td><a href='/series/details/{{ item.id }}/'>{{ item.name }}</a></td>
             </tr>
             {% endfor %}
         </tbody>

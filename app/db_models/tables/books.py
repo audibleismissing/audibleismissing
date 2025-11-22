@@ -149,7 +149,6 @@ def getAllBooks(engine) -> list:
         return None
 
 
-
 def returnBookObj(engine, book_table) -> Book:
     """Convert a BooksTable object to a Book object"""
     book = Book()
