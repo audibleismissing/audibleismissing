@@ -1,6 +1,6 @@
 import uuid
 
-from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
+from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, func
 from app.custom_objects.series import Series
 from app.db_models.tables.seriesmappings import SeriesMappingsTable
 
@@ -13,6 +13,7 @@ class SeriesTable(SQLModel, table=True):
     name: str
     seriesAsin: str | None = None
     totalBooksInSeries: int | None = None
+    totalBooksInLibrary: int | None = None
 
 
 def addSeries(engine: create_engine, series: Series) -> str:
@@ -21,6 +22,7 @@ def addSeries(engine: create_engine, series: Series) -> str:
     if not doesSeriesExist(engine, series.name):
         row = SeriesTable(
             name=series.name,
+            totalBooksInLibrary=0,
         )
 
         with Session(engine) as session:
@@ -53,6 +55,24 @@ def updateSeries(engine: create_engine, series: Series) -> None:
         results.name = series.name
         results.seriesAsin = series.seriesAsin
         results.totalBooksInSeries = series.totalBooksInSeries
+
+        # Calculate totalBooksInLibrary as count of books in this series
+        count_statement = select(func.count()).select_from(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series.id)
+        results.totalBooksInLibrary = session.exec(count_statement).one()
+
+        session.add(results)
+        session.commit()
+
+
+def updateTotalBooksInLibrary(engine: create_engine, series_id: str) -> None:
+    """Update the totalBooksInLibrary for a specific series"""
+    with Session(engine) as session:
+        statement = select(SeriesTable).where(SeriesTable.id == series_id)
+        results = session.exec(statement).one()
+
+        # Calculate totalBooksInLibrary as count of books in this series
+        count_statement = select(func.count()).select_from(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series_id)
+        results.totalBooksInLibrary = session.exec(count_statement).one()
 
         session.add(results)
         session.commit()

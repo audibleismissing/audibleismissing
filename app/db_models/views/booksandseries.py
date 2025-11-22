@@ -11,9 +11,15 @@ def createBooksAndSeriesView(sqlite_db) -> None:
                         books.id AS bookId,
                         books.title,
                         books.bookAsin,
+                        books.isOwned,
+                        books.releaseDate,
+                        books.audibleOverallAvgRating,
+                        seriesmappings.sequence,
                         series.id AS seriesId,
                         series.name AS seriesname,
-                        series.seriesAsin
+                        series.seriesAsin,
+                        series.totalBooksInSeries,
+                        series.totalBooksInLibrary
                     FROM books
                     INNER JOIN seriesmappings ON books.id = seriesmappings.bookId
                     INNER JOIN series ON seriesmappings.seriesId = series.id
