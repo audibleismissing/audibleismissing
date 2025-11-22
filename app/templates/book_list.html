@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+    <table id="book-table" data-toggle="table" data-search="true" data-pagination="true" class="table table-striped">
+        <thead>
+            <tr>
+                <th data-field="title" data-searchable="true" data-sortable="true">Title</th>
+                <th data-field="bookAsin" data-searchable="true" data-sortable="true">ASIN</th>
+                <th data-field="releaseDate" data-searchable="true" data-sortable="true">Release Date</th>
+                <th data-field="owned" data-sortable="true">Owned</th>
+                <th data-field="audibleOverallAvgRating" data-sortable="true">Avg Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in table %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.bookAsin }}</td>
+                <td>{{ book.releaseDate }}</td>
+                <td>{{ book.owned }}</td>
+                <td>{{ book.audibleOverallAvgRating }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

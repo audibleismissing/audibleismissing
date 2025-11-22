@@ -1,0 +1,94 @@
+import uuid
+
+from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
+from app.custom_objects.narrator import Narrator
+from app.db_models.tables.narratormappings import NarratorMappingsTable
+
+class NarratorsTable(SQLModel, table=True):
+    __tablename__ = "narrators"
+
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
+    name: str
+
+
+
+def addNarrator(engine:create_engine, narrator:Narrator) -> str:
+    """Add narrator to db"""
+    # check if narrator already exists
+    if not doesNarratorExist(engine, narrator.name):
+        row = NarratorsTable(
+            name=narrator.name,
+        )
+
+        with Session(engine) as session:
+            session.add(row)
+            session.commit()
+            session.refresh(row)
+            return row.id
+    return None
+
+
+def getNarrator(engine:create_engine, search_string):
+    """Get narrator from db"""
+    with Session(engine) as session:
+        statement = select(NarratorsTable).where(or_(NarratorsTable.name == search_string, NarratorsTable.id == search_string))
+
+        results = session.exec(statement).first()
+        if results:
+            return returnNarratorObj(results)
+        return None
+
+
+def updateNarrator(engine: create_engine, narrator: Narrator) -> None:
+    """Update narrator in db"""
+    with Session(engine) as session:
+        statement = select(NarratorsTable).where(NarratorsTable.id == narrator.id)
+        results = session.exec(statement).one()
+
+        results.name = narrator.name
+
+        session.add(results)
+        session.commit()
+
+
+def deleteNarrator():
+    """Delete narrator from db"""
+
+
+def doesNarratorExist(engine:create_engine, search_string) -> bool:
+    with Session(engine) as session:
+        statement = select(NarratorsTable).where(or_(NarratorsTable.name == search_string, NarratorsTable.id == search_string))
+
+        results = session.exec(statement)
+        if len(results.all()) > 0:
+            return True
+        else:
+            return False
+
+
+def getBookNarrators(engine:create_engine, book_id) -> list:
+    """Get narrators by book id"""
+    with Session(engine) as session:
+        # get the authors related to a specific book id
+        narrator_mappings_query = select(NarratorMappingsTable).where(NarratorMappingsTable.bookId == book_id)
+        narrator_mappings_table = session.exec(narrator_mappings_query).all()
+
+        narrators = []
+        for narrator_mappings_row in narrator_mappings_table:
+            narrator_query = select(NarratorsTable).where(NarratorsTable.id == narrator_mappings_row.narratorId)
+            narrators_table = session.exec(narrator_query).one_or_none()
+
+            narrator = Narrator()
+            narrator.id = narrators_table.id
+            narrator.name = narrators_table.name
+            narrators.append(narrator)
+
+        return narrators
+
+
+
+def returnNarratorObj(sql_data) -> Narrator:
+    narrator = Narrator()
+    narrator.id = sql_data.id
+    narrator.name = sql_data.name
+    return narrator
