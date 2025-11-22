@@ -6,7 +6,7 @@
                 <th data-field="title" data-searchable="true" data-sortable="true">Title</th>
                 <th data-field="bookAsin" data-searchable="true" data-sortable="true">ASIN</th>
                 <th data-field="releaseDate" data-searchable="true" data-sortable="true">Release Date</th>
-                <th data-field="owned" data-sortable="true">Owned</th>
+                <th data-field="isOwned" data-sortable="true">Owned</th>
                 <th data-field="audibleOverallAvgRating" data-sortable="true">Avg Rating</th>
             </tr>
         </thead>
@@ -16,7 +16,7 @@
                 <td>{{ book.title }}</td>
                 <td>{{ book.bookAsin }}</td>
                 <td>{{ book.releaseDate }}</td>
-                <td>{{ book.owned }}</td>
+                <td>{{ book.isOwned }}</td>
                 <td>{{ book.audibleOverallAvgRating }}</td>
             </tr>
             {% endfor %}
