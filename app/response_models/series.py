@@ -16,3 +16,4 @@ class SeriesResponse(BaseModel):
     seriesAsin: str | None
     sequence: str | None
     totalBooksInSeries: int | None
+    totalBooksInLibrary: int | None
