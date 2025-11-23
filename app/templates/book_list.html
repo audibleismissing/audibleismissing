@@ -11,13 +11,13 @@
             </tr>
         </thead>
         <tbody>
-            {% for book in table %}
+            {% for item in table %}
             <tr>
-                <td>{{ book.title }}</td>
-                <td>{{ book.bookAsin }}</td>
-                <td>{{ book.releaseDate }}</td>
-                <td>{{ book.isOwned }}</td>
-                <td>{{ book.audibleOverallAvgRating }}</td>
+                <td><a href='#'>{{ item.title }}</a></td>
+                <td>{{ item.bookAsin }}</td>
+                <td>{{ item.releaseDate }}</td>
+                <td>{{ item.isOwned }}</td>
+                <td>{{ item.audibleOverallAvgRating }}</td>
             </tr>
             {% endfor %}
         </tbody>
