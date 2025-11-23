@@ -3,7 +3,7 @@ from typing import Annotated, List
 
 from app.routers.api import api_router
 from app.routers.route_tags import Tags
-from app.response_models import series, book
+from app.response_models import series, book, series_view
 from app.custom_objects import settings
 from app.app_helpers.audiobookshelf import abs_helpers
 from app.db_models import db_helpers
@@ -29,7 +29,7 @@ engine = db_helpers.connectToDb()
 # /api/series/all/
 # getAllSeries -> [Series]
 
-@router.get("/series/all", tags=[Tags.series])#, response_model=List[series.SeriesResponse])
+@router.get("/series/all", tags=[Tags.series], response_model=List[series_view.SeriesViewResponse])
 async def get_all_series():
     """Returns list of all series"""
     results = seriesandcounts.getViewAllSeries(settings.sqlite_path)

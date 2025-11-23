@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 
-class SeriesQuery(BaseModel):
+class SeriesViewQuery(BaseModel):
     author_name: str = Field(
         default=None,
         name="Series' name",
@@ -10,8 +10,9 @@ class SeriesQuery(BaseModel):
     )
 
 
-class SeriesResponse(BaseModel):
-    id: str
-    name: str | None
+class SeriesViewResponse(BaseModel):
+    seriesId: str
+    seriesName: str | None
     seriesAsin: str | None
-    sequence: str | None
+    totalBooksInSeries: int | None
+    totalBooksInLibrary: int | None
