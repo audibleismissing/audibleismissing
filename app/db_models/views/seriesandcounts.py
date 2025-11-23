@@ -8,7 +8,7 @@ def createSeriesAndCountsView(sqlite_db) -> None:
                     CREATE VIEW IF NOT EXISTS seriesandcounts AS
                         SELECT
                             s.id          AS seriesId,
-                            s.name        AS seriesname,
+                            s.name        AS seriesName,
                             s.seriesAsin,
 
                             /* How many books are part of this series */
@@ -31,3 +31,19 @@ def createSeriesAndCountsView(sqlite_db) -> None:
             connection.commit()
     except sqlite3.Error as error:
         print('DB conneciton error occured -', error)
+
+
+def getViewAllSeries(sqlite_path) -> list:
+    with sqlite3.connect(sqlite_path) as conn:
+        """Get all books using the seriesandcounts view"""
+        cur = conn.cursor()
+        cur.execute('select * from seriesandcounts')
+        results = cur.fetchall()
+        if results:
+            all_series = []
+            columns = [desc[0] for desc in cur.description]
+            for row in results:
+                series_dict = dict(zip(columns, row))
+                all_series.append(series_dict)
+            return all_series
+        return []

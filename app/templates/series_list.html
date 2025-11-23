@@ -12,7 +12,7 @@
         <tbody>
             {% for item in table %}
             <tr>
-                <td><a href='/series/details/{{ item.id }}/'>{{ item.name }}</a></td>
+                <td><a href='/series/details/{{ item.seriesId }}/'>{{ item.seriesName }}</a></td>
                 <td>{{ item.seriesAsin }}</td>
                 <td>{{ item.totalBooksInSeries }}</td>
                 <td>{{ item.totalBooksInLibrary }}</td>

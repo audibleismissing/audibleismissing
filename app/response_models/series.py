@@ -12,6 +12,7 @@ class SeriesQuery(BaseModel):
 
 class SeriesResponse(BaseModel):
     id: str
-    name: str | None
+    seriesName: str | None
     seriesAsin: str | None
-    sequence: str | None
+    totalBooksInSeries: int | None
+    totalBooksInLibrary: int | None

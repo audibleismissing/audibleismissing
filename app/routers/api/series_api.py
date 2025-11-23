@@ -10,7 +10,7 @@ from app.db_models import db_helpers
 from app.app_helpers.fastapi_utils.fastapi_tasks import taskRefreshAbsData
 
 from app.db_models.tables import series as series_table
-from app.db_models.views import booksandseries
+from app.db_models.views import booksandseries, seriesandcounts
 
 
 router = api_router.initRouter()
@@ -29,10 +29,10 @@ engine = db_helpers.connectToDb()
 # /api/series/all/
 # getAllSeries -> [Series]
 
-@router.get("/series/all", tags=[Tags.series], response_model=List[series.SeriesResponse])
+@router.get("/series/all", tags=[Tags.series])#, response_model=List[series.SeriesResponse])
 async def get_all_series():
     """Returns list of all series"""
-    results = series_table.getAllSeries(engine)
+    results = seriesandcounts.getViewAllSeries(settings.sqlite_path)
     if results:
         return results
     return []
