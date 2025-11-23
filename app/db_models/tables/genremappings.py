@@ -28,9 +28,15 @@ def addGenreMapping(engine:create_engine, genre_id, book_id) -> str:
     return None
 
 
-def getGenreMapping():
+def getGenreMappingByBook(engine:create_engine, book_id):
     """Get genre mapping from db"""
+    with Session(engine) as session:
+        statement = select(GenreMappingsTable).where(GenreMappingsTable.bookId == book_id)
 
+        results = session.exec(statement).first()
+        if results:
+            return results
+        return None
 
 def updateGenreMapping():
     """Update genre mapping in db"""

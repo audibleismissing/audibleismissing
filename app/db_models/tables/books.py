@@ -84,7 +84,7 @@ def getBook(engine:create_engine, search_string) -> Book:
         return None
     
 
-def updateBook(engine: create_engine, book: Book) -> None:
+def updateBook(engine: create_engine, book: Book) -> str:
     """Update book in db"""
     print(f"Updating book: {book.title}")
     with Session(engine) as session:
@@ -115,6 +115,8 @@ def updateBook(engine: create_engine, book: Book) -> None:
 
         session.add(results)
         session.commit()
+        session.refresh(results)
+        return results.id
 
 
 def deleteBook(engine: create_engine, search_string) -> None:

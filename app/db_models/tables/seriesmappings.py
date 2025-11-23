@@ -35,8 +35,26 @@ def addSeriesMapping(engine:create_engine, series_id, book_id, sequence) -> str:
     return None
 
 
-def getSeriesMapping():
-    """Get series mapping from db"""
+def getSeriesMappingByBook(engine: create_engine, book_id):
+    """Get book id from series mapping from db by series id"""
+    with Session(engine) as session:
+        statement = select(SeriesMappingsTable).where(SeriesMappingsTable.bookId == book_id)
+
+        results = session.exec(statement).first()
+        if results:
+            return results
+        return None
+
+
+def getSeriesMappingBySeries(engine: create_engine, series_id):
+    """Get book id from series mapping from db by series id"""
+    with Session(engine) as session:
+        statement = select(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series_id)
+
+        results = session.exec(statement).all()
+        if results:
+            return results
+        return None
 
 
 def updateSeriesMapping():

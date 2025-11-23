@@ -29,9 +29,16 @@ def addAuthorMapping(engine:create_engine, author_id, book_id) -> str:
     return None
 
 
-def getAuthorMapping():
+def getAuthorMappingByBook(engine:create_engine, book_id):
     """Get author mapping from db"""
+    with Session(engine) as session:
+        statement = select(AuthorsMappingsTable).where(AuthorsMappingsTable.bookId == book_id)
 
+        results = session.exec(statement).first()
+        if results:
+            return results
+        return None
+    
 
 def updateAuthorMapping():
     """Update author mapping in db"""
