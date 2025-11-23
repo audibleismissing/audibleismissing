@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+    <img src={{ details.imageUrl }} style="width:256px;height:265px;">
+    <div>Title: {{ details.title }}</div>
+    <div>ASIN: {{ details.bookAsin }}</div>
+    <div>Release Date: {{ details.releaseDate }}</div>
+
+    <div>Series: {{ details.seriesName }}</div>
+    <div>Sequence: {{ details.sequence }}</div>
+    <div>Books in Series: {{ details.totalBooksInSeries }}</div>
+    <div>Series ASIN: {{ details.seriesAsin }}</div>
+
+    <div>Description: {{ details.description }}</div>
+{% endblock %}

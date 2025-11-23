@@ -11,6 +11,7 @@ from app.app_helpers.fastapi_utils.fastapi_tasks import taskRefreshAbsData
 
 from app.db_models.tables import books as books_table
 from app.db_models.tables import series as series_table
+from app.db_models.views import booksandseries
 
 
 
@@ -43,6 +44,15 @@ async def get_book(book_asin: str):
     if results:
         return results
     return []
+
+
+@router.get("/book/details/{book_id}", tags=[Tags.book])
+async def get_book_details(book_id: str):
+    """Returns single book by book id from details view"""
+    results = booksandseries.getViewBookDetails(settings.sqlite_path, book_id)
+    if results:
+        return results
+    return {}
 
 
 # @router.get("/book/series/{search_string}", tags=[Tags.book], response_model=List[book.BookResponse])

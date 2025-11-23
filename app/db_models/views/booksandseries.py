@@ -16,13 +16,14 @@ def createBooksAndSeriesView(sqlite_db) -> None:
                             b.releaseDate,
                             b.audibleOverallAvgRating,
                             b.imageUrl,
+                            b.description,
 
                             /* sequence comes from the mapping */
                             sm.sequence,
 
                             /* SERIES‑LEVEL data – same as before */
                             s.id          AS seriesId,
-                            s.name        AS seriesname,
+                            s.name        AS seriesName,
                             s.seriesAsin,
 
                             /* NEW: counts calculated on the fly */
@@ -78,4 +79,16 @@ def getViewSeriesDetails(sqlite_path, series_id) -> list:
                 books.append(book_dict)
             return books
         return []
-        
+
+
+def getViewBookDetails(sqlite_path, book_id):
+    """Get book details from booksandseriesview."""
+    with sqlite3.connect(sqlite_path) as conn:
+        cur = conn.cursor()
+        cur.execute('select * from booksandseries where bookId = ?', (book_id,))
+        results = cur.fetchone()
+        if results:
+            columns = [desc[0] for desc in cur.description]
+            book_dict = dict(zip(columns, results))
+            return book_dict
+        return {}

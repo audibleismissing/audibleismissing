@@ -25,3 +25,14 @@ def page(request: Request):
     return templates.TemplateResponse(
         request = request, name='book_list.html', context={"table": table}
     )
+
+
+@router.get('/book/details/{book_id}', response_class=HTMLResponse, tags=[Tags.page])
+def details(request: Request, book_id: str):
+    """Render book details page"""
+
+    details = get_json_from_api(f'http://localhost:8000/api/book/details/{book_id}')
+
+    return templates.TemplateResponse(
+        request = request, name='book_details.html', context={"details": details}
+    )
