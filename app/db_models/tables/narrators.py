@@ -37,7 +37,7 @@ def getNarrator(engine:create_engine, search_string):
         return None
 
 
-def updateNarrator(engine: create_engine, narrator: Narrator) -> None:
+def updateNarrator(engine: create_engine, narrator: Narrator) -> str:
     """Update narrator in db"""
     print(f"Updating narrator: {narrator.name}")
     with Session(engine) as session:
@@ -48,6 +48,7 @@ def updateNarrator(engine: create_engine, narrator: Narrator) -> None:
 
         session.add(results)
         session.commit()
+        return results.id
 
 
 def deleteNarrator():

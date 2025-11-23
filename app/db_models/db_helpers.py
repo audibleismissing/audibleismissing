@@ -6,13 +6,13 @@ from app.app_helpers.audibleapi import auth
 from app.db_models.views import booksandseries
 from app.custom_objects import settings
 from app.custom_objects.book import jsonToBook
-from app.custom_objects.author import jsonToAuthor
+from app.custom_objects.author import jsonToAuthor, Author
 from app.custom_objects.series import jsonToSeries
 from app.custom_objects.narrator import jsonToNarrator
 from app.custom_objects.genre import jsonToGenre
 from app.app_helpers.testdata.tools import importJson, exportJson
 from app.db_models.tables.books import getAllBooks, addBook, doesBookExist
-from app.db_models.tables.authors import addAuthor, doesAuthorExist
+from app.db_models.tables.authors import addAuthor, doesAuthorExist, getAuthor, updateAuthor
 from app.db_models.tables.authorsmappings import addAuthorMapping
 from app.db_models.tables.genres import addGenre, doesGenreExist
 from app.db_models.tables.genremappings import addGenreMapping
@@ -81,7 +81,7 @@ def importDb(engine) -> None:
     print("Importing....")
     books = importJson("app/app_helpers/testdata/testdata_small.json")
     for single_book in books:
-        if single_book['authors'][0]['name'] == "pirateaba":
+        if single_book['authors'][0]['name'] == "pirateaba" and not doesBookExist(engine, single_book['title']):
             book = jsonToBook(single_book)
             book_id = addBook(engine, book)
             for single_author in single_book['authors']:

@@ -37,7 +37,7 @@ def getGenre(engine:create_engine, search_string):
         return None
 
 
-def updateGenre(engine: create_engine, genre: Genre) -> None:
+def updateGenre(engine: create_engine, genre: Genre) -> str:
     """Update genre in db"""
     print(f"Updating genre: {genre.name}")
     with Session(engine) as session:
@@ -48,6 +48,7 @@ def updateGenre(engine: create_engine, genre: Genre) -> None:
 
         session.add(results)
         session.commit()
+        return results.id
 
 
 def deleteGenre():

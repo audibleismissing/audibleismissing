@@ -40,7 +40,7 @@ def getAuthor(engine:create_engine, search_string):
         return None
 
 
-def updateAuthor(engine: create_engine, author: Author) -> None:
+def updateAuthor(engine: create_engine, author: Author) -> str:
     """Update author in db"""
     print(f"Updating author: {author.name}")
     with Session(engine) as session:
@@ -52,6 +52,7 @@ def updateAuthor(engine: create_engine, author: Author) -> None:
 
         session.add(results)
         session.commit()
+        return results.id
 
 
 def deleteAuthor():

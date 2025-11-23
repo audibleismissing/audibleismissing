@@ -47,7 +47,7 @@ def getSeries(engine: create_engine, search_string):
         return None
 
 
-def updateSeries(engine: create_engine, series: Series) -> None:
+def updateSeries(engine: create_engine, series: Series) -> str:
     """Update series in db"""
     print(f"Updating series: {series.name}")
     with Session(engine) as session:
@@ -64,6 +64,7 @@ def updateSeries(engine: create_engine, series: Series) -> None:
 
         session.add(results)
         session.commit()
+        return results.id
 
 
 def updateTotalBooksInLibrary(engine: create_engine, series_id: str) -> None:
