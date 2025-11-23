@@ -31,14 +31,18 @@ engine = db_helpers.connectToDb()
 async def get_all_books():
     """Returns list of all books"""
     results = books_table.getAllBooks(engine)
-    return results
+    if results:
+        return results
+    return []
 
 
 @router.get("/book/{book_asin}", tags=[Tags.book], response_model=book.BookResponse)
 async def get_book(book_asin: str):
     """Returns single book by asin"""
     results = books_table.getBook(engine, book_asin)
-    return results
+    if results:
+        return results
+    return []
 
 
 # @router.get("/book/series/{search_string}", tags=[Tags.book], response_model=List[book.BookResponse])
