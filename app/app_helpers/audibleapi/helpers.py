@@ -29,8 +29,6 @@ def returnSeriesObj(api_series) -> Series:
     series.seriesAsin = api_series.setdefault('asin', None)
     series.name = api_series.setdefault('title', None)
     series.sequence = api_series.setdefault('sequence', None)
-    # series.totalBooksInSeries = None
-    # series.totalBooksInLibrary = None
     return series
 
 

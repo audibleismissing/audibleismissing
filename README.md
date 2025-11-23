@@ -45,6 +45,9 @@ https://fastapi.tiangolo.com/tutorial/bigger-applications/#another-module-with-a
 
 
 
+max books returned by audible api is 50
+
+
 
 /api/book/{title or bookAsin}
 getBook -> Book

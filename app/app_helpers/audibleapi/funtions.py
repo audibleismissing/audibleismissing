@@ -16,7 +16,7 @@ from app.db_models.tables.genres import addGenre, updateGenre, getGenre, doesGen
 from app.db_models.tables.genremappings import addGenreMapping, getGenreMappingByBook
 from app.db_models.tables.narrators import addNarrator, updateNarrator, getNarrator, doesNarratorExist
 from app.db_models.tables.narratormappings import addNarratorMapping, getNarratorMappingByBook
-from app.db_models.tables.series import addSeries, updateSeries, getSeries, doesSeriesExist, getAllSeries
+from app.db_models.tables.series import addSeries, updateSeries, getSeries, doesSeriesExist, getAllSeries, getSeriesByBook
 from app.db_models.tables.seriesmappings import addSeriesMapping, getSeriesMappingByBook, getSeriesMappingBySeries
 
 
@@ -39,9 +39,9 @@ def backfillAudibleData(engine, auth):
     # get list of audible books
     audible_books = []
     for library_book_asin in library_book_asins:
-        books_in_series = []
-        books_in_series = returnListofBookObjs(getAudibleBooksInSeries(auth, library_book_asin))
-        for book_in_series in books_in_series:
+        audible_books_in_series = []
+        audible_books_in_series = returnListofBookObjs(getAudibleBooksInSeries(auth, library_book_asin))
+        for book_in_series in audible_books_in_series:
             audible_books.append(book_in_series)
 
     for single_book in audible_books:
@@ -90,14 +90,12 @@ def backfillAudibleData(engine, auth):
         for single_series in single_book.series:
             if not doesSeriesExist(engine, single_series.name):
                 # add new DB entry
-                single_series.totalBooksInSeries = len(books_in_series) # max returned by audible api is 50
                 single_series.id = addSeries(engine, single_series)
             else:
                 # update metadata on existing db entry
                 series = Series()
                 series = getSeries(engine, single_series.name)
                 single_series.id = series.id
-                single_series.totalBooksInSeries = len(books_in_series) # max returned by audible api is 50
                 updateSeries(engine, single_series)
             if not getSeriesMappingByBook(engine, single_book.id):
                 addSeriesMapping(engine, single_series.id, single_book.id, single_series.sequence)

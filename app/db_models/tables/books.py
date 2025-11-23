@@ -1,6 +1,6 @@
 import uuid
 
-from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
+from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, and_
 
 from app.custom_objects.book import Book
 

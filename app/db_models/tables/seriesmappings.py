@@ -26,11 +26,6 @@ def addSeriesMapping(engine:create_engine, series_id, book_id, sequence) -> str:
         session.add(row)
         session.commit()
         session.refresh(row)
-
-        # Update the totalBooksInLibrary for the series
-        from app.db_models.tables.series import updateTotalBooksInLibrary
-        updateTotalBooksInLibrary(engine, series_id)
-
         return row.id
     return None
 

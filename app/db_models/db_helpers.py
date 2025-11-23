@@ -3,7 +3,7 @@ import sqlite3
 from sqlmodel import SQLModel, create_engine
 
 from app.app_helpers.audibleapi import auth
-from app.db_models.views import booksandseries
+from app.db_models.views import booksandseries, seriesandcounts
 from app.custom_objects import settings
 from app.custom_objects.book import jsonToBook
 from app.custom_objects.author import jsonToAuthor, Author
@@ -33,6 +33,7 @@ def connectToDb() -> create_engine:
 def createTables(engine, sqlite_db):
     SQLModel.metadata.create_all(engine)
     booksandseries.createBooksAndSeriesView(sqlite_db)
+    seriesandcounts.createSeriesAndCountsView(sqlite_db)
 
 
 def dropAllTables(sqlite_db) -> None:
@@ -49,6 +50,7 @@ def dropAllTables(sqlite_db) -> None:
             cursor.execute("DROP TABLE IF EXISTS genres")
             cursor.execute("DROP TABLE IF EXISTS genremappings")
             cursor.execute("DROP VIEW IF EXISTS booksandseries")
+            cursor.execute("DROP VIEW IF EXISTS seriesandcounts")
 
             connection.commit()
     except sqlite3.Error as error:
