@@ -1,4 +1,6 @@
 import uuid
+from decimal import Decimal 
+
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, and_
 
@@ -31,12 +33,11 @@ class BooksTable(SQLModel, table=True):
     link: str | None
     imageUrl: str | None
     isOwned: bool = Field(default=True)
-    audibleOverallAvgRating: float | None
-    audiblePerformanceAvgRating: float | None
-    audibleStoryAvgRating: float | None
+    audibleOverallAvgRating: Decimal | None = Field(default=0, max_digits=3, decimal_places=2)
+    audiblePerformanceAvgRating: Decimal | None = Field(default=0, max_digits=3, decimal_places=2)
+    audibleStoryAvgRating: Decimal | None = Field(default=0, max_digits=3, decimal_places=2)
     lengthMinutes: float | None
     isAudiobook: bool = Field(default=True)
-
 
 
 def addBook(engine, book:Book) -> str:
