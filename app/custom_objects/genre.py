@@ -10,3 +10,9 @@ class Genre:
     def serialize(self):
         """Serialize the Genre object to a dictionary."""
         return {"id": self.id, "name": self.name}
+
+
+def jsonToGenre(data) -> Genre:
+    genre = Genre()
+    genre.name = data['name']
+    return genre

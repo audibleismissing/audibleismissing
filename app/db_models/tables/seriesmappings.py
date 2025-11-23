@@ -15,6 +15,7 @@ class SeriesMappingsTable(SQLModel, table=True):
 
 def addSeriesMapping(engine:create_engine, series_id, book_id, sequence) -> str:
     """Add series mapping to db"""
+    print(f"Adding series mapping: {series_id} -> {book_id}")
     row = SeriesMappingsTable(
         seriesId=series_id,
         bookId=book_id,
@@ -25,17 +26,30 @@ def addSeriesMapping(engine:create_engine, series_id, book_id, sequence) -> str:
         session.add(row)
         session.commit()
         session.refresh(row)
-
-        # Update the totalBooksInLibrary for the series
-        from app.db_models.tables.series import updateTotalBooksInLibrary
-        updateTotalBooksInLibrary(engine, series_id)
-
         return row.id
     return None
 
 
-def getSeriesMapping():
-    """Get series mapping from db"""
+def getSeriesMappingByBook(engine: create_engine, book_id):
+    """Get book id from series mapping from db by series id"""
+    with Session(engine) as session:
+        statement = select(SeriesMappingsTable).where(SeriesMappingsTable.bookId == book_id)
+
+        results = session.exec(statement).first()
+        if results:
+            return results
+        return None
+
+
+def getSeriesMappingBySeries(engine: create_engine, series_id):
+    """Get book id from series mapping from db by series id"""
+    with Session(engine) as session:
+        statement = select(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series_id)
+
+        results = session.exec(statement).all()
+        if results:
+            return results
+        return None
 
 
 def updateSeriesMapping():

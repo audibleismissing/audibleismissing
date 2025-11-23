@@ -31,41 +31,29 @@ engine = db_helpers.connectToDb()
 async def get_all_books():
     """Returns list of all books"""
     results = books_table.getAllBooks(engine)
-    return results
+    if results:
+        return results
+    return []
 
 
 @router.get("/book/{book_asin}", tags=[Tags.book], response_model=book.BookResponse)
 async def get_book(book_asin: str):
     """Returns single book by asin"""
     results = books_table.getBook(engine, book_asin)
-    return results
+    if results:
+        return results
+    return []
 
 
-@router.get("/book/series/{search_string}", tags=[Tags.book], response_model=List[book.BookResponse])
-async def get_books_in_series(search_string: str):
-    """Returns list of all books in a series with given book asin or title"""
-    results = series_table.getSeriesByBookAsin(engine, search_string)
-    return results
+# @router.get("/book/series/{search_string}", tags=[Tags.book], response_model=List[book.BookResponse])
+# async def get_books_in_series(search_string: str):
+#     """Returns list of all books in a series with given book asin or title"""
+#     results = series_table.getSeriesByBookAsin(engine, search_string)
+#     return results
+# # FIX: getSeriesByBookAsin is missing
 
 
 # @router.get("/book/author/{author_name}", tags=[Tags.book], response_model=List[book.BookResponse])
 # async def get_books_by_author(author_name: str):
 #     """Returns list of all books by a given authors name"""
 #     return {"message": "Not implemented yet"}
-
-
-
-######### TODO: Move to admin router #########
-@router.get("/abs/refreshdata", tags=[Tags.admin])
-async def refresh_abs_Data(background_task: BackgroundTasks):
-    """Wipes all data from db and re-import abs data"""
-    background_task.add_task(taskRefreshAbsData, engine, settings)
-    # abs_helpers.refreshAbsData(engine, settings.abs_url, settings.abs_api_key, settings.abs_library_id)
-    return {"message": "Refreshing data. This may take a while."}
-
-
-@router.get("/abs/resetdb", tags=[Tags.admin])
-async def reset_db(background_task: BackgroundTasks):
-    """Drops db and recreates tables"""
-    db_helpers.resetAllData(engine, settings.sqlite_path)
-    return {"message": "Refreshing data. This may take a while."}

@@ -1,6 +1,6 @@
 import uuid
 
-from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
+from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, and_
 
 from app.custom_objects.book import Book
 
@@ -41,6 +41,7 @@ class BooksTable(SQLModel, table=True):
 
 def addBook(engine, book:Book) -> str:
     """Add book to db"""
+    print(f"Adding book: {book.title}")
     row = BooksTable(
         title=book.title,
         subtitle=book.subtitle,
@@ -83,8 +84,9 @@ def getBook(engine:create_engine, search_string) -> Book:
         return None
     
 
-def updateBook(engine: create_engine, book: Book) -> None:
+def updateBook(engine: create_engine, book: Book) -> str:
     """Update book in db"""
+    print(f"Updating book: {book.title}")
     with Session(engine) as session:
         statement = select(BooksTable).where(BooksTable.id == book.id)
         results = session.exec(statement).one()
@@ -113,6 +115,8 @@ def updateBook(engine: create_engine, book: Book) -> None:
 
         session.add(results)
         session.commit()
+        session.refresh(results)
+        return results.id
 
 
 def deleteBook(engine: create_engine, search_string) -> None:

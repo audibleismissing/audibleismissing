@@ -10,3 +10,9 @@ class Narrator:
     def serialize(self):
         """Serialize the Narrator object to a dictionary."""
         return {"id": self.id, "name": self.name}
+
+
+def jsonToNarrator(data) -> Narrator:
+    narrator = Narrator()
+    narrator.name = data['name']
+    return narrator

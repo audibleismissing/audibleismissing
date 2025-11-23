@@ -4,8 +4,6 @@ class Series:
         self.name = None
         self.seriesAsin = None
         self.sequence = None
-        self.totalBooksInSeries = None
-        self.totalBooksInLibrary = None
 
     def __iter__(self):
         for series in self.name:
@@ -18,6 +16,12 @@ class Series:
             "name": self.name,
             "seriesAsin": self.seriesAsin,
             "sequence": self.sequence,
-            "totalBooksInSeries": self.totalBooksInSeries,
-            "totalBooksInLibrary": self.totalBooksInLibrary,
         }
+
+
+def jsonToSeries(data) -> Series:
+    series = Series()
+    series.name = data['name']
+    series.seriesAsin = data['seriesAsin']
+    series.sequence = data['sequence']
+    return series

@@ -16,7 +16,7 @@
             {% for item in table %}
             <tr>
                 <td>{{ item.title }}</td>
-                <td>{{ item.bookAsin }}</td>
+                <td><a href='https://www.audible.com/pd/{{ item.bookAsin }}''>{{ item.bookAsin }}</td>
                 <td>{{ item.releaseDate }}</td>
                 <td>{{ item.isOwned }}</td>
                 <td>{{ item.audibleOverallAvgRating }}</td>

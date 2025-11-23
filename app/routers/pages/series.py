@@ -30,8 +30,8 @@ def page(request: Request):
 def details(request: Request, series_id: str):
     """Render series details page"""
 
-    series_books = get_json_from_api(f'http://localhost:8000/api/series/details/{series_id}')
+    table = get_json_from_api(f'http://localhost:8000/api/series/details/{series_id}')
 
     return templates.TemplateResponse(
-        request = request, name='series_details.html', context={"table": series_books}
+        request = request, name='series_details.html', context={"table": table}
     )

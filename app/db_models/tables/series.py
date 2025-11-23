@@ -1,7 +1,8 @@
 import uuid
 
-from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, func
+from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, func, and_
 from app.custom_objects.series import Series
+from app.db_models.tables import books
 from app.db_models.tables.seriesmappings import SeriesMappingsTable
 
 
@@ -12,24 +13,22 @@ class SeriesTable(SQLModel, table=True):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
     name: str = Field(index=True)
     seriesAsin: str | None = Field(index=True)
-    totalBooksInSeries: int | None = None
-    totalBooksInLibrary: int | None = None
+
 
 
 def addSeries(engine: create_engine, series: Series) -> str:
     """Add series to db"""
-    # check if series already exists
-    if not doesSeriesExist(engine, series.name):
-        row = SeriesTable(
-            name=series.name,
-            totalBooksInLibrary=0,
-        )
+    print(f"Adding series: {series.name}")
+    row = SeriesTable(
+        name=series.name,
+        seriesAsin=series.seriesAsin,
+    )
 
-        with Session(engine) as session:
-            session.add(row)
-            session.commit()
-            session.refresh(row)
-            return row.id
+    with Session(engine) as session:
+        session.add(row)
+        session.commit()
+        session.refresh(row)
+        return row.id
     return None
 
 
@@ -46,36 +45,19 @@ def getSeries(engine: create_engine, search_string):
         return None
 
 
-def updateSeries(engine: create_engine, series: Series) -> None:
+def updateSeries(engine: create_engine, series: Series) -> str:
     """Update series in db"""
+    print(f"Updating series: {series.name}")
     with Session(engine) as session:
         statement = select(SeriesTable).where(SeriesTable.id == series.id)
         results = session.exec(statement).one()
 
         results.name = series.name
         results.seriesAsin = series.seriesAsin
-        results.totalBooksInSeries = series.totalBooksInSeries
-
-        # Calculate totalBooksInLibrary as count of books in this series
-        count_statement = select(func.count()).select_from(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series.id)
-        results.totalBooksInLibrary = session.exec(count_statement).one()
 
         session.add(results)
         session.commit()
-
-
-def updateTotalBooksInLibrary(engine: create_engine, series_id: str) -> None:
-    """Update the totalBooksInLibrary for a specific series"""
-    with Session(engine) as session:
-        statement = select(SeriesTable).where(SeriesTable.id == series_id)
-        results = session.exec(statement).one()
-
-        # Calculate totalBooksInLibrary as count of books in this series
-        count_statement = select(func.count()).select_from(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series_id)
-        results.totalBooksInLibrary = session.exec(count_statement).one()
-
-        session.add(results)
-        session.commit()
+        return results.id
 
 
 def deleteSeries():
@@ -197,7 +179,6 @@ def getAllSeries(engine) -> list:
             series_list.append(series)
 
         return series_list
-    
 
 
 def returnSeriesObj(sql_data) -> Series:
@@ -205,8 +186,6 @@ def returnSeriesObj(sql_data) -> Series:
     series.id = sql_data.id
     series.name = sql_data.name
     series.seriesAsin = sql_data.seriesAsin
-    series.totalBooksInSeries = sql_data.totalBooksInSeries
-    series.totalBooksInLibrary = sql_data.totalBooksInLibrary
     if hasattr(sql_data, "sequence"):
         series.sequence = sql_data.sequence
     return series

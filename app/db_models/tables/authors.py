@@ -16,19 +16,17 @@ class AuthorsTable(SQLModel, table=True):
 
 def addAuthor(engine:create_engine, author:Author) -> str:
     """Add author to db"""
-    # check if author already exists
-    if not doesAuthorExist(engine, author.name) or not doesAuthorExist(engine, author.authorAsin):
-        row = AuthorsTable(
-            name=author.name,
-            authorAsin=author.authorAsin
-        )
+    print(f"Adding author: {author.name}")
+    row = AuthorsTable(
+        name=author.name,
+        authorAsin=author.authorAsin
+    )
 
-        with Session(engine) as session:
-            session.add(row)
-            session.commit()
-            session.refresh(row)
-            return row.id
-    return None
+    with Session(engine) as session:
+        session.add(row)
+        session.commit()
+        session.refresh(row)
+        return row.id
 
 
 def getAuthor(engine:create_engine, search_string):
@@ -42,8 +40,9 @@ def getAuthor(engine:create_engine, search_string):
         return None
 
 
-def updateAuthor(engine: create_engine, author: Author) -> None:
+def updateAuthor(engine: create_engine, author: Author) -> str:
     """Update author in db"""
+    print(f"Updating author: {author.name}")
     with Session(engine) as session:
         statement = select(AuthorsTable).where(AuthorsTable.id == author.id)
         results = session.exec(statement).one()
@@ -53,6 +52,7 @@ def updateAuthor(engine: create_engine, author: Author) -> None:
 
         session.add(results)
         session.commit()
+        return results.id
 
 
 def deleteAuthor():
