@@ -15,6 +15,7 @@ class SeriesMappingsTable(SQLModel, table=True):
 
 def addSeriesMapping(engine:create_engine, series_id, book_id, sequence) -> str:
     """Add series mapping to db"""
+    print(f"Adding series mapping: {series_id} -> {book_id}")
     row = SeriesMappingsTable(
         seriesId=series_id,
         bookId=book_id,

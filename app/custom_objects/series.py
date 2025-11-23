@@ -21,3 +21,13 @@ class Series:
             "totalBooksInSeries": self.totalBooksInSeries,
             "totalBooksInLibrary": self.totalBooksInLibrary,
         }
+
+
+def jsonToSeries(data) -> Series:
+    series = Series()
+    series.name = data['name']
+    series.seriesAsin = data['seriesAsin']
+    series.sequence = data['sequence']
+    series.totalBooksInSeries = data['totalBooksInSeries']
+    series.totalBooksInLibrary = data['totalBooksInLibrary']
+    return series

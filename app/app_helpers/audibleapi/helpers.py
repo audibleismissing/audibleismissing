@@ -29,6 +29,8 @@ def returnSeriesObj(api_series) -> Series:
     series.seriesAsin = api_series.setdefault('asin', None)
     series.name = api_series.setdefault('title', None)
     series.sequence = api_series.setdefault('sequence', None)
+    # series.totalBooksInSeries = None
+    # series.totalBooksInLibrary = None
     return series
 
 
@@ -89,13 +91,13 @@ def returnBookObj(api_book:dict, isSeries:bool) -> Book:
     book.bookAsin = api_book.setdefault('asin', None)
     book.region = 'us'
     # book.language = api_book
-    # book.explicit = api_book
-    # book.abridged = api_book
+    # book.isExplicit = api_book
+    # book.isAbridged = api_book
     book.releaseDate = api_book.setdefault('date_first_available', None)
     # book.tags = api_book
     # book.link = api_book
     # book.imageUrl = api_book
-    book.owned = False
+    book.isOwned = False
     book.audibleOverallAvgRating = api_book['rating']['overall_distribution'].setdefault('average_rating', None)
     book.audiblePerformanceAvgRating = api_book['rating']['performance_distribution'].setdefault('average_rating', None)
     book.audibleStoryAvgRating = api_book['rating']['story_distribution'].setdefault('average_rating', None)

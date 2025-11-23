@@ -14,6 +14,7 @@ class NarratorMappingsTable(SQLModel, table=True):
 
 def addNarratorMapping(engine:create_engine, narrator_id, book_id) -> str:
     """Add narrator mapping to db"""
+    print(f"Adding narrator mapping: {narrator_id} -> {book_id}")
     row = NarratorMappingsTable(
         narratorId=narrator_id,
         bookId=book_id

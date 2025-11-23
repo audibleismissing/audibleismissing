@@ -41,6 +41,7 @@ class BooksTable(SQLModel, table=True):
 
 def addBook(engine, book:Book) -> str:
     """Add book to db"""
+    print(f"Adding book: {book.title}")
     row = BooksTable(
         title=book.title,
         subtitle=book.subtitle,
@@ -85,6 +86,7 @@ def getBook(engine:create_engine, search_string) -> Book:
 
 def updateBook(engine: create_engine, book: Book) -> None:
     """Update book in db"""
+    print(f"Updating book: {book.title}")
     with Session(engine) as session:
         statement = select(BooksTable).where(BooksTable.id == book.id)
         results = session.exec(statement).one()

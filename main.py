@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers.pages import index, series, books
-from app.routers.api import book_api, series_api
+from app.routers.api import book_api, series_api, admin_api
 
 from fastapi.staticfiles import StaticFiles
 
@@ -50,3 +50,4 @@ app.include_router(books.router)
 # api routers
 app.include_router(book_api.router)
 app.include_router(series_api.router)
+app.include_router(admin_api.router)

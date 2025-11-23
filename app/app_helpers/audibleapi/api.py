@@ -6,7 +6,7 @@ from app.custom_objects.book import Book
 
 
 # get book and return book object
-def getBook(auth, asin) -> Book:
+def getAudibleBook(auth, asin) -> Book:
     from app.app_helpers.audibleapi.helpers import returnBookObj
     
     with audible.Client(auth) as client:

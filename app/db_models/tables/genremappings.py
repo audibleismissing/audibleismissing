@@ -14,7 +14,7 @@ class GenreMappingsTable(SQLModel, table=True):
 
 def addGenreMapping(engine:create_engine, genre_id, book_id) -> str:
     """Add genre mapping to db"""
-    # if not doesGenreExist(engine, genre_id) and not doesBookExist(engine, book_id):
+    print(f"Adding genre mapping: {genre_id} -> {book_id}")
     row = GenreMappingsTable(
         genreId=genre_id,
         bookId=book_id,

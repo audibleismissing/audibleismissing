@@ -14,18 +14,16 @@ class GenresTable(SQLModel, table=True):
 
 def addGenre(engine:create_engine, genre:Genre) -> str:
     """Add genre to db"""
-    # check if genre already exists
-    if not doesGenreExist(engine, genre.name):
-        row = GenresTable(
-            name=genre.name,
-        )
+    print(f"Adding genre: {genre.name}")
+    row = GenresTable(
+        name=genre.name,
+    )
 
-        with Session(engine) as session:
-            session.add(row)
-            session.commit()
-            session.refresh(row)
-            return row.id
-    return None
+    with Session(engine) as session:
+        session.add(row)
+        session.commit()
+        session.refresh(row)
+        return row.id
 
 
 def getGenre(engine:create_engine, search_string):
@@ -41,6 +39,7 @@ def getGenre(engine:create_engine, search_string):
 
 def updateGenre(engine: create_engine, genre: Genre) -> None:
     """Update genre in db"""
+    print(f"Updating genre: {genre.name}")
     with Session(engine) as session:
         statement = select(GenresTable).where(GenresTable.id == genre.id)
         results = session.exec(statement).one()

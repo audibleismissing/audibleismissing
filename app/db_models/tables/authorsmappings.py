@@ -2,6 +2,8 @@ import uuid
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
 
+from app.custom_objects import book
+
 class AuthorsMappingsTable(SQLModel, table=True):
     __tablename__ = "authormappings"
 
@@ -13,6 +15,7 @@ class AuthorsMappingsTable(SQLModel, table=True):
 
 def addAuthorMapping(engine:create_engine, author_id, book_id) -> str:
     """Add author mapping to db"""
+    print(f"Adding author mapping: {author_id} -> {book_id}")
     row = AuthorsMappingsTable(
         authorId=author_id,
         bookId=book_id

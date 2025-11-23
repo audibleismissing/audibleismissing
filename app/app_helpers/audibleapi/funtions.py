@@ -1,34 +1,21 @@
-from functions.audibleapi import returnListofBookObjs
-from packages.audibleapi import getAudibleBooksInSeries
-from classes.custom_objects import Book, Author, Genre, Narrator, Series
+from app.app_helpers.audibleapi.helpers import returnListofBookObjs
+from app.app_helpers.audibleapi.api import getAudibleBooksInSeries
 
-from functions.db import (
-    addBook,
-    doesBookExist,
-    getAllBooks,
-    doesAuthorExist,
-    doesGenreExist,
-    doesNarratorExist,
-    doesSeriesExist,
-    addAuthor,
-    updateAuthor,
-    updateBook,
-    updateGenre,
-    updateSeries,
-    updateNarrator,
-    addNarrator,
-    addGenre,
-    addSeries,
-    addAuthorMapping,
-    addGenreMapping,
-    addNarratorMapping,
-    addSeriesMapping,
-    getBook,
-    getAuthor,
-    getGenre,
-    getSeries,
-    getNarrator
-)
+from app.custom_objects.author import Author
+from app.custom_objects.book import Book
+from app.custom_objects.genre import Genre
+from app.custom_objects.narrator import Narrator
+from app.custom_objects.series import Series
+
+from app.db_models.tables.authors import addAuthor, updateAuthor, getAuthor, doesAuthorExist
+from app.db_models.tables.authorsmappings import addAuthorMapping
+from app.db_models.tables.books import addBook, updateBook, getBook, doesBookExist, getAllBooks
+from app.db_models.tables.genres import addGenre, updateGenre, getGenre, doesGenreExist
+from app.db_models.tables.genremappings import addGenreMapping
+from app.db_models.tables.narrators import addNarrator, updateNarrator, getNarrator, doesNarratorExist
+from app.db_models.tables.narratormappings import addNarratorMapping
+from app.db_models.tables.series import addSeries, updateSeries, getSeries, doesSeriesExist
+from app.db_models.tables.seriesmappings import addSeriesMapping
 
 
 
@@ -38,28 +25,29 @@ def backfillAudibleData(engine, auth):
     Populates missing book, author, genre, narrator, and series information from audible.
     """
     def logOut(object, adding: bool) -> None:
-        if adding is True:
-            if type(object) is Book:
-                print(f"Adding book:       {object.title} - {object.id}")
-            if type(object) is Author:
-                print(f"Adding author:     {object.name} - {object.id}")
-            if type(object) is Series:
-                print(f"Adding series:     {object.name} - {object.id}")
-            if type(object) is Genre:
-                print(f"Adding genre:      {object.name} - {object.id}")
-            if type(object) is Narrator:
-                print(f"Adding narrator:   {object.name} - {object.id}")
-        else:
-            if type(object) is Book:
-                print(f"Updating book:     {object.title} - {object.id}")
-            if type(object) is Author:
-                print(f"Updating author:   {object.name} - {object.id}")
-            if type(object) is Series:
-                print(f"Updating series:   {object.name} - {object.id}")
-            if type(object) is Genre:
-                print(f"Updating genre:    {object.name} - {object.id}")
-            if type(object) is Narrator:
-                print(f"Updating narrator: {object.name} - {object.id}")
+        # if adding is True:
+        #     if type(object) is Book:
+        #         print(f"Adding book:       {object.title} - {object.id}")
+        #     if type(object) is Author:
+        #         print(f"Adding author:     {object.name} - {object.id}")
+        #     if type(object) is Series:
+        #         print(f"Adding series:     {object.name} - {object.id}")
+        #     if type(object) is Genre:
+        #         print(f"Adding genre:      {object.name} - {object.id}")
+        #     if type(object) is Narrator:
+        #         print(f"Adding narrator:   {object.name} - {object.id}")
+        # else:
+        #     if type(object) is Book:
+        #         print(f"Updating book:     {object.title} - {object.id}")
+        #     if type(object) is Author:
+        #         print(f"Updating author:   {object.name} - {object.id}")
+        #     if type(object) is Series:
+        #         print(f"Updating series:   {object.name} - {object.id}")
+        #     if type(object) is Genre:
+        #         print(f"Updating genre:    {object.name} - {object.id}")
+        #     if type(object) is Narrator:
+        #         print(f"Updating narrator: {object.name} - {object.id}")
+        pass
 
     for item in getAllBooks(engine):
         books_in_series = returnListofBookObjs(getAudibleBooksInSeries(auth, item.bookAsin))
@@ -70,7 +58,7 @@ def backfillAudibleData(engine, auth):
             # books
             if not doesBookExist(engine, single_book.bookAsin) and not doesBookExist(engine, single_book.bookAsin):
                 # add new DB entry
-                single_book.owned = False
+                single_book.isOwned = False
                 single_book.id = addBook(engine, single_book)
                 logOut(single_book, True)
             else:
@@ -78,7 +66,7 @@ def backfillAudibleData(engine, auth):
                 book = Book()
                 book = getBook(engine, single_book.bookAsin)
                 single_book.id = book.id
-                single_book.owned = book.owned
+                single_book.isOwned = book.isOwned
                 updateBook(engine, single_book)
                 logOut(single_book, False)
 
@@ -143,3 +131,4 @@ def backfillAudibleData(engine, auth):
                     single_genre.id = genre.id
                     updateGenre(engine, single_genre)
                     logOut(single_genre, False)
+    print("Audible backfill complete.")

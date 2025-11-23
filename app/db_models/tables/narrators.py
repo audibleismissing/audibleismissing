@@ -14,18 +14,16 @@ class NarratorsTable(SQLModel, table=True):
 
 def addNarrator(engine:create_engine, narrator:Narrator) -> str:
     """Add narrator to db"""
-    # check if narrator already exists
-    if not doesNarratorExist(engine, narrator.name):
-        row = NarratorsTable(
-            name=narrator.name,
-        )
+    print(f"Adding narrator: {narrator.name}")
+    row = NarratorsTable(
+        name=narrator.name,
+    )
 
-        with Session(engine) as session:
-            session.add(row)
-            session.commit()
-            session.refresh(row)
-            return row.id
-    return None
+    with Session(engine) as session:
+        session.add(row)
+        session.commit()
+        session.refresh(row)
+        return row.id
 
 
 def getNarrator(engine:create_engine, search_string):
@@ -41,6 +39,7 @@ def getNarrator(engine:create_engine, search_string):
 
 def updateNarrator(engine: create_engine, narrator: Narrator) -> None:
     """Update narrator in db"""
+    print(f"Updating narrator: {narrator.name}")
     with Session(engine) as session:
         statement = select(NarratorsTable).where(NarratorsTable.id == narrator.id)
         results = session.exec(statement).one()

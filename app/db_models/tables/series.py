@@ -18,18 +18,19 @@ class SeriesTable(SQLModel, table=True):
 
 def addSeries(engine: create_engine, series: Series) -> str:
     """Add series to db"""
-    # check if series already exists
-    if not doesSeriesExist(engine, series.name):
-        row = SeriesTable(
-            name=series.name,
-            totalBooksInLibrary=0,
-        )
+    print(f"Adding series: {series.name}")
+    row = SeriesTable(
+        name=series.name,
+        totalBooksInLibrary=series.totalBooksInLibrary,
+        totalBooksInSeries=series.totalBooksInSeries,
+        seriesAsin=series.seriesAsin,
+    )
 
-        with Session(engine) as session:
-            session.add(row)
-            session.commit()
-            session.refresh(row)
-            return row.id
+    with Session(engine) as session:
+        session.add(row)
+        session.commit()
+        session.refresh(row)
+        return row.id
     return None
 
 
@@ -48,6 +49,7 @@ def getSeries(engine: create_engine, search_string):
 
 def updateSeries(engine: create_engine, series: Series) -> None:
     """Update series in db"""
+    print(f"Updating series: {series.name}")
     with Session(engine) as session:
         statement = select(SeriesTable).where(SeriesTable.id == series.id)
         results = session.exec(statement).one()
