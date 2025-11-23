@@ -7,8 +7,8 @@
     <table id="book-table" data-toggle="table" data-search="true" data-pagination="true" class="table table-striped table-responsive">
         <thead>
             <tr>
-                <th data-field="title" data-searchable="true" data-sortable="true">Title</th>
-                <th data-field="bookAsin" data-searchable="true" data-sortable="true">ASIN</th>
+                <th data-field="title" data-searchable="true" data-sortable="true">Title/Book Details</th>
+                <th data-field="bookAsin" data-searchable="true" data-sortable="true">ASIN/Audible URL</th>
                 <th data-field="releaseDate" data-searchable="true" data-sortable="true">Release Date</th>
                 <th data-field="isOwned" data-sortable="true">Owned</th>
                 <th data-field="audibleOverallAvgRating" data-sortable="true">Avg Rating</th>
@@ -23,7 +23,7 @@
                 <tr>
                 {% endif %}
                 
-                    <td>{{ item.title }}</td>
+                    <td><a href='#'>{{ item.title }}</a></td>
                     <td><a href='https://www.audible.com/pd/{{ item.bookAsin }}' target="_blank">{{ item.bookAsin }}</td>
                     <td>{{ item.releaseDate }}</td>
                     <td>{{ item.isOwned }}</td>
