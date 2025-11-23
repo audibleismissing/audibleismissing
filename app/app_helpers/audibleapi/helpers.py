@@ -110,10 +110,10 @@ def returnListofBookObjs(book_list: list) -> list:
     books = []
     for single_book in book_list['similar_products']:
         if single_book.get('series'):
-            series = True
+            isSeries = True
         else:
-            series = False
+            isSeries = False
         book = Book()
-        book = returnBookObj(single_book, series)
+        book = returnBookObj(single_book, isSeries)
         books.append(book)
     return books

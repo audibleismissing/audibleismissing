@@ -50,6 +50,7 @@ async def backfill_audible(background_task: BackgroundTasks):
 @router.get("/abs/importtestdatajson", tags=[Tags.admin])
 async def import_test_data(background_task: BackgroundTasks):
     """Wipes all data from db and re-import abs data"""
+    db_helpers.resetAllData(engine, settings.sqlite_path)
     background_task.add_task(importDb, engine)
     return {"message": "Refreshing data. This may take a while."}
 

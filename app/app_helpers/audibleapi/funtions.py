@@ -102,9 +102,9 @@ def backfillAudibleData(engine, auth):
             if not getSeriesMappingByBook(engine, single_book.id):
                 addSeriesMapping(engine, single_series.id, single_book.id, single_series.sequence)
 
-        # genre
+        # genre FIXME: genres mappings are being duplicated?
         for single_genre in single_book.genres:
-            if not doesGenreExist(engine, single_series.name):
+            if not doesGenreExist(engine, single_genre.name):
                 # add new DB entry
                 single_genre.id = addGenre(engine, single_genre)
             else:
