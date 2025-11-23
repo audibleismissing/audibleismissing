@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-    Series Details: {{ table[0].seriesname }}
+    <div>Series Details: {{ table[0].seriesname }}</div>
+    <div>Books in Series: {{ counts[0]['totalBooksInSeries'] }}</div>
+    <div>Books in Library: {{ counts[0]['totalBooksInLibrary'] }}</div>
+    
     <table id="book-table" data-toggle="table" data-search="true" data-pagination="true" class="table table-striped table-responsive">
         <thead>
             <tr>
@@ -14,14 +17,19 @@
         </thead>
         <tbody>
             {% for item in table %}
-            <tr>
-                <td>{{ item.title }}</td>
-                <td><a href='https://www.audible.com/pd/{{ item.bookAsin }}''>{{ item.bookAsin }}</td>
-                <td>{{ item.releaseDate }}</td>
-                <td>{{ item.isOwned }}</td>
-                <td>{{ item.audibleOverallAvgRating }}</td>
-                <td>{{ item.sequence }}</td>
-            </tr>
+                {% if item.isOwned == 0 %}
+                <tr class="table-warning">
+                {% else %}
+                <tr>
+                {% endif %}
+                
+                    <td>{{ item.title }}</td>
+                    <td><a href='https://www.audible.com/pd/{{ item.bookAsin }}' target="_blank">{{ item.bookAsin }}</td>
+                    <td>{{ item.releaseDate }}</td>
+                    <td>{{ item.isOwned }}</td>
+                    <td>{{ item.audibleOverallAvgRating }}</td>
+                    <td>{{ item.sequence }}</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>

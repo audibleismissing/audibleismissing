@@ -32,7 +32,7 @@ engine = db_helpers.connectToDb()
 @router.get("/series/all", tags=[Tags.series], response_model=List[series_view.SeriesViewResponse])
 async def get_all_series():
     """Returns list of all series"""
-    results = seriesandcounts.getViewAllSeries(settings.sqlite_path)
+    results = seriesandcounts.getViewSeriesCounts(settings.sqlite_path)
     if results:
         return results
     return []
@@ -51,6 +51,15 @@ async def get_series_by_series_id(series_id: str):
 async def get_series_details(series_id: str):
     """Get series details from view."""
     results = booksandseries.getViewSeriesDetails(settings.sqlite_path, series_id)
+    if results:
+        return results
+    return []
+
+
+@router.get('/series/counts/{series_id}', tags=[Tags.series])
+async def get_series_counts(series_id: str):
+    """Get series counts from view."""
+    results = seriesandcounts.getViewSeriesCountsBySeries(settings.sqlite_path, series_id)
     if results:
         return results
     return []

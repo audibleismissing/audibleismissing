@@ -78,3 +78,4 @@ def getViewSeriesDetails(sqlite_path, series_id) -> list:
                 books.append(book_dict)
             return books
         return []
+        

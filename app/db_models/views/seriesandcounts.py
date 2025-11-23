@@ -33,7 +33,7 @@ def createSeriesAndCountsView(sqlite_db) -> None:
         print('DB conneciton error occured -', error)
 
 
-def getViewAllSeries(sqlite_path) -> list:
+def getViewSeriesCounts(sqlite_path) -> list:
     with sqlite3.connect(sqlite_path) as conn:
         """Get all books using the seriesandcounts view"""
         cur = conn.cursor()
@@ -46,4 +46,20 @@ def getViewAllSeries(sqlite_path) -> list:
                 series_dict = dict(zip(columns, row))
                 all_series.append(series_dict)
             return all_series
+        return []
+
+
+def getViewSeriesCountsBySeries(sqlite_path, series_id) -> list:
+    """Get all books with series_id using the booksandseries view"""
+    with sqlite3.connect(sqlite_path) as conn:
+        cur = conn.cursor()
+        cur.execute('select * from seriesandcounts where seriesId = ?', (series_id,))
+        results = cur.fetchall()
+        if results:
+            books = []
+            columns = [desc[0] for desc in cur.description]
+            for row in results:
+                book_dict = dict(zip(columns, row))
+                books.append(book_dict)
+            return books
         return []
