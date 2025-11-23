@@ -94,7 +94,7 @@ def returnBookObj(api_book:dict, isSeries:bool) -> Book:
     book.releaseDate = api_book.setdefault('date_first_available', None)
     # book.tags = api_book
     # book.link = api_book
-    # book.imageUrl = api_book
+    book.imageUrl = api_book['product_images'].setdefault('500', None)
     book.isOwned = False
     book.audibleOverallAvgRating = api_book['rating']['overall_distribution'].setdefault('average_rating', None)
     book.audiblePerformanceAvgRating = api_book['rating']['performance_distribution'].setdefault('average_rating', None)

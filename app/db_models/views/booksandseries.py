@@ -15,7 +15,7 @@ def createBooksAndSeriesView(sqlite_db) -> None:
                             b.isOwned,
                             b.releaseDate,
                             b.audibleOverallAvgRating,
-                            b.link,
+                            b.imageUrl,
 
                             /* sequence comes from the mapping */
                             sm.sequence,

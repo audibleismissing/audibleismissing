@@ -1,6 +1,7 @@
 from typing import Any, Dict
 
 import audible
+import json
 
 from app.custom_objects.book import Book
 
@@ -24,10 +25,11 @@ def getAudibleBooksInSeries(auth, asin) -> Dict[str, Any]:
     with audible.Client(auth) as client:
         item = client.get(
             f"/1.0/catalog/products/{asin}/sims",
-            response_groups="product_desc, product_details, series, contributors, rating",
+            response_groups="product_desc, product_details, series, contributors, rating, media",
             similarity_type="InTheSameSeries",
             num_results=50
         )
         if item:
+            # print(json.dumps(item, indent=4)) # friendly json view
             return item
     return None
