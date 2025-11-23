@@ -11,18 +11,15 @@
             </tr>
         </thead>
         <tbody>
-            {% if variable|length %}
-                {% for item in table %}
-                <tr>
-                    <td><a href='#'>{{ item.title }}</a></td>
-                    <td>{{ item.bookAsin }}</td>
-                    <td>{{ item.releaseDate }}</td>
-                    <td>{{ item.isOwned }}</td>
-                    <td>{{ item.audibleOverallAvgRating }}</td>
-                </tr>
-                {% endfor %}
-            {% else %}
-            {% endif %}
+            {% for item in table %}
+            <tr>
+                <td><a href='#'>{{ item.title }}</a></td>
+                <td>{{ item.bookAsin }}</td>
+                <td>{{ item.releaseDate }}</td>
+                <td>{{ item.isOwned }}</td>
+                <td>{{ item.audibleOverallAvgRating }}</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 {% endblock %}

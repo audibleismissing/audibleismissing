@@ -10,17 +10,14 @@
             </tr>
         </thead>
         <tbody>
-            {% if variable|length %}
-                {% for item in table %}
-                <tr>
-                    <td><a href='/series/details/{{ item.id }}/'>{{ item.name }}</a></td>
-                    <td>{{ item.seriesAsin }}</td>
-                    <td>{{ item.totalBooksInSeries }}</td>
-                    <td>{{ item.totalBooksInLibrary }}</td>
-                </tr>
-                {% endfor %}
-            {% else %}
-            {% endif %}
+            {% for item in table %}
+            <tr>
+                <td><a href='/series/details/{{ item.id }}/'>{{ item.name }}</a></td>
+                <td>{{ item.seriesAsin }}</td>
+                <td>{{ item.totalBooksInSeries }}</td>
+                <td>{{ item.totalBooksInLibrary }}</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 {% endblock %}
