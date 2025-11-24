@@ -23,7 +23,12 @@
                 {% else %}
                 <tr>
                 {% endif %}
+                    {% if item.imageUrl is not none %}
                     <td><img src={{ item.imageUrl }} style="width:96px;height:96px;"></td>
+                    {% else %}
+                    <td>No Picure</td>
+                    {% endif %}
+                    
                     <td><a href='/book/details/{{ item.bookId }}'>{{ item.title }}</a></td>
                     <td><a href='https://www.audible.com/pd/{{ item.bookAsin }}' target="_blank">{{ item.bookAsin }}</td>
                     <td>{{ item.releaseDate }}</td>
