@@ -57,9 +57,10 @@ def getViewAllBooks(sqlite_path) -> list:
         results = cur.fetchall()
         if results:
             all_books = []
-            for item in results:
-                all_books.append(item)
-                print(item.sequence)
+            columns = [desc[0] for desc in cur.description]
+            for row in results:
+                book_dict = dict(zip(columns, row))
+                all_books.append(book_dict)
 
             return all_books
         return []
@@ -92,3 +93,23 @@ def getViewBookDetails(sqlite_path, book_id):
             book_dict = dict(zip(columns, results))
             return book_dict
         return {}
+    
+
+# NOTE: release schedule idea. move select from getBooksToBeReleased to here and use this for the query
+def getViewReleaseDates(sqlite_path, time_window) -> list:
+    """Get upcoming book releases using the booksandseries view"""
+    from datetime import datetime
+    current_date = datetime.now().strftime('%Y-%m-%d')
+
+    with sqlite3.connect(sqlite_path) as conn:
+        cur = conn.cursor()
+        cur.execute('select * from booksandseries where releaseDate >= ? ORDER BY releaseDate ASC LIMIT ?', (current_date, time_window))
+        results = cur.fetchall()
+        if results:
+            books = []
+            columns = [desc[0] for desc in cur.description]
+            for row in results:
+                book_dict = dict(zip(columns, row))
+                books.append(book_dict)
+            return books
+        return []

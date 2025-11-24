@@ -37,6 +37,15 @@ async def get_all_books():
     return []
 
 
+@router.get("/books/allview", tags=[Tags.book])
+async def get_all_books_view():
+    """Returns list of all books from booksandseries view"""
+    results = booksandseries.getViewAllBooks(settings.sqlite_path)
+    if results:
+        return results
+    return []
+
+
 @router.get("/book/{book_asin}", tags=[Tags.book], response_model=book.BookResponse)
 async def get_book(book_asin: str):
     """Returns single book by asin"""
@@ -53,6 +62,17 @@ async def get_book_details(book_id: str):
     if results:
         return results
     return {}
+
+
+@router.get("/book/releasedates/{limit}", tags=[Tags.book])#, response_model=List[book.BookResponse])
+async def get_book_release_dates(limit: int):
+    """Gets books to be released. results limit."""
+    # results = books_table.getBooksToBeReleased(engine, limit)
+    results = booksandseries.getViewReleaseDates(settings.sqlite_path, limit)
+
+    if results:
+        return results
+    return []
 
 
 # @router.get("/book/series/{search_string}", tags=[Tags.book], response_model=List[book.BookResponse])

@@ -152,6 +152,23 @@ def getAllBooks(engine) -> list:
 
             return all_books
         return None
+    
+
+def getBooksToBeReleased(engine, time_window) -> list:
+    from datetime import datetime
+    current_date = datetime.now().strftime('%Y-%m-%d')
+    with Session(engine) as session:
+        statement = select(BooksTable).where(BooksTable.releaseDate > current_date).order_by(BooksTable.releaseDate.asc()).limit(time_window)
+        results = session.exec(statement)
+
+        if results:
+            all_books = []
+            for item in results:
+                book = returnBookObj(engine, item)
+                all_books.append(book)
+
+            return all_books
+        return None
 
 
 def returnBookObj(engine, book_table) -> Book:

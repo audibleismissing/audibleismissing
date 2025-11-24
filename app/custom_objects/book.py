@@ -37,24 +37,24 @@ class Book:
 
     def serialize(self):
         """Serialize the Book object to a dictionary."""
-        series = []
-        authors = []
-        genre = []
-        narrators = []
+        series_list = []
+        authors_list = []
+        genres_list = []
+        narrators_list = []
         for item in self.series:
-            series.append(item.serialize())
+            series_list.append(item.serialize())
         for item in self.authors:
-            series.append(item.serialize())
-        for item in self.genre:
-            series.append(item.serialize())
+            authors_list.append(item.serialize())
+        for item in self.genres:
+            genres_list.append(item.serialize())
         for item in self.narrators:
-            series.append(item.serialize())
-            
+            narrators_list.append(item.serialize())
+
         return {
             "id": self.id,
             "title": self.title,
             "subtitle": self.subtitle,
-            'authors': authors,
+            'authors': authors_list,
             "publisher": self.publisher,
             "copyright": self.copyright,
             "description": self.description,
@@ -66,15 +66,15 @@ class Book:
             "isExplicit": self.isExplicit,
             "isAbridged": self.isAbridged,
             "releaseDate": self.releaseDate,
-            'genres': genre,
+            'genres': genres_list,
             "link": self.link,
             "imageUrl": self.imageUrl,
-            "series": series,
+            "series": series_list,
             "isOwned": self.isOwned,
             "audibleOverallAvgRating": self.audibleOverallAvgRating,
             "audiblePerformanceAvgRating": self.audiblePerformanceAvgRating,
             "audibleStoryAvgRating": self.audibleStoryAvgRating,
-            'narrators': narrators,
+            'narrators': narrators_list,
             "lengthMinutes": self.lengthMinutes,
             "isAudiobook": self.isAudiobook,
         }
