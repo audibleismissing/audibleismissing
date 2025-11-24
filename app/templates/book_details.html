@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-    <img src={{ details.imageUrl }} style="width:256px;height:265px;">
+    {% if details.imageUrl is not none %}
+    <div><img src={{ details.imageUrl }} style="width:96px;height:96px;"></div>
+    {% else %}
+    <div>No Picure</div>
+    {% endif %}
     <div>Title: {{ details.title }}</div>
     <div>ASIN: {{ details.bookAsin }}</div>
     <div>Release Date: {{ details.releaseDate }}</div>
