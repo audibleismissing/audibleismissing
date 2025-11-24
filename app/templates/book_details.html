@@ -1,21 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
-    <p></p>
-    {% if details.imageUrl is not none %}
-    <!-- <div><img src={{ details.imageUrl }} style="width:256px;height:256px;"></div> -->
-    <img src={{ details.imageUrl }} class="float-start rounded">
-    {% else %}
-    <div>No Picure</div>
-    {% endif %}
-    <p></p>
-    <div>Title: {{ details.title }}</div>
-    <div>ASIN: {{ details.bookAsin }}</div>
-    <div>Release Date: {{ details.releaseDate }}</div>
-
-    <div>Series: {{ details.seriesName }}</div>
-    <div>Sequence: {{ details.sequence }}</div>
-    <div>Books in Series: {{ details.totalBooksInSeries }}</div>
-    <div>Series ASIN: {{ details.seriesAsin }}</div>
-
-    <div>Description: {{ details.description }}</div>
+    <div class="row g-2 container-fluid"">
+        <p></p>
+        {% if details.imageUrl is not none %}
+        <div class="float-start">
+            <img class="float-start" src={{ details.imageUrl }} style="width:256px;height:256px;">
+            <div class="row g-5">
+            <div class="float-start">
+                <div>Title: {{ details.title }}</div>
+                <div>ASIN: <a href="https://www.audible.com/pd/{{ details.bookAsin }}" {{ details.bookAsin }}>{{ details.bookAsin }}</a></div>
+                <div>Release Date: {{ details.releaseDate }}</div>
+                <div>Series: {{ details.seriesName }}</div>
+                <div>Sequence: {{ details.sequence }}</div>
+                <div>Books in Series: {{ details.totalBooksInSeries }}</div>
+                <div>Series ASIN: {{ details.seriesAsin }}</div>
+            </div></div>
+        </div>
+        {% else %}
+        <div>No Picure</div>
+        {% endif %}
+        <p></p>
+        <div>{{ details.description }}</div>
+    </div>
 {% endblock %}
