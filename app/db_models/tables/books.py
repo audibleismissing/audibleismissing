@@ -46,8 +46,11 @@ def addBook(engine, book:Book) -> str:
     print(f"Adding book: {book.title}")
 
     # strip html tags from desciption strings.
-    bs_description = BeautifulSoup(book.description, "html.parser")
-    clean_description = bs_description.get_text()
+    if book.description:
+        bs_description = BeautifulSoup(book.description, "html.parser")
+        clean_description = bs_description.get_text()
+    else:
+        clean_description = "No desciption available."
 
     row = BooksTable(
         title=book.title,
