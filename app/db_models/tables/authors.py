@@ -87,8 +87,8 @@ def getBookAuthors(engine:create_engine, book_id) -> list:
             author.name = authors_table.name
             author.authorAsin = authors_table.authorAsin
             authors.append(author)
-
-        return authors
+        
+    return authors
 
 def returnAuthorObj(sql_data) -> Author:
     author = Author()

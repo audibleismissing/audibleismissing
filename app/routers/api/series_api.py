@@ -3,7 +3,7 @@ from typing import Annotated, List
 
 from app.routers.api import api_router
 from app.routers.route_tags import Tags
-from app.response_models import series, book, series_view
+from app.response_models import book_response, series_response, series_view
 from app.custom_objects import settings
 from app.app_helpers.audiobookshelf import abs_helpers
 from app.db_models import db_helpers
@@ -38,7 +38,7 @@ async def get_all_series():
     return []
 
 
-@router.get('/series/books/{series_id}', tags=[Tags.series], response_model=List[book.BookResponse])
+@router.get('/series/books/{series_id}', tags=[Tags.series], response_model=List[book_response.BookResponse])
 async def get_series_by_series_id(series_id: str):
     """Get list of books in a series by series id"""
     results = series_table.getBooksInSeries(engine, series_id)
