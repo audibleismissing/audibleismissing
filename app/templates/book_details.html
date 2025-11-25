@@ -5,7 +5,7 @@
         {% if details.imageUrl is not none %}
         <div class="float-start">
             <img class="float-start" src={{ details.imageUrl }} style="width:256px;height:256px;">
-            <div class="row g-5">
+            <div class="row">
                 <div class="float-start">
                     <div>Title: {{ details.title }}</div>
                     <div>ASIN: <a href="https://www.audible.com/pd/{{ details.bookAsin }}">{{ details.bookAsin }}</a></div>
@@ -25,61 +25,62 @@
             {{ details.description }}
         </div>
 
+        <p></p>
+        <div class="container row">
+            <!-- authors -->
+            <div class="col">
+                <table id="authors-table" data-toggle="table" class="table table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th data-field="name" data-searchable="true" data-sortable="true">Authors</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in authors %}
+                        <tr>
+                            <td>{{ item['name'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
-        <!-- authors -->
-        <div>
-            <table id="authors-table" data-toggle="table" class="table table-striped table-responsive">
-                <thead>
-                    <tr>
-                        <th data-field="name" data-searchable="true" data-sortable="true">Authors</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in authors %}
-                    <tr>
-                        <td>{{ item['name'] }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
+            <!-- narrators -->
+            <div class="col">
+                <table id="narrators-table" data-toggle="table" class="table table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th data-field="name" data-searchable="true" data-sortable="true">Narrators</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in narrators %}
+                        <tr>
+                            <td>{{ item['name'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- genres -->
+            <div class="col">
+                <table id="genres-table" data-toggle="table" class="table table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th data-field="name" data-searchable="true" data-sortable="true">Genres</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in genres %}
+                        <tr>
+                            <td>{{ item['name'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-
-        <!-- narrators -->
-        <div>
-            <table id="narrators-table" data-toggle="table" class="table table-striped table-responsive">
-                <thead>
-                    <tr>
-                        <th data-field="name" data-searchable="true" data-sortable="true">Narrators</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in narrators %}
-                    <tr>
-                        <td>{{ item['name'] }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- genres -->
-        <div>
-            <table id="genres-table" data-toggle="table" class="table table-striped table-responsive">
-                <thead>
-                    <tr>
-                        <th data-field="name" data-searchable="true" data-sortable="true">Genres</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in genres %}
-                    <tr>
-                        <td>{{ item['name'] }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
     </div>
 {% endblock %}
