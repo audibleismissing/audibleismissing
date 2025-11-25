@@ -63,5 +63,23 @@
             </table>
         </div>
 
+        <!-- genres -->
+        <div>
+            <table id="genres-table" data-toggle="table" class="table table-striped table-responsive">
+                <thead>
+                    <tr>
+                        <th data-field="name" data-searchable="true" data-sortable="true">Genres</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in genres %}
+                    <tr>
+                        <td>{{ item['name'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
     </div>
 {% endblock %}

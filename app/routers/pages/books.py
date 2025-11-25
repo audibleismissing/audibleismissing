@@ -34,8 +34,8 @@ def details(request: Request, book_id: str):
     details = get_json_from_api(f'http://localhost:8000/api/book/details/{book_id}')
     authors = get_json_from_api(f'http://localhost:8000/api/book/authors/{book_id}')
     narrators = get_json_from_api(f'http://localhost:8000/api/book/narrators/{book_id}')
-    # genres = get_json_from_api(f'http://localhost:8000/api/book/genres/{book_id}')
+    genres = get_json_from_api(f'http://localhost:8000/api/book/genres/{book_id}')
 
     return templates.TemplateResponse(
-        request = request, name='book_details.html', context={"details": details, "authors": authors, "narrators": narrators}
+        request = request, name='book_details.html', context={"details": details, "authors": authors, "narrators": narrators, "genres": genres}
     )

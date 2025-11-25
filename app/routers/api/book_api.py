@@ -13,6 +13,7 @@ from app.db_models.tables import books as books_table
 from app.db_models.tables import series as series_table
 from app.db_models.tables import authors as authors_table
 from app.db_models.tables import narrators as narrators_table
+from app.db_models.tables import genres as genres_table
 from app.db_models.views import booksandseries
 
 
@@ -89,6 +90,15 @@ async def get_book_authors(book_id: str):
 async def get_book_narrators(book_id: str):
     """Returns list of narrators for a given book id"""
     results = narrators_table.getBookNarrators(engine, book_id)
+    if results:
+        return results
+    return []
+
+
+@router.get("/book/genres/{book_id}", tags=[Tags.book], response_model=List[genre_response.GenreResponse])
+async def get_book_genres(book_id: str):
+    """Returns list of genres for a given book id"""
+    results = genres_table.getBookGenres(engine, book_id)
     if results:
         return results
     return []
