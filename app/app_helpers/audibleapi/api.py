@@ -13,11 +13,12 @@ def getAudibleBook(auth, asin) -> Book:
     with audible.Client(auth) as client:
         item = client.get(
             f"1.0/catalog/products/{asin}",
-            response_groups="product_desc, product_details, series, contributors, rating, category_ladders, relationships"
+            response_groups="product_desc, product_details, series, contributors, rating, category_ladders, relationships, media"
         )
         if item:
             # print(json.dumps(item, indent=4)) # friendly json view
-            return returnBookObj(item)
+            # return returnBookObj(item)
+            return item
     return None
 
 
