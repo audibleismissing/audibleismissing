@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 class Book:
     def __init__(self):
         self.id: str = None
@@ -21,9 +23,9 @@ class Book:
         self.imageUrl: str = None
         self.series = []
         self.isOwned: str = None
-        self.audibleOverallAvgRating: str = None
-        self.audiblePerformanceAvgRating: str = None
-        self.audibleStoryAvgRating: str = None
+        self.audibleOverallAvgRating: Decimal = None
+        self.audiblePerformanceAvgRating: Decimal = None
+        self.audibleStoryAvgRating: Decimal = None
         self.narrators = []
         self.lengthMinutes: str = None
         self.isAudiobook = True

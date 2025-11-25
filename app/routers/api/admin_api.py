@@ -4,8 +4,7 @@ from app.routers.api import api_router
 from app.routers.route_tags import Tags
 from app.custom_objects import settings
 from app.db_models import db_helpers
-from app.app_helpers.fastapi_utils.fastapi_tasks import taskRefreshAbsData
-from app.app_helpers.audibleapi.funtions import backfillAudibleData
+from app.app_helpers.fastapi_utils.fastapi_tasks import taskRefreshAbsData, refreshAudibleData
 from app.app_helpers.audibleapi.auth import loadExistingAuth
 from app.db_models.db_helpers import exportDb, importDb
 
@@ -42,7 +41,7 @@ async def backfill_audible(background_task: BackgroundTasks):
     """Gets missing info from audible. Run /abs/resetdb endpoint first"""
     auth = loadExistingAuth(settings.audible_auth)
     if auth:
-        background_task.add_task(backfillAudibleData, engine, auth)
+        background_task.add_task(refreshAudibleData, engine, auth)
         return {"message": "Refreshing data. This may take a while."}
     return {"message": "Not authenticated to audible."}
 

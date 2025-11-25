@@ -1,5 +1,5 @@
 import uuid
-from decimal import Decimal 
+from decimal import Decimal
 
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, and_

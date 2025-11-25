@@ -21,7 +21,6 @@ from app.db_models.tables.seriesmappings import addSeriesMapping, getSeriesMappi
 
 
 
-# probably will replace getMissingBooksFromSeries
 def backfillAudibleData(engine, auth):
     """
     Populates missing book, author, genre, narrator, and series information from audible.
@@ -45,6 +44,7 @@ def backfillAudibleData(engine, auth):
             audible_books.append(book_in_series)
 
     for single_book in audible_books:
+        print(f'---Processing {single_book.title}')
         # books
         if not doesBookExist(engine, single_book.bookAsin):
             # add new DB entry

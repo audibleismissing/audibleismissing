@@ -94,11 +94,16 @@ def returnBookObj(api_book:dict, isSeries:bool) -> Book:
     book.releaseDate = api_book.setdefault('date_first_available', None)
     # book.tags = api_book
     # book.link = api_book
-    book.imageUrl = api_book['product_images'].setdefault('500', None)
+
+    if api_book.get('product_images'):
+        book.imageUrl = api_book['product_images'].setdefault('500', None)
+    else:
+        book.imageUrl = None
+
     book.isOwned = False
-    book.audibleOverallAvgRating = api_book['rating']['overall_distribution'].setdefault('average_rating', None)
-    book.audiblePerformanceAvgRating = api_book['rating']['performance_distribution'].setdefault('average_rating', None)
-    book.audibleStoryAvgRating = api_book['rating']['story_distribution'].setdefault('average_rating', None)
+    book.audibleOverallAvgRating = round(api_book['rating']['overall_distribution'].setdefault('average_rating', None), 2)
+    book.audiblePerformanceAvgRating = round(api_book['rating']['performance_distribution'].setdefault('average_rating', None), 2)
+    book.audibleStoryAvgRating = round(api_book['rating']['story_distribution'].setdefault('average_rating', None), 2)
     # book.lengthMinutes = api_book
 
     return book

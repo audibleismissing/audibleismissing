@@ -1,6 +1,6 @@
 from app.app_helpers.audiobookshelf import abs_helpers
 from app.db_models import db_helpers
-# from functions.audibleapi import backfillAudibleData
+from app.app_helpers.audibleapi.funtions import backfillAudibleData
 
 
 
@@ -12,8 +12,7 @@ def taskRefreshAbsData(engine, settings):
     print("Completed taskRefreshAbsData")
 
 
-# def taskGetMissing(engine, auth):
-#     """Get books missing from series and update database"""
-#     print("Starting taskGetMissing")
-#     backfillAudibleData(engine, auth)
-#     print("Completed taskGetMissing")
+def refreshAudibleData(engine, auth):
+    print("Starting refreshAudibleData")
+    backfillAudibleData(engine, auth)
+    print("Completed refreshAudibleData")
