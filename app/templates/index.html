@@ -14,14 +14,11 @@
         </ul>
     </div>
 
-
-
-    <!-- Calendar -->
     <!-- releases -->
      <h4>Upcoming Releases</h4>
     <ul>
     {% for item in releases %}
-        <li><a href="https://www.audible.com/pd/{{ item.bookAsin }}" target="_blank">{{ item.releaseDate }} - {{ item.seriesName }} - {{ item.title }}, book {{ item.sequence }}</a></li>
+        <li>{{ item.releaseDate }}: <a href='/book/details/{{ item.bookId }}'> {{ item.seriesName }} - {{ item.title }}</a> - <a href="https://www.audible.com/pd/{{ item.bookAsin }}" target="_blank">Audible</a></li>
     {% endfor %}
     </ul>
 

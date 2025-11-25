@@ -10,7 +10,7 @@
                 <div>Title: {{ details.title }}</div>
                 <div>ASIN: <a href="https://www.audible.com/pd/{{ details.bookAsin }}">{{ details.bookAsin }}</a></div>
                 <div>Release Date: {{ details.releaseDate }}</div>
-                <div>Series: {{ details.seriesName }}</div>
+                <div>Series: <a href='/series/details/{{ details.seriesId }}/'>{{ details.seriesName }}</a></div>
                 <div>Sequence: {{ details.sequence }}</div>
                 <div>Books in Series: {{ details.totalBooksInSeries }}</div>
                 <div>Series ASIN: {{ details.seriesAsin }}</div>
