@@ -8,7 +8,6 @@ from app.custom_objects.book import Book
 
 from app.db_models.tables.authors import getBookAuthors
 from app.db_models.tables.genres import getBookGenres
-# avoid circular import by importing series helper inside functions where needed
 from app.db_models.tables.narrators import getBookNarrators
 
 
