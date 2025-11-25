@@ -47,6 +47,9 @@ def returnBookObj(api_book:dict, isSeries:bool) -> Book:
         KeyError: If required keys are missing in the api_book or nested dictionaries.
         TypeError: If api_book isn't a dictionary or contains unexpected data types.
     """
+    if api_book.get('product'):
+        api_book = api_book.get('product')
+
     book = Book()
     # print(json.dumps(api_book, indent=4))
     authors = []
@@ -101,9 +104,12 @@ def returnBookObj(api_book:dict, isSeries:bool) -> Book:
         book.imageUrl = None
 
     book.isOwned = False
+
+    # if api_book.get('rating'):
     book.audibleOverallAvgRating = round(api_book['rating']['overall_distribution'].setdefault('average_rating', None), 2)
     book.audiblePerformanceAvgRating = round(api_book['rating']['performance_distribution'].setdefault('average_rating', None), 2)
     book.audibleStoryAvgRating = round(api_book['rating']['story_distribution'].setdefault('average_rating', None), 2)
+    
     # book.lengthMinutes = api_book
 
     return book
