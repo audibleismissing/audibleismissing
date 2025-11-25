@@ -1,3 +1,33 @@
+# Audible is Missing
+## What is this.
+Ok, so I made this for a couple reasons. One, It was a pain in the ass to keep track of which audiobook series had books coming out using the native audible tools. And no such funcitonality exists in Audiobookshelf. Second, I've never made a web app, so it was a chance to learn how to do that...I learned I don't like html.
+
+This is still in early stages and is also a hobby project. So DO NOT serve this application to the open internet. My code is terrible and probably has lots of issues.
+
+
+## Some Notes
+- Maximum books returned by audible api is 50 (hard limit). So some series data might not be complete.
+- The method used for getting books in a series sometimes decides to add invalid book asins or just omits them from the results. An example of this is book 3 in Beware of Chicken. To "kinda" fix this, I implemented a work around. See [Issue 35](https://github.com/tupcakes/audibleismissing/issues/35). Because of this, it's possible that some series books might be missed. I largely hasn't been an issue though.
+- Yes, there are probably ways I could write this to be more efficent. I'm a noob when it comes to python and programming isn't my normal career choice. Essentially, yes my code sucks but I'm learning.
+
+
+## Tech Stack
+- FastAPI
+- SQLite
+- Bootstrap
+- bootstrap-table
+- bootstrap-icons
+- jquery
+
+
+## Dev Environment Setup
+### Requirements
+- Python
+- uv
+
+
+### Steps
+```
 mkdir audibleismissing-fastapi
 cd audibleismissing-fastapi
 
@@ -9,92 +39,13 @@ uv add requests
 uv add sqlmodel
 uv add toml
 uv add jinja2
+uv add beautifulsoup4
+```
 
-uv tool install ruff
-
-
-mkdir -p {app, app/templates, app/static, app/routers, app/db_models}
-
-
-
-
-
-## Docker operations
-docker system prune -f
-
-
-docker compose down
-docker rm audibleismissing-fastapi-dev-1 
-docker rmi audibleismissing-fastapi-dev:latest
-docker compose -f dev-compose.yaml up --build
-
-
-
-docker exec -it audibleismissing-fastapi-dev-1 sh
-
-
-
-## Non docker operations
+### Running
+```Dev
 uv run fastapi dev main.py
-
-
-
-https://fastapi.tiangolo.com/advanced/templates/?h=template#using-jinja2templates
-https://fastapi.tiangolo.com/tutorial/bigger-applications/#another-module-with-apirouter
-
-
-
-
-max books returned by audible api is 50
-
-
-
-/api/book/{title or bookAsin}
-getBook -> Book
-
-/api/books/all/
-getAllBooks -> [Book]
-
-/api/books/series/{seriesName}
-getBooksInSeries -> [Book]
-
-/api/books/author/{authorName}
-getBooksByAuthor -> [Book]
-
-
-
-
-/api/series/all/
-getAllSeries -> [Series]
-
-
-/api/series/{name or seriesAsin}
-getSeries -> Series
-
-/api/series/book/{title or bookAsin}
-getSeriesByBook => [Series]
-
-
-
-
-getAuthor -> Author
-getAuthorByBook => [Author]
-
-
-getNarrator -> Narrator
-getNarratorByBook => [Narrator]
-
-
-getGenre -> Genre
-getGenreByBook => [Genre]
-
-
-
-
-
-
-
-## Uses
-https://getbootstrap.com
-https://bootstrap-table.com
-https://jquery.com
+```
+```Prod
+uv run fastapi run main.py
+```
