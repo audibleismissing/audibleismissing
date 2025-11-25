@@ -4,11 +4,26 @@ Ok, so I made this for a couple reasons. One, It was a pain in the ass to keep t
 
 This is still in early stages and is also a hobby project. So DO NOT serve this application to the open internet. My code is terrible and probably has lots of issues.
 
+Index                      |  Series List
+:-------------------------:|:-------------------------:
+![](docs/screenshots/index.png)  |  ![](docs/screenshots/series_list.png)
+
+Series Details             |  Book Details
+:-------------------------:|:-------------------------:
+![](docs/screenshots/series_details.png)  |  ![](docs/screenshots/book_details.png)
+
 
 ## Some Notes
 - Maximum books returned by audible api is 50 (hard limit). So some series data might not be complete.
 - The method used for getting books in a series sometimes decides to add invalid book asins or just omits them from the results. An example of this is book 3 in Beware of Chicken. To "kinda" fix this, I implemented a work around. See [Issue 35](https://github.com/tupcakes/audibleismissing/issues/35). Because of this, it's possible that some series books might be missed. I largely hasn't been an issue though.
 - Yes, there are probably ways I could write this to be more efficent. I'm a noob when it comes to python and programming isn't my normal career choice. Essentially, yes my code sucks but I'm learning.
+
+## Possible Features
+Some stuff I'm considering implementing.
+- Tagging/watching series/books (basically a personal watch list).
+- Importing other books by existing authors for book discovery.
+- Narrator and author details lists.
+- docker builds
 
 
 ## Tech Stack
