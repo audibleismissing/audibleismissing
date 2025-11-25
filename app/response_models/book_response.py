@@ -2,10 +2,10 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
-from .author import AuthorResponse
-from .genre import GenreResponse
-from .narrator import NarratorResponse
-from .series import SeriesResponse
+from .author_response import AuthorResponse
+from .genre_response import GenreResponse
+from .narrator_response import NarratorResponse
+from .series_response import SeriesResponse
 
 
 class BookQuery(BaseModel):
