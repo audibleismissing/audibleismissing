@@ -42,13 +42,19 @@ class BooksTable(SQLModel, table=True):
 
 def addBook(engine, book:Book) -> str:
     """Add book to db"""
+    from bs4 import BeautifulSoup
     print(f"Adding book: {book.title}")
+
+    # strip html tags from desciption strings.
+    bs_description = BeautifulSoup(book.description, "html.parser")
+    clean_description = bs_description.get_text()
+
     row = BooksTable(
         title=book.title,
         subtitle=book.subtitle,
         publisher=book.publisher,
         copyright=book.copyright,
-        description=book.description,
+        description=clean_description,
         summary=book.summary,
         isbn=book.isbn,
         bookAsin=book.bookAsin,

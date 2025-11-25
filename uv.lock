@@ -56,6 +56,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "audible" },
+    { name = "beautifulsoup4" },
     { name = "fastapi", extra = ["standard"] },
     { name = "jinja2" },
     { name = "requests" },
@@ -66,6 +67,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "audible", specifier = ">=0.10.0" },
+    { name = "beautifulsoup4", specifier = ">=4.14.2" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.121.3" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "requests", specifier = ">=2.32.5" },
