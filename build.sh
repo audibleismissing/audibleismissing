@@ -3,7 +3,7 @@
 docker compose -f docker/compose-dev.yaml down
 # docker system prune -f
 docker builder prune -f
-docker rmi audibleismissing-dev:latest
+docker rmi docker-example:latest
 docker compose -f docker/compose-dev.yaml up
 
 

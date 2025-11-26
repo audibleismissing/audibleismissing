@@ -24,7 +24,7 @@ from app.db_models.tables.seriesmappings import addSeriesMapping
 
 
 def connectToDb() -> create_engine:
-    sqlite_path = (settings.readSettings('settings.toml')).sqlite_path
+    sqlite_path = (settings.readSettings('/config/settings.toml')).sqlite_path
 
     sqlite_url = f"sqlite:///{sqlite_path}"
     return create_engine(sqlite_url, echo=False)

@@ -6,6 +6,9 @@ services:
       dockerfile: docker/Dockerfile-dev
     ports:
       - 8000:8000
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - .config:/config
     develop:
       # Create a `watch` configuration to update the app
       watch:

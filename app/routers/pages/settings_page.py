@@ -19,7 +19,7 @@ templates = Jinja2Templates(directory=templates_dir)
 def page(request: Request):
     """Render settings page"""
 
-    file = "settings.toml"
+    file = "/config/settings.toml"
     settings = readSettings(file)
     audible_auth = None
 

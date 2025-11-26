@@ -13,7 +13,7 @@ router = api_router.initRouter()
 
 # Load settings from settings.toml
 # file = "/src/audibleismissing/settings.toml"
-file = "settings.toml"
+file = "/config/settings.toml"
 settings = settings.readSettings(file)
 
 

@@ -10,7 +10,7 @@ from app.app_helpers.audibleapi.auth import createDeviceAuth
 
 router = api_router.initRouter()
 
-settings_file = "settings.toml"
+settings_file = "/config/settings.toml"
 audible_auth_file = "audible_auth"
 
 class SettingsFormModel(BaseModel):
