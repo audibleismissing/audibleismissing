@@ -3,7 +3,7 @@ services:
     container_name: audibleismissing-dev
     build:
       context: ..
-      dockerfile: docker/Dockerfile-dev
+      dockerfile: docker/Dockerfile
     ports:
       - 8000:8000
     volumes:
