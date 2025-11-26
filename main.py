@@ -8,7 +8,6 @@ from app.routers.api import book_api, series_api, admin_api, test_api, settings_
 from fastapi.staticfiles import StaticFiles
 
 
-
 # initialize FastAPI app
 app = FastAPI(
     title="Audible is Missing API",

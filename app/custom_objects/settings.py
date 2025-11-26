@@ -6,7 +6,7 @@ settings_file = "/config/settings.toml"
 
 class Settings:
     def __init__(self):
-        self.settings_file: str = settings_file
+        self.settings_file = settings_file
         self.sqlite_path: str
         self.abs_url: str
         self.abs_api_key: str
@@ -42,5 +42,22 @@ def getSettingsObj(toml_config) -> Settings:
     return settings
 
 
-def createSettingsFile():
-    """Creates a default settings file if one doesn't exist"""
+def createDefaultSettingsFile():
+    """Creates a default settings file"""
+    config = {
+        "database": {
+            "sqlite": {
+                "sqlite_file": "/config/audibleismissing.sqlite",
+            }
+        },
+        "audiobookshelf": {
+            "url": "https://abs.example.com",
+            "api_key": "Bearer somekey...",
+            "library_id": "id-234234jkjdhfkjdf",
+        },
+        "audible": {
+            "auth_file": "/config/audible_auth",
+        }
+    }
+    with open(settings_file, 'w') as file:
+        toml.dump(config, file)
