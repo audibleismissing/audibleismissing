@@ -2,102 +2,189 @@
 {% block content %}
     <div id="saveAlert" class="alert" style="display: none;" role="alert"></div>
 
-    <div>
-        <form id="settingsForm">
-            <div class="mb-3">
-                <label for="inputAudiobookshelfUrl" class="form-label">Audiobookshelf URL</label>
-                <input type="text" class="form-control" id="inputAudiobookshelfUrl" name="abs_url" value="{{ settings.abs_url }}" aria-describedby="absUrlHelp">
-                <div id="absUrlHelp" class="form-text">https://abs.example.com</div>
-            </div>
+    <div class="row">
+        <div class="col">
+            <h2>Application Settings</h2>
+            <form id="settingsForm">
+                <div class="mb-3">
+                    <label for="inputAudiobookshelfUrl" class="form-label">Audiobookshelf URL</label>
+                    <input type="text" class="form-control" id="inputAudiobookshelfUrl" name="abs_url" value="{{ settings.abs_url }}" aria-describedby="absUrlHelp">
+                    <div id="absUrlHelp" class="form-text">https://abs.example.com</div>
+                </div>
 
-            <div class="mb-3">
-                <label for="inputAudiobookshelfApiKey" class="form-label">Audiobookshelf API Key</label>
-                <input type="text" class="form-control" id="inputAudiobookshelfApiKey" name="abs_api_key" value="{{ settings.abs_api_key }}" aria-describedby="absApiKeyHelp">
-                <div id="absApiKeyHelp" class="form-text">Bearer uhf8hry98ydfyaw8e9fy...</div>
-            </div>
+                <div class="mb-3">
+                    <label for="inputAudiobookshelfApiKey" class="form-label">Audiobookshelf API Key</label>
+                    <input type="text" class="form-control" id="inputAudiobookshelfApiKey" name="abs_api_key" value="{{ settings.abs_api_key }}" aria-describedby="absApiKeyHelp">
+                    <div id="absApiKeyHelp" class="form-text">Bearer uhf8hry98ydfyaw8e9fy...</div>
+                </div>
 
-            <div class="mb-3">
-                <label for="inputAudiobookshelfLibraryId" class="form-label">Audiobookshelf Library ID</label>
-                <input type="text" class="form-control" id="inputAudiobookshelfLibraryId" name="abs_library_id" value="{{ settings.abs_library_id }}" aria-describedby="absLibraryIdHelp">
-                <div id="absLibraryIdHelp" class="form-text">0a0c4b05-e4bd-486d-85fd-3c053082b540</div>
-            </div>
+                <div class="mb-3">
+                    <label for="inputAudiobookshelfLibraryId" class="form-label">Audiobookshelf Library ID</label>
+                    <input type="text" class="form-control" id="inputAudiobookshelfLibraryId" name="abs_library_id" value="{{ settings.abs_library_id }}" aria-describedby="absLibraryIdHelp">
+                    <div id="absLibraryIdHelp" class="form-text">0a0c4b05-e4bd-486d-85fd-3c053082b540</div>
+                </div>
 
 
 
-            <button type="submit" class="btn btn-primary">Save</button>
-            <script>
-            document.getElementById('settingsForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                fetch('/api/settings/save/', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const alertDiv = document.getElementById('saveAlert');
-                    alertDiv.className = 'alert alert-success';
-                    alertDiv.textContent = data.message;
-                    alertDiv.style.display = 'block';
-                    setTimeout(() => alertDiv.style.display = 'none', 5000);
-                })
-                .catch(error => {
-                    const alertDiv = document.getElementById('saveAlert');
-                    alertDiv.className = 'alert alert-danger';
-                    alertDiv.textContent = 'Error saving settings';
-                    alertDiv.style.display = 'block';
-                    setTimeout(() => alertDiv.style.display = 'none', 5000);
+                <button type="submit" class="btn btn-primary">Save</button>
+                <script>
+                document.getElementById('settingsForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    fetch('/api/settings/save/', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const alertDiv = document.getElementById('saveAlert');
+                        alertDiv.className = 'alert alert-success';
+                        alertDiv.textContent = data.message;
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => alertDiv.style.display = 'none', 5000);
+                    })
+                    .catch(error => {
+                        const alertDiv = document.getElementById('saveAlert');
+                        alertDiv.className = 'alert alert-danger';
+                        alertDiv.textContent = 'Error saving settings';
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => alertDiv.style.display = 'none', 5000);
+                    });
                 });
-            });
-            </script>
-        </form>
+                </script>
+            </form>
 
-        <!-- Audible Auth -->
-        <form id="audibleAuthForm">
-            <div class="mb-3">
-                <label for="inputAudibleUsername" class="form-label">Audible Username</label>
-                <input type="text" class="form-control" id="inputAudibleUsername" name="audible_username" value="{{ audible.audible_username }}" aria-describedby="AudibleUsernameHelp">
-                <div id="AudibleUsernameHelp" class="form-text">someuser@example.com</div>
-            </div>
+            <!-- Audible Auth -->
+            <form id="audibleAuthForm">
+                <div class="mb-3">
+                    <label for="inputAudibleUsername" class="form-label">Audible Username</label>
+                    <input type="text" class="form-control" id="inputAudibleUsername" name="audible_username" value="{{ audible.audible_username }}" aria-describedby="AudibleUsernameHelp">
+                    <div id="AudibleUsernameHelp" class="form-text">someuser@example.com</div>
+                </div>
 
-            <div class="mb-3">
-                <label for="inputAudiblePassword" class="form-label">Audible Password</label>
-                <input type="password" class="form-control" id="inputAudiblePassword" name="audible_password" value="{{ audible.audible_password }}" aria-describedby="audiblePasswordHelp">
-                <div id="audiblePasswordHelp" class="form-text">If you have activated 2-factor-authentication for your Amazon account, you can append the current OTP to your password.</div>
-            </div>
+                <div class="mb-3">
+                    <label for="inputAudiblePassword" class="form-label">Audible Password</label>
+                    <input type="password" class="form-control" id="inputAudiblePassword" name="audible_password" value="{{ audible.audible_password }}" aria-describedby="audiblePasswordHelp">
+                    <div id="audiblePasswordHelp" class="form-text">If you have activated 2-factor-authentication for your Amazon account, you can append the current OTP to your password.</div>
+                </div>
 
-            <div class="mb-3">
-                <label for="inputAudibleCountryCode" class="form-label">Audible Country Code</label>
-                <input type="text" class="form-control" id="inputAudibleCountryCode" name="audible_country_code" value="{{ audible.audible_country_code }}" aria-describedby="audibleCountryCodeHelp">
-                <div id="audibleCountryCodeHelp" class="form-text">Example: us</div>
-            </div>
+                <div class="mb-3">
+                    <label for="inputAudibleCountryCode" class="form-label">Audible Country Code</label>
+                    <input type="text" class="form-control" id="inputAudibleCountryCode" name="audible_country_code" value="{{ audible.audible_country_code }}" aria-describedby="audibleCountryCodeHelp">
+                    <div id="audibleCountryCodeHelp" class="form-text">Example: us</div>
+                </div>
 
-            <button type="submit" class="btn btn-primary">Authentcate</button>
-            <script>
-            document.getElementById('audibleAuthForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                fetch('/api/settings/audibleauth/', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const alertDiv = document.getElementById('saveAlert');
-                    alertDiv.className = 'alert alert-success';
-                    alertDiv.textContent = data.message;
-                    alertDiv.style.display = 'block';
-                    setTimeout(() => alertDiv.style.display = 'none', 5000);
-                })
-                .catch(error => {
-                    const alertDiv = document.getElementById('saveAlert');
-                    alertDiv.className = 'alert alert-danger';
-                    alertDiv.textContent = 'Error saving settings';
-                    alertDiv.style.display = 'block';
-                    setTimeout(() => alertDiv.style.display = 'none', 5000);
+                <button type="submit" class="btn btn-primary">Authentcate</button>
+                <script>
+                document.getElementById('audibleAuthForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    fetch('/api/settings/audibleauth/', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const alertDiv = document.getElementById('saveAlert');
+                        alertDiv.className = 'alert alert-success';
+                        alertDiv.textContent = data.message;
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => alertDiv.style.display = 'none', 5000);
+                    })
+                    .catch(error => {
+                        const alertDiv = document.getElementById('saveAlert');
+                        alertDiv.className = 'alert alert-danger';
+                        alertDiv.textContent = 'Error saving settings';
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => alertDiv.style.display = 'none', 5000);
+                    });
                 });
-            });
-            </script>
-        </form>
+                </script>
+            </form>
+        </div>
+
+        <div class="col">
+            <h2>Database Operations</h2>
+            <div>
+                <button type="button" class="btn btn-primary" id="refreshAbsBtn">Refresh Audiobookshelf Data</button>
+                <div id="saveAlert" style="display: none;" class="alert"></div>
+                <script>
+                document.getElementById('refreshAbsBtn').addEventListener('click', function() {
+                    fetch('/api/database/refreshabsdata/', {
+                        method: 'GET'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const alertDiv = document.getElementById('saveAlert');
+                        alertDiv.className = 'alert alert-success';
+                        alertDiv.textContent = data.message;
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => alertDiv.style.display = 'none', 5000);
+                    })
+                    .catch(error => {
+                        const alertDiv = document.getElementById('saveAlert');
+                        alertDiv.className = 'alert alert-danger';
+                        alertDiv.textContent = 'Error saving settings';
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => alertDiv.style.display = 'none', 5000);
+                    });
+                });
+                </script>
+            </div>
+
+            <div>
+                <button type="button" class="btn btn-primary" id="backfillAudibleBtn">Backfill Audible Data</button>
+                <div id="saveAlert" style="display: none;" class="alert"></div>
+                <script>
+                document.getElementById('backfillAudibleBtn').addEventListener('click', function() {
+                    fetch('/api/database/backfill_audible/', {
+                        method: 'GET'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const alertDiv = document.getElementById('saveAlert');
+                        alertDiv.className = 'alert alert-success';
+                        alertDiv.textContent = data.message;
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => alertDiv.style.display = 'none', 5000);
+                    })
+                    .catch(error => {
+                        const alertDiv = document.getElementById('saveAlert');
+                        alertDiv.className = 'alert alert-danger';
+                        alertDiv.textContent = 'Error saving settings';
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => alertDiv.style.display = 'none', 5000);
+                    });
+                });
+                </script>
+            </div>
+
+           <div>
+                <button type="button" class="btn btn-primary" id="resetDatabaseBtn">Reset Database</button>
+                <div id="saveAlert" style="display: none;" class="alert"></div>
+                <script>
+                document.getElementById('resetDatabaseBtn').addEventListener('click', function() {
+                    fetch('/api/database/resetdb/', {
+                        method: 'GET'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const alertDiv = document.getElementById('saveAlert');
+                        alertDiv.className = 'alert alert-success';
+                        alertDiv.textContent = data.message;
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => alertDiv.style.display = 'none', 5000);
+                    })
+                    .catch(error => {
+                        const alertDiv = document.getElementById('saveAlert');
+                        alertDiv.className = 'alert alert-danger';
+                        alertDiv.textContent = 'Error saving settings';
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => alertDiv.style.display = 'none', 5000);
+                    });
+                });
+                </script>
+            </div>
+        </div>
     </div>
 {% endblock %}
