@@ -16,10 +16,8 @@ from app.db_models.views import booksandseries, seriesandcounts
 router = api_router.initRouter()
 
 
-# Load settings from settings.toml
-# file = "/src/audibleismissing/settings.toml"
-file = "/config/settings.toml"
-settings = settings.readSettings(file)
+# Load settings
+settings = settings.readSettings()
 
 
 # init db connection
