@@ -1,5 +1,5 @@
 services:
-  example:
+  audibleismissing:
     container_name: audibleismissing-dev
     build:
       context: ..

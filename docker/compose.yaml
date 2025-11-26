@@ -1,0 +1,8 @@
+services:
+  audibleismissing:
+    container_name: audibleismissing
+    image: ghcr.io/audibleismissing/audibleismissing:latest
+    ports:
+      - 8000:8000
+    volumes:
+      - ../config:/config
