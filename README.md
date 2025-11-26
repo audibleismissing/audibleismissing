@@ -1,4 +1,5 @@
 # Audible is Missing
+[![Build Docker Images](https://github.com/audibleismissing/audibleismissing/actions/workflows/docker-image.yml/badge.svg)](https://github.com/audibleismissing/audibleismissing/actions/workflows/docker-image.yml)
 ## What is this.
 Ok, so I made this for a couple reasons. One, It was a pain in the ass to keep track of which audiobook series had books coming out using the native audible tools. And no such funcitonality exists in Audiobookshelf. Second, I've never made a web app, so it was a chance to learn how to do that...I learned I don't like html.
 
