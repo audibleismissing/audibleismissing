@@ -95,6 +95,15 @@ def getBook(engine:create_engine, search_string) -> Book:
 
 def updateBook(engine: create_engine, book: Book) -> str:
     """Update book in db"""
+    from bs4 import BeautifulSoup
+
+    # strip html tags from desciption strings.
+    if book.description:
+        bs_description = BeautifulSoup(book.description, "html.parser")
+        clean_description = bs_description.get_text()
+    else:
+        clean_description = "No desciption available."
+
     print(f"Updating book: {book.title}")
     with Session(engine) as session:
         statement = select(BooksTable).where(BooksTable.id == book.id)
@@ -104,7 +113,7 @@ def updateBook(engine: create_engine, book: Book) -> str:
         results.subtitle = book.subtitle
         results.publisher = book.publisher
         results.copyright = book.copyright
-        results.description = book.description
+        results.description = clean_description
         results.summary = book.summary
         results.isbn = book.isbn
         results.bookAsin = book.bookAsin

@@ -33,7 +33,7 @@ engine = db_helpers.connectToDb()
 async def import_test_data(background_task: BackgroundTasks):
     """Wipes all data from db and re-import abs data"""
     db_helpers.resetAllData(engine, settings.sqlite_path)
-    background_task.add_task(importDb, engine)
+    background_task.add_task(db_helpers.importDb, engine)
     return {"message": "Refreshing data. This may take a while."}
 
 
