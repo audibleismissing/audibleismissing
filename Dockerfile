@@ -27,7 +27,7 @@ EXPOSE 8000
 # CMD ["tail", "-f", "/dev/null"]
 
 # Run dev
-CMD ["uv", "run", "fastapi", "run", "main.py"]
+CMD ["uv", "run", "fastapi", "run", "main.py", "--proxy-headers"]
 # CMD ["/app/.venv/bin/fastapi", "run", "app/main.py", "--host", "0.0.0.0"
 
 # For prod, if running behind a proxy like Nginx or Traefik add --proxy-headers
