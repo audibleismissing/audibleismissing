@@ -9,3 +9,4 @@ class Tags(Enum):
     genre = "genre"
     page = "page"
     admin = "admin"
+    settings = "settings"
