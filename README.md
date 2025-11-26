@@ -35,7 +35,7 @@ Some stuff I'm considering implementing.
 - Tagging/watching series/books (basically a personal watch list).
 - Importing other books by existing authors for book discovery.
 - Narrator and author details lists.
-- docker builds
+
 
 ## Install
 ### docker compose
