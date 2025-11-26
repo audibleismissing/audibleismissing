@@ -20,7 +20,17 @@ Series Details             |  Book Details
 - The method used for getting books in a series sometimes decides to add invalid book asins or just omits them from the results. An example of this is book 3 in Beware of Chicken. To "kinda" fix this, I implemented a work around. See [Issue 35](https://github.com/tupcakes/audibleismissing/issues/35). Because of this, it's possible that some series books might be missed. I largely hasn't been an issue though.
 - Yes, there are probably ways I could write this to be more efficent. I'm a noob when it comes to python and programming isn't my normal career choice. Essentially, yes my code sucks but I'm learning.
 
-## Possible Features
+
+## Features
+### Existing
+- Settings page for audible authentication and audiobookshelf authentication
+- At a glance, soon to be released list based off your library.
+- Series list (searchable)
+- Series details with list of searchable books. (has ratings)
+- Book details page contains general info about a book.
+
+
+### Possible Features
 Some stuff I'm considering implementing.
 - Tagging/watching series/books (basically a personal watch list).
 - Importing other books by existing authors for book discovery.
