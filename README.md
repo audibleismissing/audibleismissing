@@ -37,6 +37,20 @@ Some stuff I'm considering implementing.
 - Narrator and author details lists.
 - docker builds
 
+## Install
+### docker compose
+```compose.yaml
+services:
+  audibleismissing:
+    container_name: audibleismissing
+    image: ghcr.io/audibleismissing/audibleismissing:latest
+    ports:
+      - 8000:8000
+    volumes:
+      - ../config:/config
+
+```
+
 
 ## Tech Stack
 - FastAPI
@@ -76,3 +90,6 @@ uv run fastapi dev main.py
 ```Prod
 uv run fastapi run main.py
 ```
+
+### Docker dev (prefered)
+`sh build.sh`
