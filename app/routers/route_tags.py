@@ -10,3 +10,4 @@ class Tags(Enum):
     page = "page"
     admin = "admin"
     settings = "settings"
+    test = "test"

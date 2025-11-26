@@ -22,21 +22,21 @@ settings = settings.readSettings(file)
 engine = db_helpers.connectToDb()
 
 
-@router.get("/abs/refreshabsdata", tags=[Tags.admin])
+@router.get("/database/refreshabsdata", tags=[Tags.admin])
 async def refresh_abs_Data(background_task: BackgroundTasks):
     """Wipes all data from db and re-import abs data"""
     background_task.add_task(taskRefreshAbsData, engine, settings)
     return {"message": "Refreshing data. This may take a while."}
 
 
-@router.get("/abs/resetdb", tags=[Tags.admin])
+@router.get("/database/resetdb", tags=[Tags.admin])
 async def reset_db(background_task: BackgroundTasks):
     """Drops db and recreates tables"""
     db_helpers.resetAllData(engine, settings.sqlite_path)
     return {"message": "Refreshing data. This may take a while."}
 
 
-@router.get("/abs/backfill_audible", tags=[Tags.admin])
+@router.get("/database/backfill_audible", tags=[Tags.admin])
 async def backfill_audible(background_task: BackgroundTasks):
     """Gets missing info from audible. Run /abs/resetdb endpoint first"""
     auth = loadExistingAuth(settings.audible_auth)
@@ -44,14 +44,6 @@ async def backfill_audible(background_task: BackgroundTasks):
         background_task.add_task(refreshAudibleData, engine, auth)
         return {"message": "Refreshing data. This may take a while."}
     return {"message": "Not authenticated to audible."}
-
-
-@router.get("/abs/importtestdatajson", tags=[Tags.admin])
-async def import_test_data(background_task: BackgroundTasks):
-    """Wipes all data from db and re-import abs data"""
-    db_helpers.resetAllData(engine, settings.sqlite_path)
-    background_task.add_task(importDb, engine)
-    return {"message": "Refreshing data. This may take a while."}
 
 
 # FIXME: export to json

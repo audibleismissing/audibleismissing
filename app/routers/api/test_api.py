@@ -29,7 +29,15 @@ engine = db_helpers.connectToDb()
 
 
 
-@router.get('/test/getAudibleBook/{book_asin}', tags=[Tags.admin])
+@router.get("/test/importtestdatajson", tags=[Tags.test])
+async def import_test_data(background_task: BackgroundTasks):
+    """Wipes all data from db and re-import abs data"""
+    db_helpers.resetAllData(engine, settings.sqlite_path)
+    background_task.add_task(importDb, engine)
+    return {"message": "Refreshing data. This may take a while."}
+
+
+@router.get('/test/getAudibleBook/{book_asin}', tags=[Tags.test])
 async def test_getAudibleBook(book_asin: str):
     """Get list of books in a series by series id"""
     auth = loadExistingAuth(settings.audible_auth)
@@ -41,7 +49,7 @@ async def test_getAudibleBook(book_asin: str):
     return {"message": "Audible auth error."}
 
 
-@router.get('/test/getAudibleBooksInSeries/{book_asin}', tags=[Tags.admin])
+@router.get('/test/getAudibleBooksInSeries/{book_asin}', tags=[Tags.test])
 async def test_getAudibleBooksInSeries(book_asin: str):
     """Get list of books in a series by series id"""
     auth = loadExistingAuth(settings.audible_auth)
