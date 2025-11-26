@@ -15,11 +15,13 @@
     </div>
 
     <!-- releases -->
-     <h4>Upcoming Releases</h4>
-    <ul>
-    {% for item in releases %}
-        <li>{{ item.releaseDate }}: <a href='/series/details/{{ item.seriesId }}'>{{ item.seriesName }}</a> - <a href='/book/details/{{ item.bookId }}'>{{ item.title }}</a> - <a href="https://www.audible.com/pd/{{ item.bookAsin }}" target="_blank">Audible</a></li>
-    {% endfor %}
-    </ul>
+    <h4>Upcoming Releases</h4>
+    {% if releases %}
+        <ul>
+        {% for item in releases %}
+            <li>{{ item.releaseDate }}: <a href='/series/details/{{ item.seriesId }}'>{{ item.seriesName }}</a> - <a href='/book/details/{{ item.bookId }}'>{{ item.title }}</a> - <a href="https://www.audible.com/pd/{{ item.bookAsin }}" target="_blank">Audible</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 
 {% endblock %}

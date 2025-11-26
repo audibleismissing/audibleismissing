@@ -1,23 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
-    <table id="series-table" data-toggle="table" data-search="true" data-pagination="true" class="table table-striped table-responsive">
-        <thead>
-            <tr>
-                <th data-field="name" data-searchable="true" data-sortable="true">Name</th>
-                <th data-field="seriesAsin" data-searchable="true" data-sortable="true">ASIN</th>
-                <th data-field="totalBooksInSeries" data-sortable="true">Books in Series</th>
-                <th data-field="totalBooksInLibrary" data-sortable="true">Books in Library</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in table %}
-            <tr>
-                <td><a href='/series/details/{{ item.seriesId }}/'>{{ item.seriesName }}</a></td>
-                <td>{{ item.seriesAsin }}</td>
-                <td>{{ item.totalBooksInSeries }}</td>
-                <td>{{ item.totalBooksInLibrary }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% if table is not none %}
+        <table id="series-table" data-toggle="table" data-search="true" data-pagination="true" class="table table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th data-field="name" data-searchable="true" data-sortable="true">Name</th>
+                    <th data-field="seriesAsin" data-searchable="true" data-sortable="true">ASIN</th>
+                    <th data-field="totalBooksInSeries" data-sortable="true">Books in Series</th>
+                    <th data-field="totalBooksInLibrary" data-sortable="true">Books in Library</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in table %}
+                <tr>
+                    <td><a href='/series/details/{{ item.seriesId }}/'>{{ item.seriesName }}</a></td>
+                    <td>{{ item.seriesAsin }}</td>
+                    <td>{{ item.totalBooksInSeries }}</td>
+                    <td>{{ item.totalBooksInLibrary }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endblock %}

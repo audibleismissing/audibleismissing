@@ -95,7 +95,6 @@ def getViewBookDetails(sqlite_path, book_id):
         return {}
     
 
-# NOTE: release schedule idea. move select from getBooksToBeReleased to here and use this for the query
 def getViewReleaseDates(sqlite_path, time_window) -> list:
     """Get upcoming book releases using the booksandseries view"""
     from datetime import datetime
