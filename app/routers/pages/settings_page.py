@@ -21,7 +21,8 @@ def page(request: Request):
 
     file = "settings.toml"
     settings = readSettings(file)
+    audible_auth = None
 
     return templates.TemplateResponse(
-        request = request, name='settings.html', context={"settings": settings}
+        request = request, name='settings.html', context={"settings": settings, "audible": audible_auth}
     )

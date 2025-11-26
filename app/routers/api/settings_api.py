@@ -5,11 +5,13 @@ from pydantic import BaseModel
 
 from app.routers.api import api_router
 from app.routers.route_tags import Tags
+from app.app_helpers.audibleapi.auth import createDeviceAuth
 
 
 router = api_router.initRouter()
 
-file = "settings.toml"
+settings_file = "settings.toml"
+audible_auth_file = "audible_auth"
 
 class SettingsFormModel(BaseModel):
     abs_url: str
@@ -22,9 +24,10 @@ class SettingsFormModel(BaseModel):
 # https://fastapi.tiangolo.com/tutorial/request-form-models/#forbid-extra-form-fields
 @router.post("/settings/save/", tags=[Tags.settings])
 async def save_settings(data: Annotated[SettingsFormModel, Form()]):
+    """Save settings"""
     # Load existing settings
     try:
-        with open(file, 'r') as f:
+        with open(settings_file, 'r') as f:
             settings = toml.load(f)
     except FileNotFoundError:
         settings = {}
@@ -37,7 +40,27 @@ async def save_settings(data: Annotated[SettingsFormModel, Form()]):
     settings['audiobookshelf']['library_id'] = data.abs_library_id
 
     # Save back to file
-    with open(file, 'w') as f:
+    with open(settings_file, 'w') as f:
         toml.dump(settings, f)
 
     return {"message": "Settings saved successfully"}
+
+
+class AudibleAuthFormModel(BaseModel):
+    audible_username: str
+    audible_password: str
+    audible_country_code: str
+    model_config = {"extra": "forbid"}
+
+@router.post("/settings/audibleauth/", tags=[Tags.settings])
+async def authenticate_to_audible(data: Annotated[AudibleAuthFormModel, Form()]):
+    """Authenticate to audible"""
+    import os.path
+
+    # if not authenticated, create device auth
+    # TODO: add check to see if the token is expired ("expires" key) maybe to doesAuthExist
+    if not os.path.isfile(audible_auth_file):
+        createDeviceAuth(data.audible_username, data.audible_password, data.audible_country_code, audible_auth_file)
+        return {"message": "Settings saved successfully"}
+    
+    return {"message": "Auth not created. File exists."}

@@ -51,5 +51,53 @@
             });
             </script>
         </form>
+
+        <!-- Audible Auth -->
+        <form id="audibleAuthForm">
+            <div class="mb-3">
+                <label for="inputAudibleUsername" class="form-label">Audible Username</label>
+                <input type="text" class="form-control" id="inputAudibleUsername" name="audible_username" value="{{ audible.audible_username }}" aria-describedby="AudibleUsernameHelp">
+                <div id="AudibleUsernameHelp" class="form-text">someuser@example.com</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="inputAudiblePassword" class="form-label">Audible Password</label>
+                <input type="password" class="form-control" id="inputAudiblePassword" name="audible_password" value="{{ audible.audible_password }}" aria-describedby="audiblePasswordHelp">
+                <div id="audiblePasswordHelp" class="form-text">If you have activated 2-factor-authentication for your Amazon account, you can append the current OTP to your password.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="inputAudibleCountryCode" class="form-label">Audible Country Code</label>
+                <input type="text" class="form-control" id="inputAudibleCountryCode" name="audible_country_code" value="{{ audible.audible_country_code }}" aria-describedby="audibleCountryCodeHelp">
+                <div id="audibleCountryCodeHelp" class="form-text">Example: us</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Authentcate</button>
+            <script>
+            document.getElementById('audibleAuthForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                fetch('/api/settings/audibleauth/', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const alertDiv = document.getElementById('saveAlert');
+                    alertDiv.className = 'alert alert-success';
+                    alertDiv.textContent = data.message;
+                    alertDiv.style.display = 'block';
+                    setTimeout(() => alertDiv.style.display = 'none', 5000);
+                })
+                .catch(error => {
+                    const alertDiv = document.getElementById('saveAlert');
+                    alertDiv.className = 'alert alert-danger';
+                    alertDiv.textContent = 'Error saving settings';
+                    alertDiv.style.display = 'block';
+                    setTimeout(() => alertDiv.style.display = 'none', 5000);
+                });
+            });
+            </script>
+        </form>
     </div>
 {% endblock %}
