@@ -4,6 +4,8 @@ Ok, so I made this for a couple reasons. One, It was a pain in the ass to keep t
 
 This is still in early stages and is also a hobby project. So DO NOT serve this application to the open internet. My code is terrible and probably has lots of issues.
 
+Disclaimer: Yes, I have used AI a little when writing some of this. I'd say it's probably 85-90% hand written and the rest was AI when I got stuck.
+
 Index                      |  Series List
 :-------------------------:|:-------------------------:
 ![](docs/screenshots/index.png)  |  ![](docs/screenshots/series_list.png)
