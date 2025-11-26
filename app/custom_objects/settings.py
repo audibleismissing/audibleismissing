@@ -2,23 +2,26 @@ import toml
 import json
 
 
+settings_file = "/config/settings.toml"
+
 class Settings:
     def __init__(self):
+        self.settings_file: str = settings_file
         self.sqlite_path: str
         self.abs_url: str
         self.abs_api_key: str
         self.abs_library_id: str
-        self.audible_auth: None
+        self.audible_auth_file: str
 
 
-def saveSettings(settings_file) -> None:
+def saveSettings() -> None:
     """Saves settings to toml file"""
     with open(settings_file, "w") as file:
         print("creating DB")
         toml.dump(settings_file, file)
 
 
-def readSettings(settings_file) -> toml:
+def readSettings() -> toml:
     """Loads settings from toml file and returns a settings object"""
     with open(settings_file) as file:
         config = toml.load(file)
@@ -37,3 +40,7 @@ def getSettingsObj(toml_config) -> Settings:
     settings.abs_library_id = toml_config["audiobookshelf"]["library_id"]
     settings.audible_auth = toml_config["audible"]["auth_file"]
     return settings
+
+
+def createSettingsFile():
+    """Creates a default settings file if one doesn't exist"""
