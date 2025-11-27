@@ -1,12 +1,11 @@
 from app.app_helpers.audiobookshelf import abs_helpers
 from app.db_models import db_helpers
-from app.app_helpers.audibleapi.funtions import backfillAudibleData, backfillAudibleDataMissedBooks
+from app.app_helpers.audibleapi import functions as audible_functions
 
-
-# testing audimeta
-from app.app_helpers.audimeta.audimeta_functions import backfillAudimetaBookData
+# testing audimeta - doesn't want to return series data
+from app.app_helpers.audimeta import audimeta_functions
 # testing audnexus
-from app.app_helpers.audnexus.audnexus_functions import backfillAudnexusBookData
+from app.app_helpers.audnexus import audnexus_functions
 
 
 
@@ -20,20 +19,19 @@ def taskRefreshAbsData(engine, settings):
 
 def refreshAudibleData(engine, auth):
     print("Starting refreshAudibleData")
-    backfillAudibleData(engine, auth)
-    backfillAudibleDataMissedBooks(engine, auth)
+    audible_functions.getMissingBooks(engine, auth)
     print("Completed refreshAudibleData")
-
-
-# testing audimeta
-def refreshAudimetaData(engine):
-    print("Starting refreshAudimetaData")
-    backfillAudimetaBookData(engine)
-    print("Completed refreshAudimetaData")
 
 
 # testing audnexus
 def refreshAudnexusData(engine):
-    print("Starting refreshAudnexusData")
-    backfillAudnexusBookData(engine)
-    print("Completed refreshAudnexusData")
+    print("Starting backfillAudnexusBookData")
+    audnexus_functions.backfillAudnexusBookData(engine)
+    print("Completed backfillAudnexusBookData")
+
+
+def refreshAudimetaData(engine):
+    print("Starting getMissingBooks")
+    audimeta_functions.getMissingBooks(engine)
+    print("Completed getMissingBooks")
+    
