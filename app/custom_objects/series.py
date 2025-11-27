@@ -4,6 +4,7 @@ class Series:
         self.name = None
         self.seriesAsin = None
         self.sequence = None
+        self.rating = None
 
     def __iter__(self):
         for series in self.name:

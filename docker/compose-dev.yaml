@@ -1,5 +1,5 @@
 services:
-  audibleismissing:
+  audibleismissing-dev:
     container_name: audibleismissing-dev
     build:
       context: ..

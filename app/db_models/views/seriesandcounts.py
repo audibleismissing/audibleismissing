@@ -10,6 +10,7 @@ def createSeriesAndCountsView(sqlite_db) -> None:
                             s.id          AS seriesId,
                             s.name        AS seriesName,
                             s.seriesAsin,
+                            s.rating,
 
                             /* How many books are part of this series */
                             COUNT(b.id)                                                                   
@@ -24,7 +25,8 @@ def createSeriesAndCountsView(sqlite_db) -> None:
                         GROUP BY
                             s.id,
                             s.name,
-                            s.seriesAsin
+                            s.seriesAsin,
+                            s.rating
                         ORDER BY
                             s.name;
                 """)
