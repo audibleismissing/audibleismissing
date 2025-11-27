@@ -1,10 +1,10 @@
 from decimal import Decimal
 import uuid
 
-from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, func, and_
+from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, func, and_, delete
 from app.custom_objects.series import Series
 from app.db_models.tables import books
-from app.db_models.tables.seriesmappings import SeriesMappingsTable
+from app.db_models.tables.seriesmappings import SeriesMappingsTable, deleteSeriesMapping
 
 
 
@@ -66,8 +66,14 @@ def updateSeries(engine: create_engine, series: Series) -> str:
         return results.id
 
 
-def deleteSeries():
+def deleteSeries(engine: create_engine, series_id):
     """Delete series from db"""
+    print(f"Deleting series: {series_id}")
+    with Session(engine) as session:
+        statement = select(SeriesTable).where(SeriesTable.id == series_id)
+        results = session.exec(statement)
+        row = results.one()
+        session.delete(row)
 
 
 def doesSeriesExist(engine: create_engine, search_string) -> bool:
@@ -211,3 +217,21 @@ def returnSeriesObj(sql_data) -> Series:
         series.sequence = sql_data.sequence
     series.rating = sql_data.rating
     return series
+
+
+def cleanupDanglingSeries(engine: create_engine):
+    """Deletes DB entries from the SeriesTable and SeriesMappingsTable that don't have a seriesAsin."""
+
+    with Session(engine) as session:
+        # Find series that don't have a seriesAsin
+        statement = select(SeriesTable).where(SeriesTable.seriesAsin.is_(None))
+        series_without_asin = session.exec(statement).all()
+
+        for series in series_without_asin:
+            print(f"Deleting series without seriesAsin: {series.name} (ID: {series.id})")
+            # Delete mappings for this series
+            session.exec(delete(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series.id))
+            # Delete the series
+            session.delete(series)
+
+        session.commit()
