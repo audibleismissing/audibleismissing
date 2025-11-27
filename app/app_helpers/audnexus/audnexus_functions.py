@@ -55,8 +55,8 @@ def backfillAudnexusBookData(engine) -> None:
                     single_authors.id = library_series.id
                     updateAuthor(engine, single_authors)
                 else:
-                    single_series.id = addAuthor(engine, single_authors)
-                    addAuthorMapping(engine, single_series.id, audnexus_book.id)
+                    single_authors.id = addAuthor(engine, single_authors)
+                    addAuthorMapping(engine, single_authors.id, audnexus_book.id)
 
 
     cleanupDanglingSeries(engine)

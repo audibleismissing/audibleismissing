@@ -45,7 +45,6 @@ async def backfill_audible(background_task: BackgroundTasks):
     return {"message": "Not authenticated to audible."}
 
 
-# FIXME: export to json
 # @router.get("/abs/exporttestdatajson", tags=[Tags.admin])
 # async def export_test_data(background_task: BackgroundTasks):
 #     """Exports data to json. Creates a large and small dataset."""
