@@ -136,7 +136,7 @@ def processBook(engine, single_book) -> None:
         if not getSeriesMappingByBook(engine, single_book.id):
             addSeriesMapping(engine, single_series.id, single_book.id, single_series.sequence)
 
-    # genre FIXME: genres mappings are being duplicated?
+    # genres
     for single_genre in single_book.genres:
         if not doesGenreExist(engine, single_genre.name):
             # add new DB entry
