@@ -1,4 +1,3 @@
-from math import sin
 import audible
 from app.app_helpers.audibleapi import helpers as audible_helpers #returnListofBookObjs, returnBookObj
 from app.app_helpers.audibleapi.api import getAudibleBooksInSeries, getAudibleBook
@@ -22,7 +21,19 @@ from app.db_models.tables.seriesmappings import addSeriesMapping, getSeriesMappi
 
 
 
-def backfillAudibleData(engine, auth):
+# from app.db_models.tables.authorsmappings import addAuthorMapping, getAuthorMappingByBook
+# from app.db_models.tables.books import addBook, getBook
+# from app.db_models.tables.series import addSeries, updateSeries, getSeries, cleanupDanglingSeries, calculateSeriesRating, getAllSeries
+# from app.db_models.tables.seriesmappings import addSeriesMapping, getSeriesMappingByBook, getSeriesMappingBySeries
+# from app.db_models.tables.authors import addAuthor, updateAuthor, getAuthor, cleanupDanglingAuthors
+# from app.db_models.tables.genres import addGenre, updateGenre, getGenre
+# from app.db_models.tables.narrators import addNarrator, updateNarrator, getNarrator
+# from app.db_models.tables.narratormappings import addNarratorMapping, getNarratorMappingByBook
+# from app.db_models.tables.genremappings import addGenreMapping, getGenreMappingByBook
+
+
+
+def getMissingBooks(engine, auth):
     """
     Populates missing book, author, genre, narrator, and series information from audible.
     """
@@ -40,35 +51,39 @@ def backfillAudibleData(engine, auth):
     audible_books = []
     for library_book_asin in library_book_asins:
         audible_books_in_series = []
-        audible_books_in_series = audible_helpers.returnListofBookObjs(getAudibleBooksInSeries(auth, library_book_asin))
+        audible_books_in_series = getAudibleBooksInSeries(auth, library_book_asin)
+        
         for book_in_series in audible_books_in_series:
             audible_books.append(book_in_series)
 
     for single_book in audible_books:
-        processBook(engine, single_book)
+        if not getBook(engine, single_book.bookAsin):
+            processBook(engine, single_book)
 
+    # cleanupDanglingSeries(engine)
+    # cleanupDanglingAuthors(engine)
 
     print("Audible backfill complete.")
 
 
-def backfillAudibleDataMissedBooks(engine, auth):
-    """Find books that are missing audible data and reprocess using getAudibleBook to lookup the books individually."""
+# def backfillAudibleDataMissedBooks(engine, auth):
+#     """Find books that are missing audible data and reprocess using getAudibleBook to lookup the books individually."""
 
-    # get all books in library
-    all_books = getAllBooks(engine)
+#     # get all books in library
+#     all_books = getAllBooks(engine)
 
-    # make a list of the books missing audible information
-    # missing imageUrl is a good indicator of this.
-    books_missing_info = []
-    for single_book in all_books:
-        if not single_book.imageUrl:
-            books_missing_info.append(single_book)
+#     # make a list of the books missing audible information
+#     # missing imageUrl is a good indicator of this.
+#     books_missing_info = []
+#     for single_book in all_books:
+#         if not single_book.imageUrl:
+#             books_missing_info.append(single_book)
 
-    # try to lookup audible metadata for books missing information.
-    for single_book in books_missing_info:
-        book_to_process = getAudibleBook(auth, single_book.bookAsin)
-        book_obj = audible_helpers.returnBookObj(book_to_process, True)
-        processBook(engine, book_obj)
+#     # try to lookup audible metadata for books missing information.
+#     for single_book in books_missing_info:
+#         book_to_process = getAudibleBook(auth, single_book.bookAsin)
+#         book_obj = audible_helpers.returnBookObj(book_to_process, True)
+#         processBook(engine, book_obj)
 
 
 def processBook(engine, single_book) -> None:

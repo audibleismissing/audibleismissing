@@ -23,6 +23,8 @@ def getAudibleBook(auth, asin) -> Book:
 
 
 def getAudibleBooksInSeries(auth, asin) -> Dict[str, Any]:
+    from app.app_helpers.audibleapi.helpers import returnListofBookObjs
+
     with audible.Client(auth) as client:
         item = client.get(
             f"/1.0/catalog/products/{asin}/sims",
@@ -32,5 +34,6 @@ def getAudibleBooksInSeries(auth, asin) -> Dict[str, Any]:
         )
         if item:
             # print(json.dumps(item, indent=4)) # friendly json view
-            return item
+            # return item
+            return returnListofBookObjs(item)
     return None

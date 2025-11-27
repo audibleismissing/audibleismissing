@@ -1,0 +1,95 @@
+{
+  "asin": "B01L082HJ2",
+  "title": "We Are Legion (We Are Bob)",
+  "subtitle": "Bobiverse, Book 1",
+  "region": "us",
+  "regions": [
+    "us"
+  ],
+  "description": "When retired millionaire Bob Johansson chose cryogenic preservation, the last thing he expected was to be reanimated as a space probe that can clone itself. Meet the Bobs.",
+  "summary": "<p>There's a reason <i>We Are Legion (We Are Bob)</i> was named Audible's Best Science Fiction Book of 2016: Its irresistibly irreverent wit! Bob Johansson has just sold his software company for a small fortune and is looking forward to a life of leisure. The first item on his to-do list: Spending his newfound windfall. On an urge to splurge, he signs up to have his head cryogenically preserved in case of death. Then he gets himself killed crossing the street. Waking up 117 years later, Bob discovers his mind has been uploaded into a sentient space probe with the ability to replicate itself. Bob and his clones are on a mission to find new homes for humanity and boldly go where no Bob has gone before. </p> <p>Dennis E. Taylor’s hilarious novel sets the stage for the magnificent performance of Ray Porter, who revels in the brave new world of corpsicles, artificial intelligence, interstellar space probes, and space colonization in tantalizing detail. </p> <p><i>We Are Legion (We Are Bob)</i> is the first installment in the blockbuster Audible Original Bobiverse series - which has sold more than one million copies.</p>",
+  "copyright": "©2016 Dennis E. Taylor (P)2016 Audible, Inc.",
+  "bookFormat": "unabridged",
+  "imageUrl": "https://m.media-amazon.com/images/I/81NdM46erJL.jpg",
+  "lengthMinutes": 596,
+  "whisperSync": true,
+  "publisher": "Audible Originals",
+  "isbn": "9781603932202",
+  "language": "english",
+  "rating": 4.677791080514816,
+  "releaseDate": "2016-09-20T00:00:00.000+00:00",
+  "explicit": false,
+  "hasPdf": false,
+  "link": "https://audible.com/pd/B01L082HJ2",
+  "sku": "BK_ADBL_027284",
+  "skuGroup": "BK_ADBL_027284",
+  "isListenable": true,
+  "isAvailable": true,
+  "isBuyable": true,
+  "contentType": "Product",
+  "contentDeliveryType": "MultiPartBook",
+  "authors": [
+    {
+      "asin": "B010ETTBJC",
+      "name": "Dennis E. Taylor",
+      "region": "us",
+      "regions": [
+        "us"
+      ],
+      "image": "https://images-na.ssl-images-amazon.com/images/S/amzn-author-media-prod/koqumg1hcvqlj9b702mm8v4igj.jpg",
+      "updatedAt": "2025-04-29T07:37:18.471+00:00"
+    }
+  ],
+  "narrators": [
+    {
+      "name": "Ray Porter",
+      "updatedAt": "2025-04-22T22:03:38.319+00:00"
+    }
+  ],
+  "genres": [
+    {
+      "asin": "18580606011",
+      "name": "Science Fiction & Fantasy",
+      "type": "Genres",
+      "betterType": "genre",
+      "updatedAt": "2025-04-22T17:24:20.599+00:00"
+    },
+    {
+      "asin": "18580607011",
+      "name": "Fantasy",
+      "type": "Tags",
+      "betterType": "tag",
+      "updatedAt": "2025-04-22T20:08:23.585+00:00"
+    },
+    {
+      "asin": "18580628011",
+      "name": "Science Fiction",
+      "type": "Tags",
+      "betterType": "tag",
+      "updatedAt": "2025-04-22T17:24:20.610+00:00"
+    },
+    {
+      "asin": "18580636011",
+      "name": "First Contact",
+      "type": "Tags",
+      "betterType": "tag",
+      "updatedAt": "2025-04-22T21:33:26.494+00:00"
+    },
+    {
+      "asin": "18580639011",
+      "name": "Hard Science Fiction",
+      "type": "Tags",
+      "betterType": "tag",
+      "updatedAt": "2025-04-22T17:24:20.634+00:00"
+    }
+  ],
+  "series": [
+    {
+      "asin": "B01M1RDL6W",
+      "name": "Bobiverse",
+      "position": "1",
+      "updatedAt": "2025-04-28T07:02:22.418+00:00"
+    }
+  ],
+  "updatedAt": "2025-08-15T16:46:36.887+00:00"
+}

@@ -1,3 +1,4 @@
+from re import S
 import uuid
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
@@ -56,5 +57,12 @@ def updateSeriesMapping():
     """Update series mapping in db"""
 
 
-def deleteSeriesMapping():
+def deleteSeriesMapping(engine: create_engine, series_id):
     """Delete series mapping from db"""
+    print(f"Deleting series mapping: {series_id}")
+    with Session(engine) as session:
+        statement = select(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series_id)
+        results = session.exec(statement)
+        rows = results.all()
+        for row in rows:
+            session.delete(row)
