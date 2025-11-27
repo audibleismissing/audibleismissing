@@ -160,6 +160,33 @@
             </div>
 
            <div>
+                <button type="button" class="btn btn-primary" id="getMissingBtn">Get Missing Books</button>
+                <div id="saveAlert" style="display: none;" class="alert"></div>
+                <script>
+                document.getElementById('getMissingBtn').addEventListener('click', function() {
+                    fetch('/api/database/get_missing_books/', {
+                        method: 'GET'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const alertDiv = document.getElementById('saveAlert');
+                        alertDiv.className = 'alert alert-success';
+                        alertDiv.textContent = data.message;
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => alertDiv.style.display = 'none', 5000);
+                    })
+                    .catch(error => {
+                        const alertDiv = document.getElementById('saveAlert');
+                        alertDiv.className = 'alert alert-danger';
+                        alertDiv.textContent = 'Error saving settings';
+                        alertDiv.style.display = 'block';
+                        setTimeout(() => alertDiv.style.display = 'none', 5000);
+                    });
+                });
+                </script>
+            </div>
+
+           <div>
                 <button type="button" class="btn btn-primary" id="resetDatabaseBtn">Reset Database</button>
                 <div id="saveAlert" style="display: none;" class="alert"></div>
                 <script>
@@ -185,6 +212,7 @@
                 });
                 </script>
             </div>
+
         </div>
     </div>
 {% endblock %}
