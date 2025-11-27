@@ -1,4 +1,3 @@
-from math import sin
 import audible
 from app.app_helpers.audibleapi import helpers as audible_helpers #returnListofBookObjs, returnBookObj
 from app.app_helpers.audibleapi.api import getAudibleBooksInSeries, getAudibleBook

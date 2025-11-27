@@ -3,6 +3,10 @@ from app.db_models import db_helpers
 from app.app_helpers.audibleapi.funtions import backfillAudibleData, backfillAudibleDataMissedBooks
 
 
+# testing audimeta
+from app.app_helpers.audimeta.audimeta_functions import backfillAudimetaBookData
+
+
 
 def taskRefreshAbsData(engine, settings):
     """refresh all data in database from audiobookshelf"""
@@ -17,3 +21,10 @@ def refreshAudibleData(engine, auth):
     backfillAudibleData(engine, auth)
     backfillAudibleDataMissedBooks(engine, auth)
     print("Completed refreshAudibleData")
+
+
+# testing audimeta
+def refreshAudimetaData(engine, auth):
+    print("Starting refreshAudimetaData")
+    backfillAudimetaBookData(engine)
+    print("Completed refreshAudimetaData")
