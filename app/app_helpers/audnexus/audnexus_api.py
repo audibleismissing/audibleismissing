@@ -8,6 +8,11 @@ import requests
 from app.custom_objects.book import Book
 
 
+HEADERS = {
+    'User-Agent': 'audibleismissing/1.0 (+https://github.com/audibleismissing/audibleismissing)'
+}
+
+
 def getAudnexusBook(book_asin: str) -> Optional[Dict[str, Any]]:
     """
     Make an API call to retrieve book details from Audnexus.
@@ -25,7 +30,7 @@ def getAudnexusBook(book_asin: str) -> Optional[Dict[str, Any]]:
     url = f"https://api.audnex.us/books/{book_asin}"
 
     try:
-        response = requests.get(url, timeout=30)
+        response = requests.get(url, headers=HEADERS, timeout=30)
         response.raise_for_status()  # Raise an exception for bad status codes
         return response.json()
     except requests.exceptions.RequestException as e:

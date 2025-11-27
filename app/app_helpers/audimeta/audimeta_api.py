@@ -6,35 +6,8 @@ import requests
 from app.custom_objects.book import Book
 
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-    'Accept': 'application/json, text/plain, */*',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Referer': 'https://audimeta.de/',
-    'Origin': 'https://audimeta.de'
+    'User-Agent': 'audibleismissing/1.0 (+https://github.com/audibleismissing/audibleismissing)'
 }
-
-
-# def getAudimetaBook(book_asin: str):
-#     """Get book details by book asin"""
-#     # https://audimeta.de/book/B01L082HJ2?cache=true&region=us
-
-#     url = f"https://audimeta.de/book/{book_asin}"
-#     # headers = {
-#     #     "accept": "application/json",
-#     # }
-#     # params = {
-#     #     "cache": "true",
-#     #     "region": "us"
-#     # }
-
-#     try:
-#         response = requests.get(url, timeout=30)
-#         response.raise_for_status()  # Raise an exception for bad status codes
-#         return response.json()
-#     except requests.exceptions.RequestException as e:
-#         raise requests.exceptions.RequestException(f"API request failed: {e}")
-#     except ValueError as e:
-#         raise ValueError(f"Invalid JSON response: {e}")
 
 
 def getAudimetaSeries(series_asin):
@@ -50,10 +23,6 @@ def getAudimetaSeries(series_asin):
         raise requests.exceptions.RequestException(f"API request failed: {e}")
     except ValueError as e:
         raise ValueError(f"Invalid JSON response: {e}")
-    
-
-
-
 
 
 def getAudimetaBook(book_asin: str) -> Optional[Dict[str, Any]]:

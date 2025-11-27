@@ -8,6 +8,17 @@ from app.custom_objects.series import Series
 from app.app_helpers.rest_handler import methods as rest
 
 
+
+def getHeaders(api_key: str):
+    HEADERS = {
+        'User-Agent': 'audibleismissing/1.0 (+https://github.com/audibleismissing/audibleismissing)',
+        "accept": "application/json",
+        "authorization": api_key
+    }
+    return HEADERS
+
+
+
 # gets all library items (books)
 def getLibraryItems(url, api_key, library_id) -> Dict[str, Any]:
     """Retrieves library items from a specified library API endpoint.
@@ -22,10 +33,8 @@ def getLibraryItems(url, api_key, library_id) -> Dict[str, Any]:
     """
 
     url = f"{url}/api/libraries/{library_id}/items"
-    headers = {
-        "accept": "application/json",
-        "authorization": api_key
-    }
+    headers = getHeaders(api_key)
+
     try:
         return rest.get_json_from_api(url, headers)
     except ValueError as e:
@@ -46,10 +55,7 @@ def getLibraryItem(url, api_key, item_id) -> Dict[str, Any]:
     """
 
     url = f"{url}/api/items/{item_id}"
-    headers = {
-        "accept": "application/json",
-        "authorization": api_key
-    }
+    headers = getHeaders(api_key)
 
     try:
         book = rest.get_json_from_api(url, headers)
