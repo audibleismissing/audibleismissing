@@ -194,7 +194,8 @@ def calculateSeriesRating(engine, series_id: str) -> Decimal:
     if books_in_series:
         total = 0
         for single_book in books_in_series:
-            total += single_book.audibleOverallAvgRating
+            if single_book.audibleOverallAvgRating != 0:
+                total += single_book.audibleOverallAvgRating
 
         rating = round(total / len(books_in_series), 2)
         

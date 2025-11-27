@@ -14,5 +14,6 @@ class SeriesViewResponse(BaseModel):
     seriesId: str
     seriesName: str | None
     seriesAsin: str | None
+    rating: float | None
     totalBooksInSeries: int | None
     totalBooksInLibrary: int | None
