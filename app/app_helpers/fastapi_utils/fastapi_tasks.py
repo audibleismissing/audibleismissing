@@ -5,6 +5,8 @@ from app.app_helpers.audibleapi.funtions import backfillAudibleData, backfillAud
 
 # testing audimeta
 from app.app_helpers.audimeta.audimeta_functions import backfillAudimetaBookData
+# testing audnexus
+from app.app_helpers.audnexus.audnexus_functions import backfillAudnexusBookData
 
 
 
@@ -24,7 +26,14 @@ def refreshAudibleData(engine, auth):
 
 
 # testing audimeta
-def refreshAudimetaData(engine, auth):
+def refreshAudimetaData(engine):
     print("Starting refreshAudimetaData")
     backfillAudimetaBookData(engine)
     print("Completed refreshAudimetaData")
+
+
+# testing audnexus
+def refreshAudnexusData(engine):
+    print("Starting refreshAudnexusData")
+    backfillAudnexusBookData(engine)
+    print("Completed refreshAudnexusData")
