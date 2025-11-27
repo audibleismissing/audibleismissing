@@ -31,6 +31,7 @@ engine = db_helpers.connectToDb()
 async def get_all_series():
     """Returns list of all series"""
     results = seriesandcounts.getViewSeriesCounts(settings.sqlite_path)
+
     if results:
         return results
     return []

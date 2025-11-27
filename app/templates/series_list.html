@@ -6,6 +6,7 @@
                 <tr>
                     <th data-field="name" data-searchable="true" data-sortable="true">Name</th>
                     <th data-field="seriesAsin" data-searchable="true" data-sortable="true">ASIN</th>
+                    <th data-field="rating" data-sortable="true">Avg Rating</th>
                     <th data-field="totalBooksInSeries" data-sortable="true">Books in Series</th>
                     <th data-field="totalBooksInLibrary" data-sortable="true">Books in Library</th>
                 </tr>
@@ -15,6 +16,7 @@
                 <tr>
                     <td><a href='/series/details/{{ item.seriesId }}/'>{{ item.seriesName }}</a></td>
                     <td>{{ item.seriesAsin }}</td>
+                    <td>{{ item.rating }}</td>
                     <td>{{ item.totalBooksInSeries }}</td>
                     <td>{{ item.totalBooksInLibrary }}</td>
                 </tr>

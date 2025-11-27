@@ -15,3 +15,4 @@ class SeriesResponse(BaseModel):
     name: str | None
     seriesAsin: str | None
     sequence: str | None
+    rating: float | None

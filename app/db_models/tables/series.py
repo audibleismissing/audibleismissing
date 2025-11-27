@@ -1,3 +1,4 @@
+from decimal import Decimal
 import uuid
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, func, and_
@@ -13,21 +14,25 @@ class SeriesTable(SQLModel, table=True):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
     name: str = Field(index=True)
     seriesAsin: str | None = Field(index=True)
+    rating: Decimal | None = Field(default=0, max_digits=3, decimal_places=2)
 
 
 
 def addSeries(engine: create_engine, series: Series) -> str:
     """Add series to db"""
     print(f"Adding series: {series.name}")
+
     row = SeriesTable(
         name=series.name,
         seriesAsin=series.seriesAsin,
+        rating=series.rating
     )
 
     with Session(engine) as session:
         session.add(row)
         session.commit()
         session.refresh(row)
+
         return row.id
     return None
 
@@ -54,6 +59,7 @@ def updateSeries(engine: create_engine, series: Series) -> str:
 
         results.name = series.name
         results.seriesAsin = series.seriesAsin
+        results.rating = series.rating
 
         session.add(results)
         session.commit()
@@ -181,6 +187,21 @@ def getAllSeries(engine) -> list:
         return series_list
 
 
+def calculateSeriesRating(engine, series_id: str) -> Decimal:
+    """Averages ratings of books in a series and updates the series table entry"""
+    books_in_series = getBooksInSeries(engine, series_id)
+
+    if books_in_series:
+        total = 0
+        for single_book in books_in_series:
+            if single_book.audibleOverallAvgRating != 0:
+                total += single_book.audibleOverallAvgRating
+
+        rating = round(total / len(books_in_series), 2)
+        
+        return rating
+
+
 def returnSeriesObj(sql_data) -> Series:
     series = Series()
     series.id = sql_data.id
@@ -188,4 +209,5 @@ def returnSeriesObj(sql_data) -> Series:
     series.seriesAsin = sql_data.seriesAsin
     if hasattr(sql_data, "sequence"):
         series.sequence = sql_data.sequence
+    series.rating = sql_data.rating
     return series

@@ -17,7 +17,7 @@ from app.db_models.tables.genres import addGenre, updateGenre, getGenre, doesGen
 from app.db_models.tables.genremappings import addGenreMapping, getGenreMappingByBook
 from app.db_models.tables.narrators import addNarrator, updateNarrator, getNarrator, doesNarratorExist
 from app.db_models.tables.narratormappings import addNarratorMapping, getNarratorMappingByBook
-from app.db_models.tables.series import addSeries, updateSeries, getSeries, doesSeriesExist, getAllSeries, getSeriesByBook
+from app.db_models.tables.series import addSeries, updateSeries, getSeries, doesSeriesExist, getAllSeries, getSeriesByBook, calculateSeriesRating
 from app.db_models.tables.seriesmappings import addSeriesMapping, getSeriesMappingByBook, getSeriesMappingBySeries
 
 
@@ -120,11 +120,18 @@ def processBook(engine, single_book) -> None:
         if not doesSeriesExist(engine, single_series.name):
             # add new DB entry
             single_series.id = addSeries(engine, single_series)
+
+            # calculate series rating
+            single_series.rating = calculateSeriesRating(engine, single_series.id)
+            updateSeries(engine, single_series)
         else:
             # update metadata on existing db entry
             series = Series()
             series = getSeries(engine, single_series.name)
             single_series.id = series.id
+            # calculate series rating
+            single_series.rating = calculateSeriesRating(engine, single_series.id)
+
             updateSeries(engine, single_series)
         if not getSeriesMappingByBook(engine, single_book.id):
             addSeriesMapping(engine, single_series.id, single_book.id, single_series.sequence)

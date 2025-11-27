@@ -1,24 +1,4 @@
 from app.custom_objects.book import Book
-# from app.db_models.tables import (
-#     addAuthor,
-#     addAuthorMapping,
-#     addBook,
-#     addGenre,
-#     addGenreMapping,
-#     addNarrator,
-#     addNarratorMapping,
-#     addSeries,
-#     addSeriesMapping,
-#     doesAuthorExist,
-#     doesBookExist,
-#     doesGenreExist,
-#     doesNarratorExist,
-#     doesSeriesExist,
-#     getAuthor,
-#     getGenre,
-#     getNarrator,
-#     getSeries,
-# )
 
 from app.db_models.tables.authors import addAuthor
 from app.db_models.tables.authorsmappings import addAuthorMapping
