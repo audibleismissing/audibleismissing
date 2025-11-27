@@ -1,6 +1,6 @@
 import uuid
 
-from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
+from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, delete
 
 from app.custom_objects.author import Author
 from app.db_models.tables.authorsmappings import AuthorsMappingsTable
@@ -96,3 +96,21 @@ def returnAuthorObj(sql_data) -> Author:
     author.name = sql_data.name
     author.authorAsin = sql_data.authorAsin
     return author
+
+
+def cleanupDanglingAuthors(engine) -> None:
+    """Deletes DB entries from the AuthorsTable and AuthorsMappingsTable that don't have a authorsAsin."""
+
+    with Session(engine) as session:
+        # Find authors that don't have a authorsAsin
+        statement = select(AuthorsTable).where(AuthorsTable.authorAsin.is_(None))
+        authors_without_asin = session.exec(statement).all()
+
+        for authors in authors_without_asin:
+            print(f"Deleting authors without authorsAsin: {authors.name} (ID: {authors.id})")
+            # Delete mappings for this authors
+            session.exec(delete(AuthorsMappingsTable).where(AuthorsMappingsTable.authorId == authors.id))
+            # Delete the authors
+            session.delete(authors)
+
+        session.commit()

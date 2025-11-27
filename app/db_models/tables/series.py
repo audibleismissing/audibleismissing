@@ -4,7 +4,7 @@ import uuid
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, func, and_, delete
 from app.custom_objects.series import Series
 from app.db_models.tables import books
-from app.db_models.tables.seriesmappings import SeriesMappingsTable, deleteSeriesMapping
+from app.db_models.tables.seriesmappings import SeriesMappingsTable
 
 
 
