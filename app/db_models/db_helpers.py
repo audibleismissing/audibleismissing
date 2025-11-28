@@ -20,6 +20,7 @@ from app.db_models.tables.narratormappings import addNarratorMapping
 from app.db_models.tables.series import addSeries, doesSeriesExist
 from app.db_models.tables.seriesmappings import addSeriesMapping
 from app.db_models.tables.serieswatchlist import addSeriesWatchListItem
+from app.db_models.tables.bookwishlist import addBookWishListItem
 
 
 
@@ -50,6 +51,7 @@ def dropAllTables(sqlite_db) -> None:
             cursor.execute("DROP TABLE IF EXISTS genres")
             cursor.execute("DROP TABLE IF EXISTS genremappings")
             cursor.execute("DROP TABLE IF EXISTS serieswatchlist")
+            cursor.execute("DROP TABLE IF EXISTS bookwishlist")
             cursor.execute("DROP VIEW IF EXISTS booksandseries")
             cursor.execute("DROP VIEW IF EXISTS seriesandcounts")
 

@@ -5,8 +5,7 @@ from fastapi import Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from app.db_models.tables.series import getSeries
-from app.db_models.views.seriesandcounts import getViewSeriesCountsBySeries, getViewSeriesCountsSingleSeries
+from app.db_models.views.booksandseries import getViewBookDetails
 from app.routers.route_tags import Tags
 from app.routers.pages import app_router
 from app.app_helpers.rest_handler.methods import get_json_from_api
@@ -27,20 +26,21 @@ engine = db_helpers.connectToDb()
 config = readSettings()
 
 
-@router.get('/user/serieswatchlist/', response_class=HTMLResponse, tags=[Tags.page])
+@router.get('/user/bookwishlist/', response_class=HTMLResponse, tags=[Tags.page])
 def page(request: Request):
-    """Render series watchlist page"""
+    """Render book wishlist page"""
 
-    watchlist_items = get_json_from_api('http://localhost:8000/api/user/serieswatchlist')
-    
-    if watchlist_items:
-        watchlist_table = []
-        for item in watchlist_items:
-            single_series = getViewSeriesCountsSingleSeries(config.sqlite_path, item['seriesId'])
-            watchlist_table.append(single_series)
+    wishlist_items = get_json_from_api('http://localhost:8000/api/user/bookwishlist')
+
+    if wishlist_items:
+        wishlist_table = []
+        for item in wishlist_items:
+            single_book = getViewBookDetails(config.sqlite_path, item['bookId'])
+            wishlist_table.append(single_book)
     else:
-        watchlist_table = []
+        wishlist_table = []
 
     return templates.TemplateResponse(
-        request = request, name='series_watch_list.html', context={"watchlist_table": watchlist_table}
+        request = request, name='book_wish_list.html', context={"wishlist_table": wishlist_table}
     )
+

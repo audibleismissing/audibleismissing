@@ -18,6 +18,7 @@
                 <th data-field="isOwned" data-sortable="true">Owned</th>
                 <th data-field="audibleOverallAvgRating" data-sortable="true">Avg Rating</th>
                 <th data-field="sequence" data-sortable="true">Sequence</th>
+                <th>Wish List</th>
             </tr>
         </thead>
         <tbody>
@@ -40,8 +41,10 @@
                     <td>{{ item.isOwned }}</td>
                     <td>{{ item.audibleOverallAvgRating }}</td>
                     <td>{{ item.sequence }}</td>
+                    <td><button class="btn btn-sm btn-outline-primary watch-btn" data-book-id="{{ item['bookId'] }}"></button></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    <script src="/static/js/btn_book_wish_list.js"></script>
 {% endblock %}
