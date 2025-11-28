@@ -49,10 +49,10 @@ def getViewSeriesCounts(sqlite_path) -> list:
                 all_series.append(series_dict)
             return all_series
         return []
-
+    
 
 def getViewSeriesCountsBySeries(sqlite_path, series_id) -> list:
-    """Get all books with series_id using the booksandseries view"""
+    """Get single series with series_id using the seriesandcounts view"""
     with sqlite3.connect(sqlite_path) as conn:
         cur = conn.cursor()
         cur.execute('select * from seriesandcounts where seriesId = ?', (series_id,))
@@ -65,3 +65,18 @@ def getViewSeriesCountsBySeries(sqlite_path, series_id) -> list:
                 books.append(book_dict)
             return books
         return []
+
+
+def getViewSeriesCountsSingleSeries(sqlite_path, series_id):
+    """Get single series with series_id using the seriesandcounts view"""
+    with sqlite3.connect(sqlite_path) as conn:
+        cur = conn.cursor()
+        cur.execute('select * from seriesandcounts where seriesId = ?', (series_id,))
+        results = cur.fetchone()
+        if results:
+            columns = [desc[0] for desc in cur.description]
+            series_dict = dict(zip(columns, results))
+            print(series_dict)
+            return series_dict
+        return {}
+        

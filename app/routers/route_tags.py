@@ -11,3 +11,4 @@ class Tags(Enum):
     admin = "admin"
     settings = "settings"
     test = "test"
+    user = "user"
