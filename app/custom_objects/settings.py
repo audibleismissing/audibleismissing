@@ -3,11 +3,12 @@ import json
 
 
 settings_file = "/config/settings.toml"
+sqlite_file = "/config/audibleismissing.sqlite"
 
 class Settings:
     def __init__(self):
         self.settings_file = settings_file
-        self.sqlite_path: str
+        self.sqlite_path = sqlite_file
         self.abs_url: str
         self.abs_api_key: str
         self.abs_library_id: str
