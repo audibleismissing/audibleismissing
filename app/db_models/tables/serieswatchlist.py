@@ -66,6 +66,7 @@ def deleteSeriesWatchListItem(engine: create_engine, watch_list_item_id) -> None
         results = session.exec(statement)
         row = results.one()
         session.delete(row)
+        session.commit()
 
 
 def returnSeriesWatchListItemObj(sql_data) -> SeriesWatchListItem:

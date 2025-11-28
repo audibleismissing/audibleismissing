@@ -9,6 +9,7 @@
                     <th data-field="rating" data-sortable="true">Avg Rating</th>
                     <th data-field="totalBooksInSeries" data-sortable="true">Books in Series</th>
                     <th data-field="totalBooksInLibrary" data-sortable="true">Books in Library</th>
+                    <th>Watch</th>
                 </tr>
             </thead>
             <tbody>
@@ -19,9 +20,12 @@
                     <td>{{ item.rating }}</td>
                     <td>{{ item.totalBooksInSeries }}</td>
                     <td>{{ item.totalBooksInLibrary }}</td>
+                    <td><button class="btn btn-sm btn-outline-primary watch-btn" data-series-id="{{ item.seriesId }}"></button></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% endif %}
+
+    <script src="/static/js/btn_add_item_to_series_watch_list.js"></script>
 {% endblock %}

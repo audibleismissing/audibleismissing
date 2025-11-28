@@ -2,17 +2,16 @@ import sqlite3
 
 from sqlmodel import SQLModel, create_engine
 
-from app.app_helpers.audibleapi import auth
 from app.db_models.views import booksandseries, seriesandcounts
 from app.custom_objects import settings
 from app.custom_objects.book import jsonToBook
-from app.custom_objects.author import jsonToAuthor, Author
+from app.custom_objects.author import jsonToAuthor
 from app.custom_objects.series import jsonToSeries
 from app.custom_objects.narrator import jsonToNarrator
 from app.custom_objects.genre import jsonToGenre
-from app.app_helpers.testdata.tools import importJson, exportJson
-from app.db_models.tables.books import getAllBooks, addBook, doesBookExist
-from app.db_models.tables.authors import addAuthor, doesAuthorExist, getAuthor, updateAuthor
+from app.app_helpers.testdata.tools import importJson
+from app.db_models.tables.books import addBook, doesBookExist
+from app.db_models.tables.authors import addAuthor, doesAuthorExist
 from app.db_models.tables.authorsmappings import addAuthorMapping
 from app.db_models.tables.genres import addGenre, doesGenreExist
 from app.db_models.tables.genremappings import addGenreMapping
@@ -20,6 +19,7 @@ from app.db_models.tables.narrators import addNarrator, doesNarratorExist
 from app.db_models.tables.narratormappings import addNarratorMapping
 from app.db_models.tables.series import addSeries, doesSeriesExist
 from app.db_models.tables.seriesmappings import addSeriesMapping
+from app.db_models.tables.serieswatchlist import addSeriesWatchListItem
 
 
 
@@ -49,6 +49,7 @@ def dropAllTables(sqlite_db) -> None:
             cursor.execute("DROP TABLE IF EXISTS authormappings")
             cursor.execute("DROP TABLE IF EXISTS genres")
             cursor.execute("DROP TABLE IF EXISTS genremappings")
+            cursor.execute("DROP TABLE IF EXISTS serieswatchlist")
             cursor.execute("DROP VIEW IF EXISTS booksandseries")
             cursor.execute("DROP VIEW IF EXISTS seriesandcounts")
 

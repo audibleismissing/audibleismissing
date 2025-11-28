@@ -36,17 +36,30 @@ async def get_series_watch_list_item():
     results = getSeriesWatchListItem(engine)
     if results:
         return results
-    return []
+    return {}
 
 
 class SeriesWachListModel(BaseModel):
     series_id: str
     model_config = {"extra": "forbid"}
 
-@router.post("/user/addserieswatchlistitem/{item}", tags=[Tags.user])
+@router.post("/user/addserieswatchlistitem", tags=[Tags.user])
 async def add_watch_list_item(data: Annotated[SeriesWachListModel, Form()]):
     """Add item to the watchlist"""
-
-    if not getSeriesWatchListItem(engine, data.series_id):
+    item = getSeriesWatchListItem(engine, data.series_id)
+    
+    if not item:
         addSeriesWatchListItem(engine, data.series_id)
         return {"message": "Added to watch list"}
+    return {"message": "Couldn't add to watch list"}
+
+
+@router.delete("/user/removeserieswatchlistitem/{series_id}", tags=[Tags.user])
+async def remove_watch_list_item(series_id: str):
+    """Remove item from the watchlist"""
+    item = getSeriesWatchListItem(engine, series_id)
+    
+    if item:
+        deleteSeriesWatchListItem(engine, item.id)
+        return {"message": "Removed from watch list"}
+    return {"message": "Item not in watch list"}
