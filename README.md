@@ -29,13 +29,15 @@ Series Details             |  Book Details
 - Series list (searchable)
 - Series details with list of searchable books. (has ratings)
 - Book details page contains general info about a book.
+- Series watch list.
+- Book wish list.
 
 
 ### Possible Features
 Some stuff I'm considering implementing.
-- Tagging/watching series/books (basically a personal watch list).
 - Importing other books by existing authors for book discovery.
 - Narrator and author details lists.
+- Manually adding series.
 
 
 ## Install
