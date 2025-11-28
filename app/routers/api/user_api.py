@@ -19,8 +19,6 @@ settings = settings.readSettings()
 engine = db_helpers.connectToDb()
 
 
-
-
 @router.get("/user/serieswatchlist", tags=[Tags.user], response_model=List[SeriesWatchListResponse])
 async def get_series_watch_list_items():
     """Returns list of all SeriesWatchListItems"""
@@ -37,7 +35,6 @@ async def get_series_watch_list_item():
     if results:
         return results
     return {}
-
 
 class SeriesWachListModel(BaseModel):
     series_id: str

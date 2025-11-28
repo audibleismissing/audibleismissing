@@ -1,4 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
-
+    {% if watchlist_table %}
+        <h2>Series Watch List</h2>
+        <table id="series-table" data-toggle="table" data-search="true" data-pagination="true" class="table table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th data-field="name" data-searchable="true" data-sortable="true">Name</th>
+                    <th data-field="seriesAsin" data-searchable="true" data-sortable="true">ASIN</th>
+                    <th data-field="rating" data-sortable="true">Avg Rating</th>
+                    <th data-field="totalBooksInSeries" data-sortable="true">Books in Series</th>
+                    <th data-field="totalBooksInLibrary" data-sortable="true">Books in Library</th>
+                    <th>Watch</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in watchlist_table %}
+                <tr>
+                    <td><a href='/series/details/{{ item['seriesId'] }}/'>{{ item['seriesName'] }}</a></td>
+                    <td>{{ item['seriesAsin'] }}</td>
+                    <td>{{ item['rating'] }}</td>
+                    <td>{{ item['totalBooksInSeries'] }}</td>
+                    <td>{{ item['totalBooksInLibrary'] }}</td>
+                    <td><button class="btn btn-sm btn-outline-primary watch-btn" data-series-id="{{ item['seriesId'] }}"></button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    <script src="/static/js/btn_series_watch_list.js"></script>
+    
 {% endblock %}
