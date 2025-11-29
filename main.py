@@ -1,4 +1,5 @@
-from os.path import dirname, join, isfile
+import os
+from os.path import dirname, join
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -18,18 +19,13 @@ app = FastAPI(
 )
 
 
-origins = [
-    "http://127.0.0.1:8000",
-    "http://0.0.0.0:8000",
-    "http://localhost:8000",
-    "*",
-]
+origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000").split(",")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -38,7 +34,6 @@ app.add_middleware(
 current_dir = dirname(__file__)
 static_dir = join(current_dir, 'app/static')
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
-
 
 
 # site routers

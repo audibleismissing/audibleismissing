@@ -5,8 +5,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.routers.route_tags import Tags
 from app.routers.pages import app_router
-
-from app.app_helpers.rest_handler.methods import get_json_from_api
+from app.routers.api.book_api import get_all_books, get_book_authors, get_book_details, get_book_genres, get_book_narrators
 
 
 router = app_router.initRouter()
@@ -17,10 +16,10 @@ templates = Jinja2Templates(directory=templates_dir)
 
 
 @router.get('/books', response_class=HTMLResponse, tags=[Tags.page])
-def page(request: Request):
+async def page(request: Request):
     """Render books page"""
 
-    table = get_json_from_api('http://localhost:8000/api/books/all')
+    table = await get_all_books()
 
     return templates.TemplateResponse(
         request = request, name='book_list.html', context={"table": table}
@@ -28,13 +27,12 @@ def page(request: Request):
 
 
 @router.get('/book/details/{book_id}', response_class=HTMLResponse, tags=[Tags.page])
-def details(request: Request, book_id: str):
+async def details(request: Request, book_id: str):
     """Render book details page"""
-
-    details = get_json_from_api(f'http://localhost:8000/api/book/details/{book_id}')
-    authors = get_json_from_api(f'http://localhost:8000/api/book/authors/{book_id}')
-    narrators = get_json_from_api(f'http://localhost:8000/api/book/narrators/{book_id}')
-    genres = get_json_from_api(f'http://localhost:8000/api/book/genres/{book_id}')
+    details = await get_book_details(book_id)
+    authors = await get_book_authors(book_id)
+    narrators = await get_book_narrators(book_id)
+    genres = await get_book_genres(book_id)
 
     return templates.TemplateResponse(
         request = request, name='book_details.html', context={"details": details, "authors": authors, "narrators": narrators, "genres": genres}

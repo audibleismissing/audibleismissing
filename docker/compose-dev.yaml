@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8000:8000
+    environment:
+      - ALLOWED_ORIGINS="https://aim.example.com" # Set if running on something other than localhost or 127.0.0.1
     volumes:
       - ../config:/config
     develop:
@@ -22,33 +24,3 @@ services:
         # Rebuild the image on changes to the `pyproject.toml`
         - action: rebuild
           path: ../pyproject.toml
-
-
-  # audimeta-api:
-  #   container_name: audimeta-api
-  #   image: ghcr.io/vito0912/audimeta:v2-latest
-  #   # image: ghcr.io/vito0912/audimeta:v2-latest@sha256:dbb581091389e33f7407129076150f38496bb008692c8c24a21c29688a300a6c # AMD64
-  #   ports:
-  #     - 8080:8080
-
-
-
-# audimeta-api          |    - Missing environment variable "PORT"
-# audimeta-api          | - Missing environment variable "APP_KEY"
-# audimeta-api          | - Missing environment variable "HOST"
-# audimeta-api          | - Missing environment variable "LOG_LEVEL"
-# audimeta-api          | - Missing environment variable "DB_HOST"
-# audimeta-api          | - Missing environment variable "DB_PORT"
-# audimeta-api          | - Missing environment variable "DB_USER"
-# audimeta-api          | - Missing environment variable "DB_DATABASE"
-# audimeta-api          | - Missing environment variable "DEVICE_ID"
-# audimeta-api          | - Missing environment variable "REDIS_HOST"
-# audimeta-api          | - Missing environment variable "REDIS_PORT"
-# audimeta-api          | - Missing environment variable "AXIOM_DATASET"
-# audimeta-api          | - Missing environment variable "AXIOM_TOKEN"
-# audimeta-api          | - Missing environment variable "LIMITER_STORE"
-# audimeta-api          | - Missing environment variable "RATE_SEARCH"
-# audimeta-api          | - Missing environment variable "RATE_ITEM"
-# audimeta-api          | - Missing environment variable "RATE_EXTREME"
-# audimeta-api          | - Missing environment variable "RATE_CACHE"
-# audimeta-api          | - Missing environment variable "RATE_SERIES"

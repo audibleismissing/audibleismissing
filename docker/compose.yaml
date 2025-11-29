@@ -6,3 +6,5 @@ services:
       - 8000:8000
     volumes:
       - ../config:/config
+    environment:
+      - ALLOWED_ORIGINS="https://aim.example.com" # Set if running on something other than localhost or 127.0.0.1

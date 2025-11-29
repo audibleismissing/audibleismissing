@@ -5,13 +5,12 @@ from fastapi import Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from app.db_models.tables.series import getSeries
-from app.db_models.views.seriesandcounts import getViewSeriesCountsBySeries, getViewSeriesCountsSingleSeries
+from app.db_models.views.seriesandcounts import getViewSeriesCountsSingleSeries
 from app.routers.route_tags import Tags
 from app.routers.pages import app_router
-from app.app_helpers.rest_handler.methods import get_json_from_api
 from app.db_models import db_helpers
 from app.custom_objects.settings import readSettings
+from app.routers.api.user_api import get_series_watch_list_items
 
 
 router = app_router.initRouter()
@@ -28,15 +27,15 @@ config = readSettings()
 
 
 @router.get('/user/serieswatchlist/', response_class=HTMLResponse, tags=[Tags.page])
-def page(request: Request):
+async def page(request: Request):
     """Render series watchlist page"""
 
-    watchlist_items = get_json_from_api('http://localhost:8000/api/user/serieswatchlist')
+    watchlist_items = await get_series_watch_list_items()
     
     if watchlist_items:
         watchlist_table = []
         for item in watchlist_items:
-            single_series = getViewSeriesCountsSingleSeries(config.sqlite_path, item['seriesId'])
+            single_series = getViewSeriesCountsSingleSeries(config.sqlite_path, item.seriesId)
             watchlist_table.append(single_series)
     else:
         watchlist_table = []
