@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from app.db_models.views.booksandseries import getViewBookDetails
 from app.routers.route_tags import Tags
 from app.routers.pages import app_router
-from app.app_helpers.rest_handler.methods import get_json_from_api
+from app.routers.api.user_api import get_book_wish_list_items
 from app.db_models import db_helpers
 from app.custom_objects.settings import readSettings
 
@@ -27,15 +27,15 @@ config = readSettings()
 
 
 @router.get('/user/bookwishlist/', response_class=HTMLResponse, tags=[Tags.page])
-def page(request: Request):
+async def page(request: Request):
     """Render book wishlist page"""
 
-    wishlist_items = get_json_from_api('http://localhost:8000/api/user/bookwishlist')
+    wishlist_items = await get_book_wish_list_items()
 
     if wishlist_items:
         wishlist_table = []
         for item in wishlist_items:
-            single_book = getViewBookDetails(config.sqlite_path, item['bookId'])
+            single_book = getViewBookDetails(config.sqlite_path, item.bookId)
             wishlist_table.append(single_book)
     else:
         wishlist_table = []

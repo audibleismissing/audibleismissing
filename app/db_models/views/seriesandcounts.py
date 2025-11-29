@@ -76,7 +76,6 @@ def getViewSeriesCountsSingleSeries(sqlite_path, series_id):
         if results:
             columns = [desc[0] for desc in cur.description]
             series_dict = dict(zip(columns, results))
-            print(series_dict)
             return series_dict
         return {}
         

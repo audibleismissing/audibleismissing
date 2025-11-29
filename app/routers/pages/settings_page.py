@@ -16,7 +16,7 @@ templates = Jinja2Templates(directory=templates_dir)
 
 
 @router.get('/settings', response_class=HTMLResponse, tags=[Tags.page])
-def page(request: Request):
+async def page(request: Request):
     """Render settings page"""
 
     settings = readSettings()
