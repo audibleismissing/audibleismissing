@@ -13,13 +13,13 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="inputAudiobookshelfApiKey" class="form-label">Audiobookshelf API Key</label>
+                    <label for="inputAudiobookshelfApiKey" class="form-label">Audiobookshelf API key</label>
                     <input type="text" class="form-control" id="inputAudiobookshelfApiKey" name="abs_api_key" value="{{ settings.abs_api_key }}" aria-describedby="absApiKeyHelp">
                     <div id="absApiKeyHelp" class="form-text">Bearer uhf8hry98ydfyaw8e9fy...</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="inputAudiobookshelfLibraryId" class="form-label">Audiobookshelf Library ID</label>
+                    <label for="inputAudiobookshelfLibraryId" class="form-label">Audiobookshelf library ID</label>
                     <input type="text" class="form-control" id="inputAudiobookshelfLibraryId" name="abs_library_id" value="{{ settings.abs_library_id }}" aria-describedby="absLibraryIdHelp">
                     <div id="absLibraryIdHelp" class="form-text">0a0c4b05-e4bd-486d-85fd-3c053082b540</div>
                 </div>
@@ -57,19 +57,19 @@
             <!-- Audible Auth -->
             <form id="audibleAuthForm">
                 <div class="mb-3">
-                    <label for="inputAudibleUsername" class="form-label">Audible Username</label>
+                    <label for="inputAudibleUsername" class="form-label">Audible username</label>
                     <input type="text" class="form-control" id="inputAudibleUsername" name="audible_username" value="{{ audible.audible_username }}" aria-describedby="AudibleUsernameHelp">
                     <div id="AudibleUsernameHelp" class="form-text">someuser@example.com</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="inputAudiblePassword" class="form-label">Audible Password</label>
+                    <label for="inputAudiblePassword" class="form-label">Audible password</label>
                     <input type="password" class="form-control" id="inputAudiblePassword" name="audible_password" value="{{ audible.audible_password }}" aria-describedby="audiblePasswordHelp">
                     <div id="audiblePasswordHelp" class="form-text">If you have activated 2-factor-authentication for your Amazon account, you can append the current OTP to your password.</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="inputAudibleCountryCode" class="form-label">Audible Country Code</label>
+                    <label for="inputAudibleCountryCode" class="form-label">Audible country code</label>
                     <input type="text" class="form-control" id="inputAudibleCountryCode" name="audible_country_code" value="{{ audible.audible_country_code }}" aria-describedby="audibleCountryCodeHelp">
                     <div id="audibleCountryCodeHelp" class="form-text">Example: us</div>
                 </div>
@@ -107,8 +107,8 @@
             <h2>Database Operations</h2>
             <div class="btn-group gap-2" role="group" aria-label="Database Operations">
                 <div>
-                    <button type="button" class="btn btn-primary" id="refreshAbsBtn">Refresh Audiobookshelf Data</button>
-                    <div id="saveAlert" style="display: none;" class="alert"></div>
+                    <button type="button" class="btn btn-primary" id="refreshAbsBtn">Refresh Audiobookshelf data</button>
+                    <div id="refreshAbsAlert" style="display: none;" class="alert"></div>
                     <script>
                     document.getElementById('refreshAbsBtn').addEventListener('click', function() {
                         fetch('/api/database/refreshabsdata/', {
@@ -116,16 +116,16 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            const alertDiv = document.getElementById('saveAlert');
+                            const alertDiv = document.getElementById('refreshAbsAlert');
                             alertDiv.className = 'alert alert-success';
                             alertDiv.textContent = data.message;
                             alertDiv.style.display = 'block';
                             setTimeout(() => alertDiv.style.display = 'none', 5000);
                         })
                         .catch(error => {
-                            const alertDiv = document.getElementById('saveAlert');
+                            const alertDiv = document.getElementById('refreshAbsAlert');
                             alertDiv.className = 'alert alert-danger';
-                            alertDiv.textContent = 'Error saving settings';
+                            alertDiv.textContent = 'Error refreshing Abs data';
                             alertDiv.style.display = 'block';
                             setTimeout(() => alertDiv.style.display = 'none', 5000);
                         });
@@ -134,8 +134,8 @@
                 </div>
 
                 <div>
-                    <button type="button" class="btn btn-primary" id="backfillAudibleBtn">Backfill Audible Data</button>
-                    <div id="saveAlert" style="display: none;" class="alert"></div>
+                    <button type="button" class="btn btn-primary" id="backfillAudibleBtn">Backfill Audible data</button>
+                    <div id="backfillAudibleAlert" style="display: none;" class="alert"></div>
                     <script>
                     document.getElementById('backfillAudibleBtn').addEventListener('click', function() {
                         fetch('/api/database/backfill_audible/', {
@@ -143,16 +143,16 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            const alertDiv = document.getElementById('saveAlert');
+                            const alertDiv = document.getElementById('backfillAudibleAlert');
                             alertDiv.className = 'alert alert-success';
                             alertDiv.textContent = data.message;
                             alertDiv.style.display = 'block';
                             setTimeout(() => alertDiv.style.display = 'none', 5000);
                         })
                         .catch(error => {
-                            const alertDiv = document.getElementById('saveAlert');
+                            const alertDiv = document.getElementById('backfillAudibleAlert');
                             alertDiv.className = 'alert alert-danger';
-                            alertDiv.textContent = 'Error saving settings';
+                            alertDiv.textContent = 'Error backfilling data';
                             alertDiv.style.display = 'block';
                             setTimeout(() => alertDiv.style.display = 'none', 5000);
                         });
@@ -161,8 +161,8 @@
                 </div>
 
                 <div>
-                    <button type="button" class="btn btn-primary" id="getMissingBtn">Get Missing Books</button>
-                    <div id="saveAlert" style="display: none;" class="alert"></div>
+                    <button type="button" class="btn btn-primary" id="getMissingBtn">Get missing books</button>
+                    <div id="getMissingAlert" style="display: none;" class="alert"></div>
                     <script>
                     document.getElementById('getMissingBtn').addEventListener('click', function() {
                         fetch('/api/database/get_missing_books/', {
@@ -170,16 +170,16 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            const alertDiv = document.getElementById('saveAlert');
+                            const alertDiv = document.getElementById('getMissingAlert');
                             alertDiv.className = 'alert alert-success';
                             alertDiv.textContent = data.message;
                             alertDiv.style.display = 'block';
                             setTimeout(() => alertDiv.style.display = 'none', 5000);
                         })
                         .catch(error => {
-                            const alertDiv = document.getElementById('saveAlert');
+                            const alertDiv = document.getElementById('getMissingAlert');
                             alertDiv.className = 'alert alert-danger';
-                            alertDiv.textContent = 'Error saving settings';
+                            alertDiv.textContent = 'Error getting missing books';
                             alertDiv.style.display = 'block';
                             setTimeout(() => alertDiv.style.display = 'none', 5000);
                         });
@@ -188,8 +188,8 @@
                 </div>
 
                 <div>
-                    <button type="button" class="btn btn-danger" id="resetDatabaseBtn">Reset Database</button>
-                    <div id="saveAlert" style="display: none;" class="alert"></div>
+                    <button type="button" class="btn btn-danger" id="resetDatabaseBtn">Reset database</button>
+                    <div id="resetDbAlert" style="display: none;" class="alert"></div>
                     <script>
                     document.getElementById('resetDatabaseBtn').addEventListener('click', function() {
                         fetch('/api/database/resetdb/', {
@@ -197,16 +197,72 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            const alertDiv = document.getElementById('saveAlert');
+                            const alertDiv = document.getElementById('resetDbAlert');
                             alertDiv.className = 'alert alert-success';
                             alertDiv.textContent = data.message;
                             alertDiv.style.display = 'block';
                             setTimeout(() => alertDiv.style.display = 'none', 5000);
                         })
                         .catch(error => {
-                            const alertDiv = document.getElementById('saveAlert');
+                            const alertDiv = document.getElementById('resetDbAlert');
                             alertDiv.className = 'alert alert-danger';
-                            alertDiv.textContent = 'Error saving settings';
+                            alertDiv.textContent = 'Error resetting DB';
+                            alertDiv.style.display = 'block';
+                            setTimeout(() => alertDiv.style.display = 'none', 5000);
+                        });
+                    });
+                    </script>
+                </div>
+
+
+
+                <div>
+                    <button type="button" class="btn btn-danger" id="importDbBtn">Import from json file</button>
+                    <div id="importAlert" style="display: none;" class="alert"></div>
+                    <script>
+                    document.getElementById('importDbBtn').addEventListener('click', function() {
+                        fetch('/api/database/import/', {
+                            method: 'GET'
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            const alertDiv = document.getElementById('importAlert');
+                            alertDiv.className = 'alert alert-success';
+                            alertDiv.textContent = data.message;
+                            alertDiv.style.display = 'block';
+                            setTimeout(() => alertDiv.style.display = 'none', 5000);
+                        })
+                        .catch(error => {
+                            const alertDiv = document.getElementById('importAlert');
+                            alertDiv.className = 'alert alert-danger';
+                            alertDiv.textContent = 'Error importing';
+                            alertDiv.style.display = 'block';
+                            setTimeout(() => alertDiv.style.display = 'none', 5000);
+                        });
+                    });
+                    </script>
+                </div>
+
+                <div>
+                    <button type="button" class="btn btn-primary" id="exportDbBtn">Export to json file</button>
+                    <div id="exportAlert" style="display: none;" class="alert"></div>
+                    <script>
+                    document.getElementById('exportDbBtn').addEventListener('click', function() {
+                        fetch('/api/database/export/', {
+                            method: 'GET'
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            const alertDiv = document.getElementById('exportAlert');
+                            alertDiv.className = 'alert alert-success';
+                            alertDiv.textContent = data.message;
+                            alertDiv.style.display = 'block';
+                            setTimeout(() => alertDiv.style.display = 'none', 5000);
+                        })
+                        .catch(error => {
+                            const alertDiv = document.getElementById('exportAlert');
+                            alertDiv.className = 'alert alert-danger';
+                            alertDiv.textContent = 'Error exporting';
                             alertDiv.style.display = 'block';
                             setTimeout(() => alertDiv.style.display = 'none', 5000);
                         });

@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers.pages import index, series, books, settings_page, serieswatchlist_page, bookwishlist_page
-from app.routers.api import book_api, series_api, admin_api, test_api, settings_api, user_api
+from app.routers.api import book_api, series_api, admin_api, settings_api, user_api
 
 from fastapi.staticfiles import StaticFiles
 
@@ -54,6 +54,5 @@ app.include_router(bookwishlist_page.router)
 app.include_router(book_api.router)
 app.include_router(series_api.router)
 app.include_router(admin_api.router)
-app.include_router(test_api.router)
 app.include_router(settings_api.router)
 app.include_router(user_api.router)

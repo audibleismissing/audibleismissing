@@ -39,8 +39,8 @@ def returnBookObj(api_book:dict, isSeries:bool) -> Book:
 
     book = Book()
 
-    import json
-    print(json.dumps(api_book, indent=4))
+    # import json
+    # print(json.dumps(api_book, indent=4))
 
     authors = []
     if api_book.get('authors'):
