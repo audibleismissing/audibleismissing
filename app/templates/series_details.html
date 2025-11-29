@@ -2,7 +2,10 @@
 {% block content %}
     <section id="series-details">
         <div>
-            <h2><div>Series Details: {{ table[0].seriesName }}</div></h2>
+            <div>
+                <h2>Series Details: {{ table[0].seriesName }}</h2>
+                <button class="btn btn-sm btn-outline-primary watch-btn" data-series-id="{{ table[0].seriesId }}"></button>
+            </div>
             <div>Books in Series: {{ counts[0]['totalBooksInSeries'] }}</div>
             <div>Books in Library: {{ counts[0]['totalBooksInLibrary'] }}</div>
         </div>
@@ -47,4 +50,5 @@
         </tbody>
     </table>
     <script src="/static/js/btn_book_wish_list.js"></script>
+    <script src="/static/js/btn_series_watch_list.js"></script>
 {% endblock %}
