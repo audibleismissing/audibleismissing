@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.watch-btn').forEach(btn => {
                 const seriesId = btn.getAttribute('data-series-id');
                 if (watchlistIds.includes(seriesId)) {
-                    btn.textContent = 'Remove';
+                    btn.textContent = 'Remove Watch';
                     btn.classList.remove('btn-outline-primary');
                     btn.classList.add('btn-outline-danger');
                 } else {
-                    btn.textContent = 'Add';
+                    btn.textContent = 'Add Watch';
                     btn.classList.remove('btn-outline-danger');
                     btn.classList.add('btn-outline-primary');
                 }
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.classList.contains('watch-btn')) {
             const btn = e.target;
             const seriesId = btn.getAttribute('data-series-id');
-            const isRemove = btn.textContent === 'Remove';
+            const isRemove = btn.textContent === 'Remove Watch';
 
             const url = isRemove ? `/api/user/removeserieswatchlistitem/${seriesId}` : '/api/user/addserieswatchlistitem';
             const method = isRemove ? 'DELETE' : 'POST';
@@ -40,15 +40,19 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                // Toggle button
-                if (isRemove) {
-                    btn.textContent = 'Add';
-                    btn.classList.remove('btn-outline-danger');
-                    btn.classList.add('btn-outline-primary');
+                if ((isRemove && data.message === 'Removed from watch list') || (!isRemove && data.message === 'Added to watch list')) {
+                    // Toggle button
+                    if (isRemove) {
+                        btn.textContent = 'Add Watch';
+                        btn.classList.remove('btn-outline-danger');
+                        btn.classList.add('btn-outline-primary');
+                    } else {
+                        btn.textContent = 'Remove Watch';
+                        btn.classList.remove('btn-outline-primary');
+                        btn.classList.add('btn-outline-danger');
+                    }
                 } else {
-                    btn.textContent = 'Remove';
-                    btn.classList.remove('btn-outline-primary');
-                    btn.classList.add('btn-outline-danger');
+                    console.error('Operation failed:', data.message);
                 }
                 console.log(data.message);
             })

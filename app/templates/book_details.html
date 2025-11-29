@@ -8,12 +8,18 @@
             <div class="row">
                 <div class="float-start">
                     <div>Title: {{ details.title }}</div>
-                    <div>ASIN: <a href="https://www.audible.com/pd/{{ details.bookAsin }}">{{ details.bookAsin }}</a></div>
+                    <div>
+                        Book ASIN: <a href="https://www.audible.com/pd/{{ details.bookAsin }}" target="_blank">{{ details.bookAsin }}</a>
+                        <button class="btn btn-sm btn-outline-primary wish-btn" data-book-id="{{ details['bookId'] }}"></button>
+                    </div>
                     <div>Release Date: {{ details.releaseDate }}</div>
                     <div>Series: <a href='/series/details/{{ details.seriesId }}/'>{{ details.seriesName }}</a></div>
                     <div>Sequence: {{ details.sequence }}</div>
                     <div>Books in Series: {{ details.totalBooksInSeries }}</div>
-                    <div>Series ASIN: {{ details.seriesAsin }}</div>
+                    <div>
+                        Series ASIN: <a href="https://www.audible.com/series/{{ details.seriesAsin }}" target="_blank">{{ details.seriesAsin }}</a>
+                        <button class="btn btn-sm btn-outline-primary watch-btn" data-series-id="{{ details.seriesId }}"></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,4 +89,6 @@
             </div>
         </div>
     </div>
+    <script src="/static/js/btn_series_watch_list.js"></script>
+    <script src="/static/js/btn_book_wish_list.js"></script>
 {% endblock %}

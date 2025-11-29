@@ -10,6 +10,7 @@ from app.response_models.serieswatchlist_response import SeriesWatchListResponse
 from app.response_models.bookwishlist_response import BookWishListResponse
 from app.db_models.tables.serieswatchlist import deleteSeriesWatchListItem, getSeriesWatchListItem, getAllSeriesWatchListItems, addSeriesWatchListItem
 from app.db_models.tables.bookwishlist import deleteBookWishListItem, getAllBookWishListItems, getBookWishListItem, addBookWishListItem
+from app.db_models.views import booksandseries
 
 router = api_router.initRouter()
 
@@ -25,6 +26,16 @@ engine = db_helpers.connectToDb()
 async def get_series_watch_list_items():
     """Returns list of all SeriesWatchListItems"""
     results = getAllSeriesWatchListItems(engine)
+    if results:
+        return results
+    return []
+
+
+@router.get("/user/serieswatchlist/releasedates/{limit}", tags=[Tags.user])
+async def get_book_release_dates(limit: int):
+    """Gets books to be released on wachlist. results limit."""
+    results = booksandseries.getViewWatchListReleaseDates(settings.sqlite_path, limit)
+
     if results:
         return results
     return []

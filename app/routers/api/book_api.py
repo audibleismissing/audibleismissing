@@ -65,7 +65,7 @@ async def get_book_details(book_id: str):
     return {}
 
 
-@router.get("/book/releasedates/{limit}", tags=[Tags.book])#, response_model=List[book.BookResponse])
+@router.get("/book/releasedates/{limit}", tags=[Tags.book])
 async def get_book_release_dates(limit: int):
     """Gets books to be released. results limit."""
     results = booksandseries.getViewReleaseDates(settings.sqlite_path, limit)
