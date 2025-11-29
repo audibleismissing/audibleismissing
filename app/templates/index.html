@@ -1,12 +1,5 @@
 {% extends 'base.html' %}
 {% block content %}
-    <!-- <div>
-        <h1>Reports</h1>
-        <ul>
-            <li><a href="#">Series Missing Books in Library</a></li>
-        </ul>
-    </div> -->
-
     <div>
         <h4>Admin Actions</h4>
         <ul>
@@ -15,13 +8,27 @@
     </div>
 
     <!-- releases -->
-    <h4>Upcoming Releases</h4>
-    {% if releases %}
-        <ul>
-        {% for item in releases %}
-            <li>{{ item.releaseDate }}: <a href='/series/details/{{ item.seriesId }}'>{{ item.seriesName }}</a> - <a href='/book/details/{{ item.bookId }}'>{{ item.title }}</a> - <a href="https://www.audible.com/pd/{{ item.bookAsin }}" target="_blank">Audible</a></li>
-        {% endfor %}
-        </ul>
-    {% endif %}
+    <div class="row">
+        <div class="col">
+            <h4>Upcoming Book Releases</h4>
+            {% if releases %}
+                <ul>
+                {% for item in releases %}
+                    <li>{{ item.releaseDate }}: <a href='/series/details/{{ item.seriesId }}'>{{ item.seriesName }}</a> - <a href='/book/details/{{ item.bookId }}'>{{ item.title }}</a> - <a href="https://www.audible.com/pd/{{ item.bookAsin }}" target="_blank">Audible</a></li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
 
+        <div class="col">
+            <h4>Upcoming Series Watch List Releases</h4>
+            {% if watchlist_releases %}
+            <ul>
+                {% for item in watchlist_releases %}
+                <li>{{ item.releaseDate }}: <a href='/series/details/{{ item.seriesId }}'>{{ item.seriesName }}</a> - <a href='/book/details/{{ item.bookId }}'>{{ item.title }}</a> - <a href="https://www.audible.com/pd/{{ item.bookAsin }}" target="_blank">Audible</a></li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

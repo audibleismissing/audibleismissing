@@ -24,8 +24,8 @@ def page(request: Request):
     # calendar
     limit = 10
     releases = get_json_from_api(f'http://localhost:8000/api/book/releasedates/{limit}')
-
+    watchlist_releases = get_json_from_api(f'http://localhost:8000/api/user/serieswatchlist/releasedates/{limit}')
 
     return templates.TemplateResponse(
-        request = request, name='index.html', context={"releases": releases}
+        request = request, name='index.html', context={"releases": releases, "watchlist_releases": watchlist_releases}
     )

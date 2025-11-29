@@ -112,3 +112,29 @@ def getViewReleaseDates(sqlite_path, time_window) -> list:
                 books.append(book_dict)
             return books
         return []
+
+
+def getViewWatchListReleaseDates(sqlite_path, time_window) -> list:
+    """Get upcoming book releases that are in series on the series watch list. Returns list."""
+    from datetime import datetime
+    current_date = datetime.now().strftime('%Y-%m-%d')
+
+    with sqlite3.connect(sqlite_path) as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT * FROM booksandseries
+            WHERE releaseDate >= ?
+            AND seriesId IN (SELECT seriesId FROM serieswatchlist)
+            ORDER BY releaseDate ASC
+            LIMIT ?
+        """, (current_date, time_window))
+        results = cur.fetchall()
+        if results:
+            books = []
+            columns = [desc[0] for desc in cur.description]
+            for row in results:
+                book_dict = dict(zip(columns, row))
+                books.append(book_dict)
+            return books
+        return []
+    
