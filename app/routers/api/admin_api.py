@@ -4,9 +4,8 @@ from app.routers.api import api_router
 from app.routers.route_tags import Tags
 from app.custom_objects import settings
 from app.db_models import db_helpers
-from app.app_helpers.fastapi_utils.fastapi_tasks import taskRefreshAbsData, refreshAudibleData, refreshAudnexusData, refreshAudimetaData
+from app.app_helpers.fastapi_utils.fastapi_tasks import taskRefreshAbsData, refreshAudibleData, refreshAudnexusData
 from app.app_helpers.audibleapi.auth import loadExistingAuth
-from app.app_helpers.testdata.tools import exportDbToJson, importJsonToDb
 
 
 router = api_router.initRouter()
@@ -60,12 +59,12 @@ async def get_missingBooks(background_task: BackgroundTasks):
 async def import_test_data(background_task: BackgroundTasks):
     """Imports the db from a json file. destructive."""
     db_helpers.resetAllData(engine, settings.sqlite_path)
-    background_task.add_task(importJsonToDb, engine)
+    background_task.add_task(db_helpers.importJsonToDb, engine)
     return {"message": "Importing data."}
 
 
 @router.get("/database/export", tags=[Tags.admin])
 async def export_test_data(background_task: BackgroundTasks):
     """Exports the db to a json file"""
-    background_task.add_task(exportDbToJson, engine)
+    background_task.add_task(db_helpers.exportDbToJson, engine)
     return {"message": "Exporting data."}
