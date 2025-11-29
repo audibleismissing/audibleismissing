@@ -6,6 +6,7 @@ from app.custom_objects import settings
 from app.db_models import db_helpers
 from app.app_helpers.fastapi_utils.fastapi_tasks import taskRefreshAbsData, refreshAudibleData, refreshAudnexusData, refreshAudimetaData
 from app.app_helpers.audibleapi.auth import loadExistingAuth
+from app.app_helpers.testdata.tools import exportDbToJson, importJsonToDb
 
 
 router = api_router.initRouter()
@@ -54,3 +55,17 @@ async def get_missingBooks(background_task: BackgroundTasks):
         return {"message": "Refreshing data. This may take a while."}
     return {"message": "Not authenticated to audible."}
 
+
+@router.get("/database/import", tags=[Tags.admin])
+async def import_test_data(background_task: BackgroundTasks):
+    """Imports the db from a json file. destructive."""
+    db_helpers.resetAllData(engine, settings.sqlite_path)
+    background_task.add_task(importJsonToDb, engine)
+    return {"message": "Importing data."}
+
+
+@router.get("/database/export", tags=[Tags.admin])
+async def export_test_data(background_task: BackgroundTasks):
+    """Exports the db to a json file"""
+    background_task.add_task(exportDbToJson, engine)
+    return {"message": "Exporting data."}

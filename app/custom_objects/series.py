@@ -17,6 +17,7 @@ class Series:
             "name": self.name,
             "seriesAsin": self.seriesAsin,
             "sequence": self.sequence,
+            "rating": None,
         }
 
 

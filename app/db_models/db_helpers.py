@@ -1,27 +1,26 @@
+import json
 import sqlite3
 
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import Session, SQLModel, create_engine, select
 
-from app.db_models.views import booksandseries, seriesandcounts
 from app.custom_objects import settings
-from app.custom_objects.book import jsonToBook
-from app.custom_objects.author import jsonToAuthor
-from app.custom_objects.series import jsonToSeries
-from app.custom_objects.narrator import jsonToNarrator
-from app.custom_objects.genre import jsonToGenre
-from app.app_helpers.testdata.tools import importJson
-from app.db_models.tables.books import addBook, doesBookExist
-from app.db_models.tables.authors import addAuthor, doesAuthorExist
-from app.db_models.tables.authorsmappings import addAuthorMapping
-from app.db_models.tables.genres import addGenre, doesGenreExist
-from app.db_models.tables.genremappings import addGenreMapping
-from app.db_models.tables.narrators import addNarrator, doesNarratorExist
-from app.db_models.tables.narratormappings import addNarratorMapping
-from app.db_models.tables.series import addSeries, doesSeriesExist
-from app.db_models.tables.seriesmappings import addSeriesMapping
-from app.db_models.tables.serieswatchlist import addSeriesWatchListItem
-from app.db_models.tables.bookwishlist import addBookWishListItem
+from app.custom_objects.settings import readSettings
+from app.db_models.tables.authors import AuthorsTable
+from app.db_models.tables.authorsmappings import AuthorsMappingsTable
+from app.db_models.tables.books import BooksTable
+from app.db_models.tables.bookwishlist import BookWishListTable
+from app.db_models.tables.genremappings import GenreMappingsTable
+from app.db_models.tables.genres import GenresTable
+from app.db_models.tables.narratormappings import NarratorMappingsTable
+from app.db_models.tables.narrators import NarratorsTable
+from app.db_models.tables.series import SeriesTable
+from app.db_models.tables.seriesmappings import SeriesMappingsTable
+from app.db_models.tables.serieswatchlist import SeriesWatchListTable
+from app.db_models.views import booksandseries, seriesandcounts
 
+json_file = "/config/db_dump.json"
+
+config = readSettings()
 
 
 def connectToDb() -> create_engine:
@@ -57,7 +56,7 @@ def dropAllTables(sqlite_db) -> None:
 
             connection.commit()
     except sqlite3.Error as error:
-        print('DB conneciton error occured -', error)
+        print("DB conneciton error occured -", error)
 
 
 def resetAllData(engine, sqlite_db) -> None:
@@ -68,45 +67,112 @@ def resetAllData(engine, sqlite_db) -> None:
     createTables(engine, sqlite_db)
 
 
-def exportDb(engine) -> None:
-    print("Exporting....")
-    # books = getAllBooks(engine)
-    # exportJson(Book.serialize(books), "app/app_helpers/testdata/testdata_large.json")
+def exportDbToJson(engine):
+    """Export all database tables to a JSON file."""
+    data = {}
 
-    # books_to_export = []
-    # for single_book in books:
-    #     for author in single_book.authors:
-    #         if author.get('name') == "pirateaba":
-    #             books_to_export.append(Book.toJson(single_book))
-    # exportJson(books_to_export, "app/app_helpers/testdata/testdata_small.json")
-                
+    with Session(engine) as session:
+        # Export main tables
+        data["authors"] = [
+            row.model_dump() for row in session.exec(select(AuthorsTable)).all()
+        ]
+        data["books"] = [
+            row.model_dump() for row in session.exec(select(BooksTable)).all()
+        ]
+        data["genres"] = [
+            row.model_dump() for row in session.exec(select(GenresTable)).all()
+        ]
+        data["narrators"] = [
+            row.model_dump() for row in session.exec(select(NarratorsTable)).all()
+        ]
+        data["series"] = [
+            row.model_dump() for row in session.exec(select(SeriesTable)).all()
+        ]
+
+        # Export mapping tables
+        data["authormappings"] = [
+            row.model_dump() for row in session.exec(select(AuthorsMappingsTable)).all()
+        ]
+        data["genremappings"] = [
+            row.model_dump() for row in session.exec(select(GenreMappingsTable)).all()
+        ]
+        data["narratormappings"] = [
+            row.model_dump()
+            for row in session.exec(select(NarratorMappingsTable)).all()
+        ]
+        data["seriesmappings"] = [
+            row.model_dump() for row in session.exec(select(SeriesMappingsTable)).all()
+        ]
+
+        # Export wishlist tables
+        data["bookwishlist"] = [
+            row.model_dump() for row in session.exec(select(BookWishListTable)).all()
+        ]
+        data["serieswatchlist"] = [
+            row.model_dump() for row in session.exec(select(SeriesWatchListTable)).all()
+        ]
+
+    with open(json_file, "w") as f:
+        json.dump(
+            data, f, indent=2, default=str
+        )  # default=str to handle Decimal and datetime
 
 
-def importDb(engine) -> None:
-    print("Importing....")
-    books = importJson("app/app_helpers/testdata/testdata_small.json")
-    for single_book in books:
-        if single_book['authors'][0]['name'] == "pirateaba" and not doesBookExist(engine, single_book['title']):
-            book = jsonToBook(single_book)
-            book_id = addBook(engine, book)
-            for single_author in single_book['authors']:
-                author = jsonToAuthor(single_author)
-                if not doesAuthorExist(engine, author.name):
-                    author_id = addAuthor(engine, author)
-                addAuthorMapping(engine, author_id, book_id)
-            for single_genre in single_book['genres']:
-                genre = jsonToGenre(single_genre)
-                if not doesGenreExist(engine, genre.name):
-                    genre_id = addGenre(engine, genre)
-                addGenreMapping(engine, genre_id, book_id)
-            for single_narrator in single_book['narrators']:
-                narrator = jsonToNarrator(single_narrator)
-                if not doesNarratorExist(engine, narrator.name):
-                    narrator_id = addNarrator(engine, narrator)
-                addNarratorMapping(engine, narrator_id, book_id)
-            for single_series in single_book['series']:
-                series = jsonToSeries(single_series)
-                if not doesSeriesExist(engine, series.name):
-                    series_id = addSeries(engine, series)
-                addSeriesMapping(engine, series_id, book_id, series.sequence)
-    print("Completed import")
+def importJsonToDb(engine):
+    """Import JSON data from file into the database, replacing existing data."""
+    with open(json_file, "r") as f:
+        data = json.load(f)
+
+    with Session(engine) as session:
+        resetAllData(engine, config.sqlite_path)
+
+        # Insert main tables first
+        for author_data in data.get("authors", []):
+            author = AuthorsTable(**author_data)
+            session.add(author)
+
+        for book_data in data.get("books", []):
+            book = BooksTable(**book_data)
+            session.add(book)
+
+        for genre_data in data.get("genres", []):
+            genre = GenresTable(**genre_data)
+            session.add(genre)
+
+        for narrator_data in data.get("narrators", []):
+            narrator = NarratorsTable(**narrator_data)
+            session.add(narrator)
+
+        for series_data in data.get("series", []):
+            series = SeriesTable(**series_data)
+            session.add(series)
+
+        session.commit()  # Commit main tables
+
+        # Insert mapping tables
+        for mapping_data in data.get("authormappings", []):
+            mapping = AuthorsMappingsTable(**mapping_data)
+            session.add(mapping)
+
+        for mapping_data in data.get("genremappings", []):
+            mapping = GenreMappingsTable(**mapping_data)
+            session.add(mapping)
+
+        for mapping_data in data.get("narratormappings", []):
+            mapping = NarratorMappingsTable(**mapping_data)
+            session.add(mapping)
+
+        for mapping_data in data.get("seriesmappings", []):
+            mapping = SeriesMappingsTable(**mapping_data)
+            session.add(mapping)
+
+        # Insert wishlist tables
+        for item_data in data.get("bookwishlist", []):
+            item = BookWishListTable(**item_data)
+            session.add(item)
+
+        for item_data in data.get("serieswatchlist", []):
+            item = SeriesWatchListTable(**item_data)
+            session.add(item)
+
+        session.commit()
