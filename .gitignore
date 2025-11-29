@@ -223,6 +223,5 @@ settings.toml
 audible_auth
 audibleismissing.sqlite
 audibleismissing.sqlite-journal
-audibleismissing.sqlite.bak_audible
-audibleismissing.sqlite.bak_abs
 db_dump.json
+config/*
