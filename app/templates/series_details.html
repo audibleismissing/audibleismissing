@@ -2,10 +2,8 @@
 {% block content %}
     <section id="series-details">
         <div>
-            <div>
-                <h2>Series Details: {{ table[0].seriesName }}</h2>
-                <button class="btn btn-sm btn-outline-primary watch-btn" data-series-id="{{ table[0].seriesId }}"></button>
-            </div>
+            <h2>Series Details: {{ table[0].seriesName }}</h2>
+            <button class="btn btn-sm btn-outline-primary watch-btn" data-series-id="{{ table[0].seriesId }}"></button>
             <div>Books in Series: {{ counts[0]['totalBooksInSeries'] }}</div>
             <div>Books in Library: {{ counts[0]['totalBooksInLibrary'] }}</div>
         </div>
