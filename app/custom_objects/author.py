@@ -15,6 +15,6 @@ class Author:
 
 def jsonToAuthor(data) -> Author:
     author = Author()
-    author.name = data['name']
-    author.authorAsin = data['authorAsin']
+    author.name = data["name"]
+    author.authorAsin = data["authorAsin"]
     return author

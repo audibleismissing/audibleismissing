@@ -1,11 +1,20 @@
 from decimal import Decimal
 import uuid
 
-from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, func, and_, delete
+from sqlmodel import (
+    Field,
+    SQLModel,
+    Session,
+    create_engine,
+    or_,
+    select,
+    func,
+    and_,
+    delete,
+)
 from app.custom_objects.series import Series
 from app.db_models.tables import books
 from app.db_models.tables.seriesmappings import SeriesMappingsTable
-
 
 
 class SeriesTable(SQLModel, table=True):
@@ -17,15 +26,12 @@ class SeriesTable(SQLModel, table=True):
     rating: Decimal | None = Field(default=0, max_digits=3, decimal_places=2)
 
 
-
 def addSeries(engine: create_engine, series: Series) -> str:
     """Add series to db"""
     print(f"Adding series: {series.name}")
 
     row = SeriesTable(
-        name=series.name,
-        seriesAsin=series.seriesAsin,
-        rating=series.rating
+        name=series.name, seriesAsin=series.seriesAsin, rating=series.rating
     )
 
     with Session(engine) as session:
@@ -123,24 +129,37 @@ def getSeriesByBook(engine: create_engine, search_string) -> list:
 
     with Session(engine) as session:
         # find the book row by asin
-        book_row = session.exec(select(BooksTable).where(or_(BooksTable.bookAsin == search_string, BooksTable.title == search_string))).one_or_none()
+        book_row = session.exec(
+            select(BooksTable).where(
+                or_(
+                    BooksTable.bookAsin == search_string,
+                    BooksTable.title == search_string,
+                )
+            )
+        ).one_or_none()
         if not book_row:
             return []
         book_id = book_row.id
 
         # get series mappings for this book id
-        series_mappings_results = session.exec(select(SeriesMappingsTable).where(SeriesMappingsTable.bookId == book_id)).all()
+        series_mappings_results = session.exec(
+            select(SeriesMappingsTable).where(SeriesMappingsTable.bookId == book_id)
+        ).all()
         if not series_mappings_results:
             return []
         series_id = series_mappings_results[0].seriesId
 
         # get all mappings for the series id
-        mappings_in_series = session.exec(select(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series_id)).all()
+        mappings_in_series = session.exec(
+            select(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series_id)
+        ).all()
 
         # build list of book objects in the series
         series_list = []
         for mapping in mappings_in_series:
-            book_row = session.exec(select(BooksTable).where(BooksTable.id == mapping.bookId)).one_or_none()
+            book_row = session.exec(
+                select(BooksTable).where(BooksTable.id == mapping.bookId)
+            ).one_or_none()
             if book_row:
                 series_list.append(returnBookObj(engine, book_row))
 
@@ -155,12 +174,18 @@ def getBooksInSeries(engine: create_engine, search_string) -> list:
 
     with Session(engine) as session:
         # find the series id in case name is provided
-        series_id = session.exec(select(SeriesTable.id).where(or_(SeriesTable.id == search_string, SeriesTable.name == search_string))).one_or_none()
+        series_id = session.exec(
+            select(SeriesTable.id).where(
+                or_(SeriesTable.id == search_string, SeriesTable.name == search_string)
+            )
+        ).one_or_none()
         if not series_id:
             return []
-        
+
         # get book ids for this series_id using the series mappings table
-        series_mappings_results = session.exec(select(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series_id)).all()
+        series_mappings_results = session.exec(
+            select(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series_id)
+        ).all()
         if not series_mappings_results:
             return []
         book_ids = []
@@ -170,13 +195,14 @@ def getBooksInSeries(engine: create_engine, search_string) -> list:
         # build list of book objects in the series
         books_list = []
         for book_id in book_ids:
-            book_results = session.exec(select(BooksTable).where(BooksTable.id == book_id)).all()
+            book_results = session.exec(
+                select(BooksTable).where(BooksTable.id == book_id)
+            ).all()
             if book_results:
                 for book_row in book_results:
                     books_list.append(returnBookObj(engine, book_row))
 
         return books_list
-
 
 
 def getAllSeries(engine) -> list:
@@ -204,7 +230,7 @@ def calculateSeriesRating(engine, series_id: str) -> Decimal:
                 total += single_book.audibleOverallAvgRating
 
         rating = round(total / len(books_in_series), 2)
-        
+
         return rating
 
 
@@ -228,9 +254,15 @@ def cleanupDanglingSeries(engine: create_engine):
         series_without_asin = session.exec(statement).all()
 
         for series in series_without_asin:
-            print(f"Deleting series without seriesAsin: {series.name} (ID: {series.id})")
+            print(
+                f"Deleting series without seriesAsin: {series.name} (ID: {series.id})"
+            )
             # Delete mappings for this series
-            session.exec(delete(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series.id))
+            session.exec(
+                delete(SeriesMappingsTable).where(
+                    SeriesMappingsTable.seriesId == series.id
+                )
+            )
             # Delete the series
             session.delete(series)
 

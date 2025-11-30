@@ -11,10 +11,9 @@ from app.db_models.tables.genres import getBookGenres
 from app.db_models.tables.narrators import getBookNarrators
 
 
-
 class BooksTable(SQLModel, table=True):
     __tablename__ = "books"
-    
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
     title: str | None = Field(index=True)
     subtitle: str | None
@@ -32,16 +31,23 @@ class BooksTable(SQLModel, table=True):
     link: str | None
     imageUrl: str | None
     isOwned: bool = Field(default=True)
-    audibleOverallAvgRating: Decimal | None = Field(default=0, max_digits=3, decimal_places=2)
-    audiblePerformanceAvgRating: Decimal | None = Field(default=0, max_digits=3, decimal_places=2)
-    audibleStoryAvgRating: Decimal | None = Field(default=0, max_digits=3, decimal_places=2)
+    audibleOverallAvgRating: Decimal | None = Field(
+        default=0, max_digits=3, decimal_places=2
+    )
+    audiblePerformanceAvgRating: Decimal | None = Field(
+        default=0, max_digits=3, decimal_places=2
+    )
+    audibleStoryAvgRating: Decimal | None = Field(
+        default=0, max_digits=3, decimal_places=2
+    )
     lengthMinutes: float | None
     isAudiobook: bool = Field(default=True)
 
 
-def addBook(engine, book:Book) -> str:
+def addBook(engine, book: Book) -> str:
     """Add book to db"""
     from bs4 import BeautifulSoup
+
     print(f"Adding book: {book.title}")
 
     # strip html tags from desciption strings.
@@ -72,7 +78,7 @@ def addBook(engine, book:Book) -> str:
         audiblePerformanceAvgRating=book.audiblePerformanceAvgRating,
         audibleStoryAvgRating=book.audibleStoryAvgRating,
         lengthMinutes=book.lengthMinutes,
-        isAudiobook=book.isAudiobook
+        isAudiobook=book.isAudiobook,
     )
 
     with Session(engine) as session:
@@ -82,16 +88,22 @@ def addBook(engine, book:Book) -> str:
         return row.id
 
 
-def getBook(engine:create_engine, search_string) -> Book:
+def getBook(engine: create_engine, search_string) -> Book:
     """Get book from db"""
     with Session(engine) as session:
-        statement = select(BooksTable).where(or_(BooksTable.title == search_string, BooksTable.bookAsin == search_string, BooksTable.id == search_string))
+        statement = select(BooksTable).where(
+            or_(
+                BooksTable.title == search_string,
+                BooksTable.bookAsin == search_string,
+                BooksTable.id == search_string,
+            )
+        )
 
         results = session.exec(statement).first()
         if results:
             return returnBookObj(engine, results)
         return None
-    
+
 
 def updateBook(engine: create_engine, book: Book) -> str:
     """Update book in db"""
@@ -140,15 +152,23 @@ def updateBook(engine: create_engine, book: Book) -> str:
 def deleteBook(engine: create_engine, search_string) -> None:
     """Delete book from db by book asin or id"""
     with Session(engine) as session:
-        statement = select(BooksTable).where(or_(BooksTable.bookAsin == search_string, BooksTable.id == search_string))
+        statement = select(BooksTable).where(
+            or_(BooksTable.bookAsin == search_string, BooksTable.id == search_string)
+        )
         results = session.exec(statement).one()
         session.delete(results)
 
 
 def doesBookExist(engine, search_string):
     with Session(engine) as session:
-        statement = select(BooksTable).where(or_(BooksTable.title == search_string, BooksTable.bookAsin == search_string, BooksTable.id == search_string))
-            
+        statement = select(BooksTable).where(
+            or_(
+                BooksTable.title == search_string,
+                BooksTable.bookAsin == search_string,
+                BooksTable.id == search_string,
+            )
+        )
+
         results = session.exec(statement)
         if len(results.all()) > 0:
             return True
@@ -160,7 +180,7 @@ def getAllBooks(engine) -> list:
     with Session(engine) as session:
         statement = select(BooksTable).order_by(BooksTable.title)
         results = session.exec(statement).all()
-        
+
         if results:
             all_books = []
             for item in results:
@@ -169,13 +189,19 @@ def getAllBooks(engine) -> list:
 
             return all_books
         return None
-    
+
 
 def getBooksToBeReleased(engine, time_window) -> list:
     from datetime import datetime
-    current_date = datetime.now().strftime('%Y-%m-%d')
+
+    current_date = datetime.now().strftime("%Y-%m-%d")
     with Session(engine) as session:
-        statement = select(BooksTable).where(BooksTable.releaseDate > current_date).order_by(BooksTable.releaseDate.asc()).limit(time_window)
+        statement = (
+            select(BooksTable)
+            .where(BooksTable.releaseDate > current_date)
+            .order_by(BooksTable.releaseDate.asc())
+            .limit(time_window)
+        )
         results = session.exec(statement)
 
         if results:
@@ -215,12 +241,13 @@ def returnBookObj(engine, book_table) -> Book:
     book.audibleStoryAvgRating = book_table.audibleStoryAvgRating
     book.lengthMinutes = book_table.lengthMinutes
     book.isAudiobook = book_table.isAudiobook
-    
+
     book.authors = getBookAuthors(engine, book_table.id)
     book.genres = getBookGenres(engine, book_table.id)
     # import here to avoid circular import at module import time
     from app.db_models.tables.series import getBookSeries
+
     book.series = getBookSeries(engine, book_table.id)
     book.narrators = getBookNarrators(engine, book_table.id)
-    
+
     return book

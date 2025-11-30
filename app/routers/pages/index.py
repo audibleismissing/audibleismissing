@@ -13,11 +13,11 @@ from app.routers.api import book_api
 router = app_router.initRouter()
 
 current_dir = dirname(__file__)
-templates_dir = join(current_dir, '../../templates')
+templates_dir = join(current_dir, "../../templates")
 templates = Jinja2Templates(directory=templates_dir)
 
 
-@router.get('/', response_class=HTMLResponse, tags=[Tags.page])
+@router.get("/", response_class=HTMLResponse, tags=[Tags.page])
 async def page(request: Request):
     """Render index page"""
 
@@ -27,5 +27,7 @@ async def page(request: Request):
     watchlist_releases = await user_api.get_book_release_dates(limit)
 
     return templates.TemplateResponse(
-        request = request, name='index.html', context={"releases": releases, "watchlist_releases": watchlist_releases}
+        request=request,
+        name="index.html",
+        context={"releases": releases, "watchlist_releases": watchlist_releases},
     )

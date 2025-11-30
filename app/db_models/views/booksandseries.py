@@ -46,14 +46,14 @@ def createBooksAndSeriesView(sqlite_db) -> None:
                 """)
             connection.commit()
     except sqlite3.Error as error:
-        print('DB conneciton error occured -', error)
+        print("DB conneciton error occured -", error)
 
 
 def getViewAllBooks(sqlite_path) -> list:
     with sqlite3.connect(sqlite_path) as conn:
         """Get all books using the booksandseries view"""
         cur = conn.cursor()
-        cur.execute('select * from booksandseries')
+        cur.execute("select * from booksandseries")
         results = cur.fetchall()
         if results:
             all_books = []
@@ -70,7 +70,7 @@ def getViewSeriesDetails(sqlite_path, series_id) -> list:
     """Get all books with series_id using the booksandseries view"""
     with sqlite3.connect(sqlite_path) as conn:
         cur = conn.cursor()
-        cur.execute('select * from booksandseries where seriesId = ?', (series_id,))
+        cur.execute("select * from booksandseries where seriesId = ?", (series_id,))
         results = cur.fetchall()
         if results:
             books = []
@@ -86,23 +86,27 @@ def getViewBookDetails(sqlite_path, book_id):
     """Get book details from booksandseriesview."""
     with sqlite3.connect(sqlite_path) as conn:
         cur = conn.cursor()
-        cur.execute('select * from booksandseries where bookId = ?', (book_id,))
+        cur.execute("select * from booksandseries where bookId = ?", (book_id,))
         results = cur.fetchone()
         if results:
             columns = [desc[0] for desc in cur.description]
             book_dict = dict(zip(columns, results))
             return book_dict
         return {}
-    
+
 
 def getViewReleaseDates(sqlite_path, time_window) -> list:
     """Get upcoming book releases using the booksandseries view"""
     from datetime import datetime
-    current_date = datetime.now().strftime('%Y-%m-%d')
+
+    current_date = datetime.now().strftime("%Y-%m-%d")
 
     with sqlite3.connect(sqlite_path) as conn:
         cur = conn.cursor()
-        cur.execute('select * from booksandseries where releaseDate >= ? ORDER BY releaseDate ASC LIMIT ?', (current_date, time_window))
+        cur.execute(
+            "select * from booksandseries where releaseDate >= ? ORDER BY releaseDate ASC LIMIT ?",
+            (current_date, time_window),
+        )
         results = cur.fetchall()
         if results:
             books = []
@@ -117,17 +121,21 @@ def getViewReleaseDates(sqlite_path, time_window) -> list:
 def getViewWatchListReleaseDates(sqlite_path, time_window) -> list:
     """Get upcoming book releases that are in series on the series watch list. Returns list."""
     from datetime import datetime
-    current_date = datetime.now().strftime('%Y-%m-%d')
+
+    current_date = datetime.now().strftime("%Y-%m-%d")
 
     with sqlite3.connect(sqlite_path) as conn:
         cur = conn.cursor()
-        cur.execute("""
+        cur.execute(
+            """
             SELECT * FROM booksandseries
             WHERE releaseDate >= ?
             AND seriesId IN (SELECT seriesId FROM serieswatchlist)
             ORDER BY releaseDate ASC
             LIMIT ?
-        """, (current_date, time_window))
+        """,
+            (current_date, time_window),
+        )
         results = cur.fetchall()
         if results:
             books = []
@@ -137,4 +145,3 @@ def getViewWatchListReleaseDates(sqlite_path, time_window) -> list:
                 books.append(book_dict)
             return books
         return []
-    

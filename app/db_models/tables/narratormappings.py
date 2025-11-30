@@ -13,14 +13,10 @@ class NarratorMappingsTable(SQLModel, table=True):
     bookId: str = Field(default=None, foreign_key="books.id")
 
 
-
-def addNarratorMapping(engine:create_engine, narrator_id, book_id) -> str:
+def addNarratorMapping(engine: create_engine, narrator_id, book_id) -> str:
     """Add narrator mapping to db"""
     print(f"Adding narrator mapping: {narrator_id} -> {book_id}")
-    row = NarratorMappingsTable(
-        narratorId=narrator_id,
-        bookId=book_id
-    )
+    row = NarratorMappingsTable(narratorId=narrator_id, bookId=book_id)
 
     with Session(engine) as session:
         session.add(row)
@@ -30,10 +26,12 @@ def addNarratorMapping(engine:create_engine, narrator_id, book_id) -> str:
     return None
 
 
-def getNarratorMappingByBook(engine:create_engine, book_id):
+def getNarratorMappingByBook(engine: create_engine, book_id):
     """Get narrator mapping from db"""
     with Session(engine) as session:
-        statement = select(NarratorMappingsTable).where(NarratorMappingsTable.bookId == book_id)
+        statement = select(NarratorMappingsTable).where(
+            NarratorMappingsTable.bookId == book_id
+        )
 
         results = session.exec(statement).first()
         if results:

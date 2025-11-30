@@ -10,10 +10,7 @@ from .series_response import SeriesResponse
 
 class BookQuery(BaseModel):
     book_asin: str = Field(
-        default=None,
-        title="Book ASIN",
-        max_length=50,
-        example="1774240327"
+        default=None, title="Book ASIN", max_length=50, example="1774240327"
     )
 
 

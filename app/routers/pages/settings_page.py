@@ -11,11 +11,11 @@ from app.routers.pages import app_router
 router = app_router.initRouter()
 
 current_dir = dirname(__file__)
-templates_dir = join(current_dir, '../../templates')
+templates_dir = join(current_dir, "../../templates")
 templates = Jinja2Templates(directory=templates_dir)
 
 
-@router.get('/settings', response_class=HTMLResponse, tags=[Tags.page])
+@router.get("/settings", response_class=HTMLResponse, tags=[Tags.page])
 async def page(request: Request):
     """Render settings page"""
 
@@ -23,5 +23,7 @@ async def page(request: Request):
     audible_auth = None
 
     return templates.TemplateResponse(
-        request = request, name='settings.html', context={"settings": settings, "audible": audible_auth}
+        request=request,
+        name="settings.html",
+        context={"settings": settings, "audible": audible_auth},
     )

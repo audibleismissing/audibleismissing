@@ -11,8 +11,7 @@ class GenreMappingsTable(SQLModel, table=True):
     bookId: str | None = Field(default=None, foreign_key="books.id")
 
 
-
-def addGenreMapping(engine:create_engine, genre_id, book_id) -> str:
+def addGenreMapping(engine: create_engine, genre_id, book_id) -> str:
     """Add genre mapping to db"""
     print(f"Adding genre mapping: {genre_id} -> {book_id}")
     row = GenreMappingsTable(
@@ -28,15 +27,18 @@ def addGenreMapping(engine:create_engine, genre_id, book_id) -> str:
     return None
 
 
-def getGenreMappingByBook(engine:create_engine, book_id):
+def getGenreMappingByBook(engine: create_engine, book_id):
     """Get genre mapping from db"""
     with Session(engine) as session:
-        statement = select(GenreMappingsTable).where(GenreMappingsTable.bookId == book_id)
+        statement = select(GenreMappingsTable).where(
+            GenreMappingsTable.bookId == book_id
+        )
 
         results = session.exec(statement).first()
         if results:
             return results
         return None
+
 
 def updateGenreMapping():
     """Update genre mapping in db"""

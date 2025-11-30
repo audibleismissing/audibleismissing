@@ -4,6 +4,7 @@ import json
 
 settings_file = "/config/settings.toml"
 
+
 class Settings:
     def __init__(self):
         self.settings_file = settings_file
@@ -57,7 +58,7 @@ def createDefaultSettingsFile():
         },
         "audible": {
             "auth_file": "/config/audible_auth",
-        }
+        },
     }
-    with open(settings_file, 'w') as file:
+    with open(settings_file, "w") as file:
         toml.dump(config, file)

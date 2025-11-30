@@ -5,15 +5,13 @@ from app.app_helpers.rest_handler import methods as rest
 from app.app_helpers.audiobookshelf.audiobookshelf_helpers import returnBookObj
 
 
-
 def getHeaders(api_key: str):
     HEADERS = {
-        'User-Agent': 'audibleismissing/1.0 (+https://github.com/audibleismissing/audibleismissing)',
+        "User-Agent": "audibleismissing/1.0 (+https://github.com/audibleismissing/audibleismissing)",
         "accept": "application/json",
-        "authorization": api_key
+        "authorization": api_key,
     }
     return HEADERS
-
 
 
 # gets all library items (books)

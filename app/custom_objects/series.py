@@ -23,7 +23,7 @@ class Series:
 
 def jsonToSeries(data) -> Series:
     series = Series()
-    series.name = data['name']
-    series.seriesAsin = data['seriesAsin']
-    series.sequence = data['sequence']
+    series.name = data["name"]
+    series.seriesAsin = data["seriesAsin"]
+    series.sequence = data["sequence"]
     return series

@@ -14,5 +14,5 @@ class Genre:
 
 def jsonToGenre(data) -> Genre:
     genre = Genre()
-    genre.name = data['name']
+    genre.name = data["name"]
     return genre

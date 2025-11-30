@@ -21,5 +21,3 @@ settings = settings.readSettings()
 
 # init db connection
 engine = db_helpers.connectToDb()
-
-
