@@ -31,6 +31,7 @@ Series Details             |  Book Details
 - Book details page contains general info about a book.
 - Series watch list.
 - Book wish list.
+- Import/Export database to json
 
 
 ### Possible Features
@@ -51,7 +52,8 @@ services:
       - 8000:8000
     volumes:
       - ../config:/config
-
+    environment:
+      - ALLOWED_ORIGINS="https://aim.example.com" # Set if running on something other than localhost or 127.0.0.1
 ```
 
 
