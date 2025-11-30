@@ -16,12 +16,6 @@ def taskRefreshAbsData(engine, settings):
     print("Completed taskRefreshAbsData")
 
 
-# def refreshAudibleData(engine, auth):
-#     print("Starting refreshAudibleData")
-#     audible_functions.getMissingBooks(engine, auth)
-#     print("Completed refreshAudibleData")
-
-
 def getMissingAudibleBooks(engine, auth):
     print("Starting getMissingAudibleBooks")
     audible_functions.getMissingBooks(engine, auth)
