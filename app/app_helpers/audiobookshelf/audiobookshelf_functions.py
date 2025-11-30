@@ -21,7 +21,7 @@ from app.db_models.tables.series import getSeries
 
 
 
-from app.app_helpers.audiobookshelf.api import getLibraryItem, getLibraryItems
+from app.app_helpers.audiobookshelf.audiobookshelf_api import getLibraryItem, getLibraryItems
 
 
 def refreshAbsData(engine, url, abs_api_key, library_id) -> None:
