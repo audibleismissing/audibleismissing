@@ -27,4 +27,4 @@ EXPOSE 8000
 # CMD ["tail", "-f", "/dev/null"]
 
 # Run dev
-CMD ["uv", "run", "fastapi", "run", "main.py", "--host", "0.0.0.0", "--proxy-headers", "--forwarded-allow-ips='*'"]
+CMD ["uv", "run", "fastapi", "dev", "main.py", "--host", "0.0.0.0", "--proxy-headers", "--forwarded-allow-ips='*'"]
