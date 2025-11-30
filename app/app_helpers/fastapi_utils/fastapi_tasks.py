@@ -12,15 +12,14 @@ from app.app_helpers.audnexus import audnexus_functions
 def taskRefreshAbsData(engine, settings):
     """refresh all data in database from audiobookshelf"""
     print("Starting taskRefreshAbsData")
-    db_helpers.resetAllData(engine, settings.sqlite_path)
     abs_helpers.refreshAbsData(engine, settings.abs_url, settings.abs_api_key, settings.abs_library_id)
     print("Completed taskRefreshAbsData")
 
 
-def refreshAudibleData(engine, auth):
-    print("Starting refreshAudibleData")
+def getMissingAudibleBooks(engine, auth):
+    print("Starting getMissingAudibleBooks")
     audible_functions.getMissingBooks(engine, auth)
-    print("Completed refreshAudibleData")
+    print("Completed getMissingAudibleBooks")
 
 
 # testing audnexus
@@ -30,8 +29,8 @@ def refreshAudnexusData(engine):
     print("Completed backfillAudnexusBookData")
 
 
-def refreshAudimetaData(engine):
-    print("Starting getMissingBooks")
-    audimeta_functions.getMissingBooks(engine)
-    print("Completed getMissingBooks")
+# def refreshAudimetaData(engine):
+#     print("Starting getMissingBooks")
+#     audimeta_functions.getMissingBooks(engine)
+#     print("Completed getMissingBooks")
     
