@@ -1,4 +1,4 @@
-from app.app_helpers.audiobookshelf import abs_helpers
+from app.app_helpers.audiobookshelf.audiobookshelf_functions import refreshAbsData
 from app.db_models import db_helpers
 from app.app_helpers.audibleapi import audibleapi_functions as audible_functions
 
@@ -12,7 +12,7 @@ from app.app_helpers.audnexus import audnexus_functions
 def taskRefreshAbsData(engine, settings):
     """refresh all data in database from audiobookshelf"""
     print("Starting taskRefreshAbsData")
-    abs_helpers.refreshAbsData(engine, settings.abs_url, settings.abs_api_key, settings.abs_library_id)
+    refreshAbsData(engine, settings.abs_url, settings.abs_api_key, settings.abs_library_id)
     print("Completed taskRefreshAbsData")
 
 

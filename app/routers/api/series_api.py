@@ -5,7 +5,6 @@ from app.routers.api import api_router
 from app.routers.route_tags import Tags
 from app.response_models import book_response, series_response, series_view
 from app.custom_objects import settings
-from app.app_helpers.audiobookshelf import abs_helpers
 from app.db_models import db_helpers
 from app.app_helpers.fastapi_utils.fastapi_tasks import taskRefreshAbsData
 
