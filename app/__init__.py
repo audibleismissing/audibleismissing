@@ -1,4 +1,8 @@
-from app.custom_objects.settings import Settings, createDefaultSettingsFile, readSettings
+from app.custom_objects.settings import (
+    Settings,
+    createDefaultSettingsFile,
+    readSettings,
+)
 from app.db_models import db_helpers
 
 from os.path import isfile
