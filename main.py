@@ -3,7 +3,14 @@ from os.path import dirname, join
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers.pages import index, series, books, settings_page, serieswatchlist_page, bookwishlist_page
+from app.routers.pages import (
+    index,
+    series,
+    books,
+    settings_page,
+    serieswatchlist_page,
+    bookwishlist_page,
+)
 from app.routers.api import book_api, series_api, admin_api, settings_api, user_api
 
 from fastapi.staticfiles import StaticFiles
@@ -19,7 +26,9 @@ app = FastAPI(
 )
 
 
-origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000").split(",")
+origins = os.getenv(
+    "ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000"
+).split(",")
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,7 +41,7 @@ app.add_middleware(
 
 # setup static directory for web files
 current_dir = dirname(__file__)
-static_dir = join(current_dir, 'app/static')
+static_dir = join(current_dir, "app/static")
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 

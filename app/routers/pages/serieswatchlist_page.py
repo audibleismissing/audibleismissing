@@ -16,7 +16,7 @@ from app.routers.api.user_api import get_series_watch_list_items
 router = app_router.initRouter()
 
 current_dir = dirname(__file__)
-templates_dir = join(current_dir, '../../templates')
+templates_dir = join(current_dir, "../../templates")
 templates = Jinja2Templates(directory=templates_dir)
 
 # init db connection
@@ -26,20 +26,24 @@ engine = db_helpers.connectToDb()
 config = readSettings()
 
 
-@router.get('/user/serieswatchlist/', response_class=HTMLResponse, tags=[Tags.page])
+@router.get("/user/serieswatchlist/", response_class=HTMLResponse, tags=[Tags.page])
 async def page(request: Request):
     """Render series watchlist page"""
 
     watchlist_items = await get_series_watch_list_items()
-    
+
     if watchlist_items:
         watchlist_table = []
         for item in watchlist_items:
-            single_series = getViewSeriesCountsSingleSeries(config.sqlite_path, item.seriesId)
+            single_series = getViewSeriesCountsSingleSeries(
+                config.sqlite_path, item.seriesId
+            )
             watchlist_table.append(single_series)
     else:
         watchlist_table = []
 
     return templates.TemplateResponse(
-        request = request, name='series_watch_list.html', context={"watchlist_table": watchlist_table}
+        request=request,
+        name="series_watch_list.html",
+        context={"watchlist_table": watchlist_table},
     )

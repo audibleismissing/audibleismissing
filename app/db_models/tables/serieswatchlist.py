@@ -5,7 +5,6 @@ from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
 from app.custom_objects.serieswatchlistitem import SeriesWatchListItem
 
 
-
 class SeriesWatchListTable(SQLModel, table=True):
     __tablename__ = "serieswatchlist"
 
@@ -13,8 +12,7 @@ class SeriesWatchListTable(SQLModel, table=True):
     seriesId: str | None
 
 
-
-def addSeriesWatchListItem(engine:create_engine, series_id) -> str:
+def addSeriesWatchListItem(engine: create_engine, series_id) -> str:
     """Add SeriesWatchListItem"""
     print(f"Adding SeriesWatchListItem: {series_id}")
     row = SeriesWatchListTable(
@@ -29,12 +27,17 @@ def addSeriesWatchListItem(engine:create_engine, series_id) -> str:
     return None
 
 
-def getSeriesWatchListItem(engine:create_engine, search_string) -> SeriesWatchListItem:
+def getSeriesWatchListItem(engine: create_engine, search_string) -> SeriesWatchListItem:
     """Get SeriesWatchListItem
-        returns: SeriesWatchListItem
+    returns: SeriesWatchListItem
     """
     with Session(engine) as session:
-        statement = select(SeriesWatchListTable).where(or_(SeriesWatchListTable.seriesId == search_string, SeriesWatchListTable.id == search_string))
+        statement = select(SeriesWatchListTable).where(
+            or_(
+                SeriesWatchListTable.seriesId == search_string,
+                SeriesWatchListTable.id == search_string,
+            )
+        )
 
         results = session.exec(statement).first()
         if results:
@@ -42,13 +45,17 @@ def getSeriesWatchListItem(engine:create_engine, search_string) -> SeriesWatchLi
         return None
 
 
-def updateSeriesWatchListItem(engine: create_engine, watch_list_item: SeriesWatchListItem) -> str:
+def updateSeriesWatchListItem(
+    engine: create_engine, watch_list_item: SeriesWatchListItem
+) -> str:
     """Update SeriesWatchListItem
-        returns: row id
+    returns: row id
     """
     print(f"Updating SeriesWatchListItem: {watch_list_item.id}")
     with Session(engine) as session:
-        statement = select(SeriesWatchListTable).where(SeriesWatchListTable.id == watch_list_item.id)
+        statement = select(SeriesWatchListTable).where(
+            SeriesWatchListTable.id == watch_list_item.id
+        )
         results = session.exec(statement).one()
 
         results.seriesId = watch_list_item.seriesId
@@ -62,7 +69,9 @@ def deleteSeriesWatchListItem(engine: create_engine, watch_list_item_id) -> None
     """Delete SeriesWatchListItem"""
     print(f"Deleting SeriesWatchListItem: {watch_list_item_id}")
     with Session(engine) as session:
-        statement = select(SeriesWatchListTable).where(SeriesWatchListTable.id == watch_list_item_id)
+        statement = select(SeriesWatchListTable).where(
+            SeriesWatchListTable.id == watch_list_item_id
+        )
         results = session.exec(statement)
         row = results.one()
         session.delete(row)

@@ -9,7 +9,7 @@ from app.custom_objects.book import Book
 
 
 HEADERS = {
-    'User-Agent': 'audibleismissing/1.0 (+https://github.com/audibleismissing/audibleismissing)'
+    "User-Agent": "audibleismissing/1.0 (+https://github.com/audibleismissing/audibleismissing)"
 }
 
 

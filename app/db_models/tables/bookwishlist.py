@@ -5,7 +5,6 @@ from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
 from app.custom_objects.bookwishlistitem import BookWishListItem
 
 
-
 class BookWishListTable(SQLModel, table=True):
     __tablename__ = "bookwishlist"
 
@@ -13,8 +12,7 @@ class BookWishListTable(SQLModel, table=True):
     bookId: str | None
 
 
-
-def addBookWishListItem(engine:create_engine, book_id) -> str:
+def addBookWishListItem(engine: create_engine, book_id) -> str:
     """Add BookWishListItem"""
     print(f"Adding BookWishListItem: {book_id}")
     row = BookWishListTable(
@@ -29,12 +27,17 @@ def addBookWishListItem(engine:create_engine, book_id) -> str:
     return None
 
 
-def getBookWishListItem(engine:create_engine, search_string) -> BookWishListItem:
+def getBookWishListItem(engine: create_engine, search_string) -> BookWishListItem:
     """Get BookWishListItem
-        returns: BookWishListItem
+    returns: BookWishListItem
     """
     with Session(engine) as session:
-        statement = select(BookWishListTable).where(or_(BookWishListTable.bookId == search_string, BookWishListTable.id == search_string))
+        statement = select(BookWishListTable).where(
+            or_(
+                BookWishListTable.bookId == search_string,
+                BookWishListTable.id == search_string,
+            )
+        )
 
         results = session.exec(statement).first()
         if results:
@@ -42,13 +45,17 @@ def getBookWishListItem(engine:create_engine, search_string) -> BookWishListItem
         return None
 
 
-def updateBookWishListItem(engine: create_engine, wish_list_item: BookWishListItem) -> str:
+def updateBookWishListItem(
+    engine: create_engine, wish_list_item: BookWishListItem
+) -> str:
     """Update BookWishListItem
-        returns: row id
+    returns: row id
     """
     print(f"Updating BookWishListItem: {wish_list_item.id}")
     with Session(engine) as session:
-        statement = select(BookWishListTable).where(BookWishListTable.id == wish_list_item.id)
+        statement = select(BookWishListTable).where(
+            BookWishListTable.id == wish_list_item.id
+        )
         results = session.exec(statement).one()
 
         results.bookId = wish_list_item.bookId
@@ -62,7 +69,9 @@ def deleteBookWishListItem(engine: create_engine, wish_list_item_id) -> None:
     """Delete BookWishListItem"""
     print(f"Deleting BookWishListItem: {wish_list_item_id}")
     with Session(engine) as session:
-        statement = select(BookWishListTable).where(BookWishListTable.id == wish_list_item_id)
+        statement = select(BookWishListTable).where(
+            BookWishListTable.id == wish_list_item_id
+        )
         results = session.exec(statement)
         row = results.one()
         session.delete(row)

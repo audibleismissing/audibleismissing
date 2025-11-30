@@ -14,5 +14,5 @@ class Narrator:
 
 def jsonToNarrator(data) -> Narrator:
     narrator = Narrator()
-    narrator.name = data['name']
+    narrator.name = data["name"]
     return narrator

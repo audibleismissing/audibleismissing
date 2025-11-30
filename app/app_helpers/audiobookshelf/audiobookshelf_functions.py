@@ -20,18 +20,20 @@ from app.db_models.tables.narrators import getNarrator
 from app.db_models.tables.series import getSeries
 
 
-
-from app.app_helpers.audiobookshelf.audiobookshelf_api import getLibraryItem, getLibraryItems
+from app.app_helpers.audiobookshelf.audiobookshelf_api import (
+    getLibraryItem,
+    getLibraryItems,
+)
 
 
 def refreshAbsData(engine, url, abs_api_key, library_id) -> None:
     abs_books = []
     abs_books = getLibraryItems(url, abs_api_key, library_id)
 
-    for abs_book in abs_books['results']:
-        if not doesBookExist(engine, abs_book['id']):
+    for abs_book in abs_books["results"]:
+        if not doesBookExist(engine, abs_book["id"]):
             book = Book()
-            book = getLibraryItem(url, abs_api_key, abs_book['id'])
+            book = getLibraryItem(url, abs_api_key, abs_book["id"])
 
             if not doesBookExist(engine, book.bookAsin) and book.bookAsin is not None:
                 db_book_id = addBook(engine, book)
@@ -85,7 +87,9 @@ def refreshAbsData(engine, url, abs_api_key, library_id) -> None:
                         series_db_id = getSeries(engine, single_series.name).id
 
                     # link the narrator in the narrators table to the entry in the Narratorsbooks table
-                    addSeriesMapping(engine, series_db_id, db_book_id, single_series.sequence)
+                    addSeriesMapping(
+                        engine, series_db_id, db_book_id, single_series.sequence
+                    )
 
             #### Genres
             genres = []

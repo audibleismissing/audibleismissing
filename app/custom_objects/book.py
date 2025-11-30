@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+
 class Book:
     def __init__(self):
         self.id: str = None
@@ -33,7 +34,7 @@ class Book:
     def __iter__(self):
         for book in self.title:
             yield book
-    
+
     def __dict__(self):
         return self.serialize()
 
@@ -56,7 +57,7 @@ class Book:
             "id": self.id,
             "title": self.title,
             "subtitle": self.subtitle,
-            'authors': authors_list,
+            "authors": authors_list,
             "publisher": self.publisher,
             "copyright": self.copyright,
             "description": self.description,
@@ -68,7 +69,7 @@ class Book:
             "isExplicit": self.isExplicit,
             "isAbridged": self.isAbridged,
             "releaseDate": self.releaseDate,
-            'genres': genres_list,
+            "genres": genres_list,
             "link": self.link,
             "imageUrl": self.imageUrl,
             "series": series_list,
@@ -76,36 +77,37 @@ class Book:
             "audibleOverallAvgRating": self.audibleOverallAvgRating,
             "audiblePerformanceAvgRating": self.audiblePerformanceAvgRating,
             "audibleStoryAvgRating": self.audibleStoryAvgRating,
-            'narrators': narrators_list,
+            "narrators": narrators_list,
             "lengthMinutes": self.lengthMinutes,
             "isAudiobook": self.isAudiobook,
         }
 
+
 def jsonToBook(data) -> Book:
     book = Book()
-    book.title = data['title']
-    book.subtitle = data['subtitle']
+    book.title = data["title"]
+    book.subtitle = data["subtitle"]
     book.authors = []
-    book.publisher = data['publisher']
-    book.copyright = data['copyright']
-    book.description = data['description']
-    book.summary = data['summary']
-    book.isbn = data['isbn']
-    book.bookAsin = data['bookAsin']
-    book.region = data['region']
-    book.language = data['language']
-    book.isExplicit = data['isExplicit']
-    book.isAbridged = data['isAbridged']
-    book.releaseDate = data['releaseDate']
+    book.publisher = data["publisher"]
+    book.copyright = data["copyright"]
+    book.description = data["description"]
+    book.summary = data["summary"]
+    book.isbn = data["isbn"]
+    book.bookAsin = data["bookAsin"]
+    book.region = data["region"]
+    book.language = data["language"]
+    book.isExplicit = data["isExplicit"]
+    book.isAbridged = data["isAbridged"]
+    book.releaseDate = data["releaseDate"]
     book.genres = []
-    book.link = data['link']
-    book.imageUrl = data['imageUrl']
+    book.link = data["link"]
+    book.imageUrl = data["imageUrl"]
     book.series = []
-    book.isOwned = data['isOwned']
-    book.audibleOverallAvgRating = data['audibleOverallAvgRating']
-    book.audiblePerformanceAvgRating = data['audiblePerformanceAvgRating']
-    book.audibleStoryAvgRating = data['audibleStoryAvgRating']
+    book.isOwned = data["isOwned"]
+    book.audibleOverallAvgRating = data["audibleOverallAvgRating"]
+    book.audiblePerformanceAvgRating = data["audiblePerformanceAvgRating"]
+    book.audibleStoryAvgRating = data["audibleStoryAvgRating"]
     book.narrators = []
-    book.lengthMinutes = data['lengthMinutes']
+    book.lengthMinutes = data["lengthMinutes"]
     book.isAudiobook = True
     return book

@@ -26,7 +26,12 @@ engine = db_helpers.connectToDb()
 # /api/series/all/
 # getAllSeries -> [Series]
 
-@router.get("/series/all", tags=[Tags.series], response_model=List[series_view.SeriesViewResponse])
+
+@router.get(
+    "/series/all",
+    tags=[Tags.series],
+    response_model=List[series_view.SeriesViewResponse],
+)
 async def get_all_series():
     """Returns list of all series"""
     results = seriesandcounts.getViewSeriesCounts(settings.sqlite_path)
@@ -36,7 +41,11 @@ async def get_all_series():
     return []
 
 
-@router.get('/series/books/{series_id}', tags=[Tags.series], response_model=List[book_response.BookResponse])
+@router.get(
+    "/series/books/{series_id}",
+    tags=[Tags.series],
+    response_model=List[book_response.BookResponse],
+)
 async def get_series_by_series_id(series_id: str):
     """Get list of books in a series by series id"""
     results = series_table.getBooksInSeries(engine, series_id)
@@ -45,7 +54,7 @@ async def get_series_by_series_id(series_id: str):
     return []
 
 
-@router.get('/series/details/{series_id}', tags=[Tags.series])
+@router.get("/series/details/{series_id}", tags=[Tags.series])
 async def get_series_details(series_id: str):
     """Get series details from view."""
     results = booksandseries.getViewSeriesDetails(settings.sqlite_path, series_id)
@@ -54,10 +63,12 @@ async def get_series_details(series_id: str):
     return []
 
 
-@router.get('/series/counts/{series_id}', tags=[Tags.series])
+@router.get("/series/counts/{series_id}", tags=[Tags.series])
 async def get_series_counts(series_id: str):
     """Get series counts from view."""
-    results = seriesandcounts.getViewSeriesCountsBySeries(settings.sqlite_path, series_id)
+    results = seriesandcounts.getViewSeriesCountsBySeries(
+        settings.sqlite_path, series_id
+    )
     if results:
         return results
     return []

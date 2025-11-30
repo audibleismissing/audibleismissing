@@ -6,7 +6,7 @@ import requests
 from app.custom_objects.book import Book
 
 HEADERS = {
-    'User-Agent': 'audibleismissing/1.0 (+https://github.com/audibleismissing/audibleismissing)'
+    "User-Agent": "audibleismissing/1.0 (+https://github.com/audibleismissing/audibleismissing)"
 }
 
 
@@ -49,7 +49,7 @@ def getAudimetaBook(book_asin: str) -> Optional[Dict[str, Any]]:
         raise requests.exceptions.RequestException(f"API request failed: {e}")
     except ValueError as e:
         raise ValueError(f"Invalid JSON response: {e}")
-    
+
 
 def getAudnexusBookAsBook(book_asin: str) -> Optional[Book]:
     """
@@ -81,7 +81,7 @@ def getAudimetaBookInSeries(series_asin):
         raise requests.exceptions.RequestException(f"API request failed: {e}")
     except ValueError as e:
         raise ValueError(f"Invalid JSON response: {e}")
-    
+
 
 def getAudimetaSeriesOfBooksAsBooks(series_asin: str) -> list:
     """Gets a list of books in a series with a given series asin.

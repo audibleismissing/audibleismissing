@@ -12,7 +12,7 @@ class GenresTable(SQLModel, table=True):
     name: str | None
 
 
-def addGenre(engine:create_engine, genre:Genre) -> str:
+def addGenre(engine: create_engine, genre: Genre) -> str:
     """Add genre to db"""
     print(f"Adding genre: {genre.name}")
     row = GenresTable(
@@ -26,10 +26,12 @@ def addGenre(engine:create_engine, genre:Genre) -> str:
         return row.id
 
 
-def getGenre(engine:create_engine, search_string):
+def getGenre(engine: create_engine, search_string):
     """Get genre from db"""
     with Session(engine) as session:
-        statement = select(GenresTable).where(or_(GenresTable.name == search_string, GenresTable.id == search_string))
+        statement = select(GenresTable).where(
+            or_(GenresTable.name == search_string, GenresTable.id == search_string)
+        )
 
         results = session.exec(statement).first()
         if results:
@@ -55,9 +57,11 @@ def deleteGenre():
     """Delete genre from db"""
 
 
-def doesGenreExist(engine:create_engine, search_string) -> bool:
+def doesGenreExist(engine: create_engine, search_string) -> bool:
     with Session(engine) as session:
-        statement = select(GenresTable).where(or_(GenresTable.name == search_string, GenresTable.id == search_string))
+        statement = select(GenresTable).where(
+            or_(GenresTable.name == search_string, GenresTable.id == search_string)
+        )
 
         results = session.exec(statement)
         if len(results.all()) > 0:
@@ -66,16 +70,20 @@ def doesGenreExist(engine:create_engine, search_string) -> bool:
             return False
 
 
-def getBookGenres(engine:create_engine, book_id) -> list:
+def getBookGenres(engine: create_engine, book_id) -> list:
     """Get genres by book id"""
     with Session(engine) as session:
         # get the authors related to a specific book id
-        genre_mappings_query = select(GenreMappingsTable).where(GenreMappingsTable.bookId == book_id)
+        genre_mappings_query = select(GenreMappingsTable).where(
+            GenreMappingsTable.bookId == book_id
+        )
         genre_mappings_table = session.exec(genre_mappings_query).all()
 
         genres = []
         for genre_mappings_row in genre_mappings_table:
-            genre_query = select(GenresTable).where(GenresTable.id == genre_mappings_row.genreId)
+            genre_query = select(GenresTable).where(
+                GenresTable.id == genre_mappings_row.genreId
+            )
             genres_table = session.exec(genre_query).one_or_none()
 
             genre = Genre()
@@ -84,7 +92,6 @@ def getBookGenres(engine:create_engine, book_id) -> list:
             genres.append(genre)
 
         return genres
-    
 
 
 def returnGenreObj(sql_data) -> Genre:

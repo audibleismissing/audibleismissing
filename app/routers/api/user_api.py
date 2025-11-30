@@ -8,8 +8,18 @@ from app.routers.route_tags import Tags
 from app.db_models import db_helpers
 from app.response_models.serieswatchlist_response import SeriesWatchListResponse
 from app.response_models.bookwishlist_response import BookWishListResponse
-from app.db_models.tables.serieswatchlist import deleteSeriesWatchListItem, getSeriesWatchListItem, getAllSeriesWatchListItems, addSeriesWatchListItem
-from app.db_models.tables.bookwishlist import deleteBookWishListItem, getAllBookWishListItems, getBookWishListItem, addBookWishListItem
+from app.db_models.tables.serieswatchlist import (
+    deleteSeriesWatchListItem,
+    getSeriesWatchListItem,
+    getAllSeriesWatchListItems,
+    addSeriesWatchListItem,
+)
+from app.db_models.tables.bookwishlist import (
+    deleteBookWishListItem,
+    getAllBookWishListItems,
+    getBookWishListItem,
+    addBookWishListItem,
+)
 from app.db_models.views import booksandseries
 
 router = api_router.initRouter()
@@ -22,7 +32,11 @@ engine = db_helpers.connectToDb()
 
 
 # Series watch list
-@router.get("/user/serieswatchlist", tags=[Tags.user], response_model=List[SeriesWatchListResponse])
+@router.get(
+    "/user/serieswatchlist",
+    tags=[Tags.user],
+    response_model=List[SeriesWatchListResponse],
+)
 async def get_series_watch_list_items():
     """Returns list of all SeriesWatchListItems"""
     results = getAllSeriesWatchListItems(engine)
@@ -41,7 +55,11 @@ async def get_book_release_dates(limit: int):
     return []
 
 
-@router.get("/user/serieswatchlistitem/{item_id}", tags=[Tags.user], response_model=SeriesWatchListResponse)
+@router.get(
+    "/user/serieswatchlistitem/{item_id}",
+    tags=[Tags.user],
+    response_model=SeriesWatchListResponse,
+)
 async def get_series_watch_list_item():
     """Returns list of all SeriesWatchListItems"""
     results = getSeriesWatchListItem(engine)
@@ -49,15 +67,17 @@ async def get_series_watch_list_item():
         return results
     return {}
 
+
 class SeriesWatchListModel(BaseModel):
     series_id: str
     model_config = {"extra": "forbid"}
+
 
 @router.post("/user/addserieswatchlistitem", tags=[Tags.user])
 async def add_watch_list_item(data: Annotated[SeriesWatchListModel, Form()]):
     """Add item to the watchlist"""
     item = getSeriesWatchListItem(engine, data.series_id)
-    
+
     if not item:
         addSeriesWatchListItem(engine, data.series_id)
         return {"message": "Added to watch list"}
@@ -68,16 +88,20 @@ async def add_watch_list_item(data: Annotated[SeriesWatchListModel, Form()]):
 async def remove_watch_list_item(series_id: str):
     """Remove item from the watchlist"""
     item = getSeriesWatchListItem(engine, series_id)
-    
+
     if item:
         deleteSeriesWatchListItem(engine, item.id)
         return {"message": "Removed from watch list"}
     return {"message": "Item not in watch list"}
+
+
 # End Series watch list
 
 
 # Book wish list
-@router.get("/user/bookwishlist", tags=[Tags.user], response_model=List[BookWishListResponse])
+@router.get(
+    "/user/bookwishlist", tags=[Tags.user], response_model=List[BookWishListResponse]
+)
 async def get_book_wish_list_items():
     """Returns list of all SeriesWatchListItems"""
     results = getAllBookWishListItems(engine)
@@ -86,7 +110,11 @@ async def get_book_wish_list_items():
     return []
 
 
-@router.get("/user/bookwishlistitem/{item_id}", tags=[Tags.user], response_model=BookWishListResponse)
+@router.get(
+    "/user/bookwishlistitem/{item_id}",
+    tags=[Tags.user],
+    response_model=BookWishListResponse,
+)
 async def get_book_wish_list_item():
     """Returns list of all SeriesWatchListItems"""
     results = getBookWishListItem(engine)
@@ -94,9 +122,11 @@ async def get_book_wish_list_item():
         return results
     return {}
 
+
 class BookWishListModel(BaseModel):
     book_id: str
     model_config = {"extra": "forbid"}
+
 
 @router.post("/user/addbookwishlistitem", tags=[Tags.user])
 async def add_book_wish_list_item(data: Annotated[BookWishListModel, Form()]):
@@ -118,4 +148,6 @@ async def remove_book_wish_list_item(book_id: str):
         deleteBookWishListItem(engine, item.id)
         return {"message": "Removed from wish list"}
     return {"message": "Item not in wish list"}
+
+
 # End book wish list

@@ -6,7 +6,7 @@ class BookWishListQuery(BaseModel):
         default=None,
         name="Wish list item id",
         max_length=50,
-        example="27e7d3a3-3eab-457a-99d0-6973c6ff6ee8"
+        example="27e7d3a3-3eab-457a-99d0-6973c6ff6ee8",
     )
 
 

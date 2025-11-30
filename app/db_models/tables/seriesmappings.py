@@ -13,15 +13,10 @@ class SeriesMappingsTable(SQLModel, table=True):
     bookId: str | None = Field(default=None, foreign_key="books.id")
 
 
-
-def addSeriesMapping(engine:create_engine, series_id, book_id, sequence) -> str:
+def addSeriesMapping(engine: create_engine, series_id, book_id, sequence) -> str:
     """Add series mapping to db"""
     print(f"Adding series mapping: {series_id} -> {book_id}")
-    row = SeriesMappingsTable(
-        seriesId=series_id,
-        bookId=book_id,
-        sequence=sequence
-    )
+    row = SeriesMappingsTable(seriesId=series_id, bookId=book_id, sequence=sequence)
 
     with Session(engine) as session:
         session.add(row)
@@ -34,7 +29,9 @@ def addSeriesMapping(engine:create_engine, series_id, book_id, sequence) -> str:
 def getSeriesMappingByBook(engine: create_engine, book_id):
     """Get book id from series mapping from db by series id"""
     with Session(engine) as session:
-        statement = select(SeriesMappingsTable).where(SeriesMappingsTable.bookId == book_id)
+        statement = select(SeriesMappingsTable).where(
+            SeriesMappingsTable.bookId == book_id
+        )
 
         results = session.exec(statement).first()
         if results:
@@ -45,7 +42,9 @@ def getSeriesMappingByBook(engine: create_engine, book_id):
 def getSeriesMappingBySeries(engine: create_engine, series_id):
     """Get book id from series mapping from db by series id"""
     with Session(engine) as session:
-        statement = select(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series_id)
+        statement = select(SeriesMappingsTable).where(
+            SeriesMappingsTable.seriesId == series_id
+        )
 
         results = session.exec(statement).all()
         if results:
@@ -61,7 +60,9 @@ def deleteSeriesMapping(engine: create_engine, series_id):
     """Delete series mapping from db"""
     print(f"Deleting series mapping: {series_id}")
     with Session(engine) as session:
-        statement = select(SeriesMappingsTable).where(SeriesMappingsTable.seriesId == series_id)
+        statement = select(SeriesMappingsTable).where(
+            SeriesMappingsTable.seriesId == series_id
+        )
         results = session.exec(statement)
         rows = results.all()
         for row in rows:

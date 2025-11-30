@@ -16,7 +16,7 @@ from app.custom_objects.settings import readSettings
 router = app_router.initRouter()
 
 current_dir = dirname(__file__)
-templates_dir = join(current_dir, '../../templates')
+templates_dir = join(current_dir, "../../templates")
 templates = Jinja2Templates(directory=templates_dir)
 
 # init db connection
@@ -26,7 +26,7 @@ engine = db_helpers.connectToDb()
 config = readSettings()
 
 
-@router.get('/user/bookwishlist/', response_class=HTMLResponse, tags=[Tags.page])
+@router.get("/user/bookwishlist/", response_class=HTMLResponse, tags=[Tags.page])
 async def page(request: Request):
     """Render book wishlist page"""
 
@@ -41,6 +41,7 @@ async def page(request: Request):
         wishlist_table = []
 
     return templates.TemplateResponse(
-        request = request, name='book_wish_list.html', context={"wishlist_table": wishlist_table}
+        request=request,
+        name="book_wish_list.html",
+        context={"wishlist_table": wishlist_table},
     )
-

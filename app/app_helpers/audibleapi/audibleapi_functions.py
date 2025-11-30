@@ -1,6 +1,11 @@
 import audible
-from app.app_helpers.audibleapi import audibleapi_helpers as audible_helpers #returnListofBookObjs, returnBookObj
-from app.app_helpers.audibleapi.audibleapi_api import getAudibleBooksInSeries, getAudibleBook
+from app.app_helpers.audibleapi import (
+    audibleapi_helpers as audible_helpers,
+)  # returnListofBookObjs, returnBookObj
+from app.app_helpers.audibleapi.audibleapi_api import (
+    getAudibleBooksInSeries,
+    getAudibleBook,
+)
 
 from app.custom_objects import book
 from app.custom_objects.author import Author
@@ -9,16 +14,50 @@ from app.custom_objects.genre import Genre
 from app.custom_objects.narrator import Narrator
 from app.custom_objects.series import Series
 
-from app.db_models.tables.authors import addAuthor, updateAuthor, getAuthor, doesAuthorExist
-from app.db_models.tables.authorsmappings import addAuthorMapping, getAuthorMappingByBook
-from app.db_models.tables.books import addBook, returnBookObj, updateBook, getBook, doesBookExist, getAllBooks
+from app.db_models.tables.authors import (
+    addAuthor,
+    updateAuthor,
+    getAuthor,
+    doesAuthorExist,
+)
+from app.db_models.tables.authorsmappings import (
+    addAuthorMapping,
+    getAuthorMappingByBook,
+)
+from app.db_models.tables.books import (
+    addBook,
+    returnBookObj,
+    updateBook,
+    getBook,
+    doesBookExist,
+    getAllBooks,
+)
 from app.db_models.tables.genres import addGenre, updateGenre, getGenre, doesGenreExist
 from app.db_models.tables.genremappings import addGenreMapping, getGenreMappingByBook
-from app.db_models.tables.narrators import addNarrator, updateNarrator, getNarrator, doesNarratorExist
-from app.db_models.tables.narratormappings import addNarratorMapping, getNarratorMappingByBook
-from app.db_models.tables.series import addSeries, updateSeries, getSeries, doesSeriesExist, getAllSeries, getSeriesByBook, calculateSeriesRating
-from app.db_models.tables.seriesmappings import addSeriesMapping, getSeriesMappingByBook, getSeriesMappingBySeries
-
+from app.db_models.tables.narrators import (
+    addNarrator,
+    updateNarrator,
+    getNarrator,
+    doesNarratorExist,
+)
+from app.db_models.tables.narratormappings import (
+    addNarratorMapping,
+    getNarratorMappingByBook,
+)
+from app.db_models.tables.series import (
+    addSeries,
+    updateSeries,
+    getSeries,
+    doesSeriesExist,
+    getAllSeries,
+    getSeriesByBook,
+    calculateSeriesRating,
+)
+from app.db_models.tables.seriesmappings import (
+    addSeriesMapping,
+    getSeriesMappingByBook,
+    getSeriesMappingBySeries,
+)
 
 
 # from app.db_models.tables.authorsmappings import addAuthorMapping, getAuthorMappingByBook
@@ -30,7 +69,6 @@ from app.db_models.tables.seriesmappings import addSeriesMapping, getSeriesMappi
 # from app.db_models.tables.narrators import addNarrator, updateNarrator, getNarrator
 # from app.db_models.tables.narratormappings import addNarratorMapping, getNarratorMappingByBook
 # from app.db_models.tables.genremappings import addGenreMapping, getGenreMappingByBook
-
 
 
 def getMissingBooks(engine, auth):
@@ -46,13 +84,13 @@ def getMissingBooks(engine, auth):
         book_id = getSeriesMappingBySeries(engine, series_id)[0].bookId
         library_book = getBook(engine, book_id)
         library_book_asins.append(library_book.bookAsin)
-    
+
     # get list of audible books
     audible_books = []
     for library_book_asin in library_book_asins:
         audible_books_in_series = []
         audible_books_in_series = getAudibleBooksInSeries(auth, library_book_asin)
-        
+
         for book_in_series in audible_books_in_series:
             audible_books.append(book_in_series)
 
@@ -88,7 +126,7 @@ def getMissingBooks(engine, auth):
 
 def processBook(engine, single_book) -> None:
     """helper function for adding audible book metadata to the database"""
-    print(f'---Processing {single_book.title}')
+    print(f"---Processing {single_book.title}")
     # books
     if not doesBookExist(engine, single_book.bookAsin):
         # add new DB entry
@@ -149,7 +187,9 @@ def processBook(engine, single_book) -> None:
 
             updateSeries(engine, single_series)
         if not getSeriesMappingByBook(engine, single_book.id):
-            addSeriesMapping(engine, single_series.id, single_book.id, single_series.sequence)
+            addSeriesMapping(
+                engine, single_series.id, single_book.id, single_series.sequence
+            )
 
     # genres
     for single_genre in single_book.genres:

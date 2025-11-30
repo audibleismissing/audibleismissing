@@ -4,6 +4,7 @@ from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
 from app.custom_objects.narrator import Narrator
 from app.db_models.tables.narratormappings import NarratorMappingsTable
 
+
 class NarratorsTable(SQLModel, table=True):
     __tablename__ = "narrators"
 
@@ -11,8 +12,7 @@ class NarratorsTable(SQLModel, table=True):
     name: str
 
 
-
-def addNarrator(engine:create_engine, narrator:Narrator) -> str:
+def addNarrator(engine: create_engine, narrator: Narrator) -> str:
     """Add narrator to db"""
     print(f"Adding narrator: {narrator.name}")
     row = NarratorsTable(
@@ -26,10 +26,14 @@ def addNarrator(engine:create_engine, narrator:Narrator) -> str:
         return row.id
 
 
-def getNarrator(engine:create_engine, search_string):
+def getNarrator(engine: create_engine, search_string):
     """Get narrator from db"""
     with Session(engine) as session:
-        statement = select(NarratorsTable).where(or_(NarratorsTable.name == search_string, NarratorsTable.id == search_string))
+        statement = select(NarratorsTable).where(
+            or_(
+                NarratorsTable.name == search_string, NarratorsTable.id == search_string
+            )
+        )
 
         results = session.exec(statement).first()
         if results:
@@ -55,9 +59,13 @@ def deleteNarrator():
     """Delete narrator from db"""
 
 
-def doesNarratorExist(engine:create_engine, search_string) -> bool:
+def doesNarratorExist(engine: create_engine, search_string) -> bool:
     with Session(engine) as session:
-        statement = select(NarratorsTable).where(or_(NarratorsTable.name == search_string, NarratorsTable.id == search_string))
+        statement = select(NarratorsTable).where(
+            or_(
+                NarratorsTable.name == search_string, NarratorsTable.id == search_string
+            )
+        )
 
         results = session.exec(statement)
         if len(results.all()) > 0:
@@ -66,16 +74,20 @@ def doesNarratorExist(engine:create_engine, search_string) -> bool:
             return False
 
 
-def getBookNarrators(engine:create_engine, book_id) -> list:
+def getBookNarrators(engine: create_engine, book_id) -> list:
     """Get narrators by book id"""
     with Session(engine) as session:
         # get the authors related to a specific book id
-        narrator_mappings_query = select(NarratorMappingsTable).where(NarratorMappingsTable.bookId == book_id)
+        narrator_mappings_query = select(NarratorMappingsTable).where(
+            NarratorMappingsTable.bookId == book_id
+        )
         narrator_mappings_table = session.exec(narrator_mappings_query).all()
 
         narrators = []
         for narrator_mappings_row in narrator_mappings_table:
-            narrator_query = select(NarratorsTable).where(NarratorsTable.id == narrator_mappings_row.narratorId)
+            narrator_query = select(NarratorsTable).where(
+                NarratorsTable.id == narrator_mappings_row.narratorId
+            )
             narrators_table = session.exec(narrator_query).one_or_none()
 
             narrator = Narrator()
@@ -84,7 +96,6 @@ def getBookNarrators(engine:create_engine, book_id) -> list:
             narrators.append(narrator)
 
         return narrators
-
 
 
 def returnNarratorObj(sql_data) -> Narrator:
