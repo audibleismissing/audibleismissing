@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 from app.routers.api import api_router
 from app.routers.route_tags import Tags
-from app.app_helpers.audibleapi.auth import createDeviceAuth
+from app.app_helpers.audibleapi.audibleapi_api import createDeviceAuth
 from app.custom_objects.settings import readSettings
 
 

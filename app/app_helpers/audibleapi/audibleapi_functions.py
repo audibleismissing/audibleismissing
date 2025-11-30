@@ -1,6 +1,6 @@
 import audible
-from app.app_helpers.audibleapi import helpers as audible_helpers #returnListofBookObjs, returnBookObj
-from app.app_helpers.audibleapi.api import getAudibleBooksInSeries, getAudibleBook
+from app.app_helpers.audibleapi import audibleapi_helpers as audible_helpers #returnListofBookObjs, returnBookObj
+from app.app_helpers.audibleapi.audibleapi_api import getAudibleBooksInSeries, getAudibleBook
 
 from app.custom_objects import book
 from app.custom_objects.author import Author
