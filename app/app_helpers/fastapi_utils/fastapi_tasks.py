@@ -1,6 +1,6 @@
 from app.app_helpers.audiobookshelf import abs_helpers
 from app.db_models import db_helpers
-from app.app_helpers.audibleapi import functions as audible_functions
+from app.app_helpers.audibleapi import audibleapi_functions as audible_functions
 
 # testing audimeta - doesn't want to return series data
 from app.app_helpers.audimeta import audimeta_functions
