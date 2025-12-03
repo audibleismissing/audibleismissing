@@ -79,6 +79,7 @@ cd audibleismissing-fastapi
 
 uv init
 
+uv add ruff
 uv add fastapi --extra standard
 uv add audible
 uv add requests
@@ -98,3 +99,10 @@ uv run fastapi run main.py
 
 ### Docker dev (prefered)
 `sh build.sh`
+
+
+## run linter
+```
+uv run ruff format
+Optional: uv run ruff check --fix
+```
