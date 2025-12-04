@@ -1,5 +1,6 @@
 import toml
 import json
+import os
 
 
 settings_file = "/config/settings.toml"
@@ -24,8 +25,13 @@ def saveSettings() -> None:
 
 def readSettings() -> toml:
     """Loads settings from toml file and returns a settings object"""
-    with open(settings_file) as file:
-        config = toml.load(file)
+    if os.path.exists(settings_file):
+        with open(settings_file) as file:
+            config = toml.load(file)
+    else:
+        createDefaultSettingsFile()
+        with open(settings_file) as file:
+            config = toml.load(file)
 
     # print("Using settings:")
     # print(json.dumps(config, indent=4))
