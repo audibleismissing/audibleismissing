@@ -20,6 +20,7 @@ from app.db_models.tables import (
     seriesmappings,
     serieswatchlist,
 )
+from app.db_models.views import booksandseries, seriesandcounts
 
 
 
@@ -48,3 +49,5 @@ class SQLiteService:
         """Create all database tables."""
         self.logger.info("Creating database tables.")
         SQLModel.metadata.create_all(self.engine)
+        booksandseries.createBooksAndSeriesView(self.db_path)
+        seriesandcounts.createSeriesAndCountsView(self.db_path)

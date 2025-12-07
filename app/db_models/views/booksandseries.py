@@ -1,5 +1,29 @@
 import sqlite3
+from fastapi import Depends
 
+from app.services.sqlite import SQLiteService
+from app.services.task_manager import BackgroundTaskManagerService
+
+# setup global services
+db_service = None
+background_manager = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
+
+def get_background_manager() -> BackgroundTaskManagerService:
+    """Get the background task manager instance."""
+    global background_manager
+    if background_manager is None:
+        background_manager = BackgroundTaskManagerService()
+    return background_manager
+
+
+# service: SQLiteService = Depends(get_db_service)):
 
 def createBooksAndSeriesView(sqlite_db) -> None:
     try:
@@ -49,8 +73,8 @@ def createBooksAndSeriesView(sqlite_db) -> None:
         print("DB conneciton error occured -", error)
 
 
-def getViewAllBooks(sqlite_path) -> list:
-    with sqlite3.connect(sqlite_path) as conn:
+def getViewAllBooks(service: SQLiteService = Depends(get_db_service)) -> list:
+    with sqlite3.connect(service.db_path) as conn:
         """Get all books using the booksandseries view"""
         cur = conn.cursor()
         cur.execute("select * from booksandseries")
@@ -66,9 +90,9 @@ def getViewAllBooks(sqlite_path) -> list:
         return []
 
 
-def getViewSeriesDetails(sqlite_path, series_id) -> list:
+def getViewSeriesDetails(series_id, service: SQLiteService = Depends(get_db_service)) -> list:
     """Get all books with series_id using the booksandseries view"""
-    with sqlite3.connect(sqlite_path) as conn:
+    with sqlite3.connect(service.db_path) as conn:
         cur = conn.cursor()
         cur.execute("select * from booksandseries where seriesId = ?", (series_id,))
         results = cur.fetchall()
@@ -82,9 +106,9 @@ def getViewSeriesDetails(sqlite_path, series_id) -> list:
         return []
 
 
-def getViewBookDetails(sqlite_path, book_id):
+def getViewBookDetails(book_id, service: SQLiteService = Depends(get_db_service)):
     """Get book details from booksandseriesview."""
-    with sqlite3.connect(sqlite_path) as conn:
+    with sqlite3.connect(service.db_path) as conn:
         cur = conn.cursor()
         cur.execute("select * from booksandseries where bookId = ?", (book_id,))
         results = cur.fetchone()
@@ -94,14 +118,14 @@ def getViewBookDetails(sqlite_path, book_id):
             return book_dict
         return {}
 
-
-def getViewReleaseDates(sqlite_path, time_window) -> list:
+#adfhasldfhaslkdjflkajshdflkjashdlfjhaslkdjfhlasdf
+def getViewReleaseDates(time_window, service: SQLiteService = Depends(get_db_service)) -> list:
     """Get upcoming book releases using the booksandseries view"""
     from datetime import datetime
 
     current_date = datetime.now().strftime("%Y-%m-%d")
 
-    with sqlite3.connect(sqlite_path) as conn:
+    with sqlite3.connect(service.db_path) as conn:
         cur = conn.cursor()
         cur.execute(
             "select * from booksandseries where releaseDate >= ? ORDER BY releaseDate ASC LIMIT ?",
@@ -118,13 +142,13 @@ def getViewReleaseDates(sqlite_path, time_window) -> list:
         return []
 
 
-def getViewWatchListReleaseDates(sqlite_path, time_window) -> list:
+def getViewWatchListReleaseDates(time_window, service: SQLiteService = Depends(get_db_service)) -> list:
     """Get upcoming book releases that are in series on the series watch list. Returns list."""
     from datetime import datetime
 
     current_date = datetime.now().strftime("%Y-%m-%d")
 
-    with sqlite3.connect(sqlite_path) as conn:
+    with sqlite3.connect(service.db_path) as conn:
         cur = conn.cursor()
         cur.execute(
             """

@@ -46,8 +46,8 @@ async def page(request: Request, service: SQLiteService = Depends(get_db_service
 
     # calendar
     limit = 10
-    releases = await book_api.get_book_release_dates(limit, service.db_path)
-    watchlist_releases = await user_api.get_book_release_dates(limit, service.db_path)
+    releases = await book_api.get_book_release_dates(limit, service)
+    watchlist_releases = await user_api.get_book_release_dates(limit, service)
 
     return templates.TemplateResponse(
         request=request,

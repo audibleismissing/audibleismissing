@@ -56,13 +56,13 @@ templates = Jinja2Templates(directory=templates_dir)
 async def page(request: Request, service: SQLiteService = Depends(get_db_service)):
     """Render series watchlist page"""
 
-    watchlist_items = await get_series_watch_list_items()
+    watchlist_items = await get_series_watch_list_items(service)
 
     if watchlist_items:
         watchlist_table = []
         for item in watchlist_items:
             single_series = getViewSeriesCountsSingleSeries(
-                service.db_path, item.seriesId
+                service, item.seriesId
             )
             watchlist_table.append(single_series)
     else:

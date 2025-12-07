@@ -73,7 +73,7 @@ async def get_series_watch_list_items(service: SQLiteService = Depends(get_db_se
 @router.get("/user/serieswatchlist/releasedates/{limit}", tags=[Tags.user])
 async def get_book_release_dates(limit: int, service: SQLiteService = Depends(get_db_service)):
     """Gets books to be released on wachlist. results limit."""
-    results = booksandseries.getViewWatchListReleaseDates(service.db_path, limit)
+    results = booksandseries.getViewWatchListReleaseDates(limit, service)
 
     if results:
         return results

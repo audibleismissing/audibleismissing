@@ -44,7 +44,7 @@ def get_background_manager() -> BackgroundTaskManagerService:
     return background_manager
 
 
-# service: SQLiteService = Depends(get_db_service)):
+# service: SQLiteService = Depends(get_db_service)
 
 
 router = api_router.initRouter()
@@ -89,7 +89,7 @@ async def get_book(book_asin: str, service: SQLiteService = Depends(get_db_servi
 @router.get("/book/details/{book_id}", tags=[Tags.book])
 async def get_book_details(book_id: str, service: SQLiteService = Depends(get_db_service)):
     """Returns single book by book id from details view"""
-    results = booksandseries.getViewBookDetails(service.db_path, book_id)
+    results = booksandseries.getViewBookDetails(book_id, service.db_path)
     if results:
         return results
     return {}
@@ -98,7 +98,7 @@ async def get_book_details(book_id: str, service: SQLiteService = Depends(get_db
 @router.get("/book/releasedates/{limit}", tags=[Tags.book])
 async def get_book_release_dates(limit: int, service: SQLiteService = Depends(get_db_service)):
     """Gets books to be released. results limit."""
-    results = booksandseries.getViewReleaseDates(service.db_path, limit)
+    results = booksandseries.getViewReleaseDates(limit, service)
 
     if results:
         return results

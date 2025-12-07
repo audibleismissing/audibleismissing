@@ -1,4 +1,4 @@
-from fastapi import BackgroundTasks, Query
+from fastapi import BackgroundTasks, Query, Depends
 from typing import Annotated, List
 
 from app.routers.api import api_router
@@ -12,19 +12,31 @@ from app.db_models.tables import series as series_table
 from app.db_models.views import booksandseries, seriesandcounts
 
 
+from app.services.sqlite import SQLiteService
+from app.services.task_manager import BackgroundTaskManagerService
+
+# setup global services
+db_service = None
+background_manager = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
+
+def get_background_manager() -> BackgroundTaskManagerService:
+    """Get the background task manager instance."""
+    global background_manager
+    if background_manager is None:
+        background_manager = BackgroundTaskManagerService()
+    return background_manager
+
+
+# service: SQLiteService = Depends(get_db_service)):
+
 router = api_router.initRouter()
-
-
-# Load settings
-settings = settings.readSettings()
-
-
-# init db connection
-engine = db_helpers.connectToDb()
-
-
-# /api/series/all/
-# getAllSeries -> [Series]
 
 
 @router.get(
@@ -32,9 +44,9 @@ engine = db_helpers.connectToDb()
     tags=[Tags.series],
     response_model=List[series_view.SeriesViewResponse],
 )
-async def get_all_series():
+async def get_all_series(service: SQLiteService = Depends(get_db_service)):
     """Returns list of all series"""
-    results = seriesandcounts.getViewSeriesCounts(settings.sqlite_path)
+    results = seriesandcounts.getViewSeriesCounts(service.db_path)
 
     if results:
         return results
@@ -46,28 +58,28 @@ async def get_all_series():
     tags=[Tags.series],
     response_model=List[book_response.BookResponse],
 )
-async def get_series_by_series_id(series_id: str):
+async def get_series_by_series_id(series_id: str, service: SQLiteService = Depends(get_db_service)):
     """Get list of books in a series by series id"""
-    results = series_table.getBooksInSeries(engine, series_id)
+    results = series_table.getBooksInSeries(series_id, service.engine)
     if results:
         return results
     return []
 
 
 @router.get("/series/details/{series_id}", tags=[Tags.series])
-async def get_series_details(series_id: str):
+async def get_series_details(series_id: str, service: SQLiteService = Depends(get_db_service)):
     """Get series details from view."""
-    results = booksandseries.getViewSeriesDetails(settings.sqlite_path, series_id)
+    results = booksandseries.getViewSeriesDetails(series_id, service)
     if results:
         return results
     return []
 
 
 @router.get("/series/counts/{series_id}", tags=[Tags.series])
-async def get_series_counts(series_id: str):
+async def get_series_counts(series_id: str, service: SQLiteService = Depends(get_db_service)):
     """Get series counts from view."""
     results = seriesandcounts.getViewSeriesCountsBySeries(
-        settings.sqlite_path, series_id
+        service.db_path, series_id
     )
     if results:
         return results

@@ -51,12 +51,12 @@ templates = Jinja2Templates(directory=templates_dir)
 async def page(request: Request, service: SQLiteService = Depends(get_db_service)):
     """Render book wishlist page"""
 
-    wishlist_items = await get_book_wish_list_items()
+    wishlist_items = await get_book_wish_list_items(service)
 
     if wishlist_items:
         wishlist_table = []
         for item in wishlist_items:
-            single_book = getViewBookDetails(service.db_path, item.bookId)
+            single_book = getViewBookDetails(item.bookId, service)
             wishlist_table.append(single_book)
     else:
         wishlist_table = []
