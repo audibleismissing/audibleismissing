@@ -1,3 +1,5 @@
+from fastapi import Depends
+
 from app.custom_objects.book import Book
 
 from app.db_models.tables.authors import addAuthor
@@ -51,17 +53,17 @@ def get_background_manager() -> BackgroundTaskManagerService:
 # service: SQLiteService = Depends(get_db_service)
 
 
-def refreshAbsData(engine, url, abs_api_key, library_id) -> None:
+def refreshAbsData(url, abs_api_key, library_id, service: SQLiteService = Depends(get_db_service)) -> None:
     abs_books = []
     abs_books = getLibraryItems(url, abs_api_key, library_id)
 
     for abs_book in abs_books["results"]:
-        if not doesBookExist(engine, abs_book["id"]):
+        if not doesBookExist(service.engine, abs_book["id"]):
             book = Book()
             book = getLibraryItem(url, abs_api_key, abs_book["id"])
 
-            if not doesBookExist(engine, book.bookAsin) and book.bookAsin is not None:
-                db_book_id = addBook(engine, book)
+            if not doesBookExist(service.engine, book.bookAsin) and book.bookAsin is not None:
+                db_book_id = addBook(service.engine, book)
             else:
                 print(f"duplicate book or missing asin: {book.title} {book.bookAsin}")
                 continue
@@ -74,13 +76,13 @@ def refreshAbsData(engine, url, abs_api_key, library_id) -> None:
                 for single_author in authors:
                     # check if the author already exists in the authors table
                     # if not add the author and get the new author id
-                    if not doesAuthorExist(engine, single_author.name):
-                        author_db_id = addAuthor(engine, single_author)
+                    if not doesAuthorExist(service.engine, single_author.name):
+                        author_db_id = addAuthor(service.engine, single_author)
                     else:
-                        author_db_id = getAuthor(engine, single_author.name).id
+                        author_db_id = getAuthor(service.engine, single_author.name).id
 
                     # link the author in the authors table to the entry in the authorsbooks table
-                    addAuthorMapping(engine, author_db_id, db_book_id)
+                    addAuthorMapping(service.engine, author_db_id, db_book_id)
 
             #### Narrators
             narrators = []
@@ -90,13 +92,13 @@ def refreshAbsData(engine, url, abs_api_key, library_id) -> None:
                 for single_narrator in narrators:
                     # check if the narrator already exists in the narrators table
                     # if not add the narrator and get the new narrator id
-                    if not doesNarratorExist(engine, single_narrator.name):
-                        narrator_db_id = addNarrator(engine, single_narrator)
+                    if not doesNarratorExist(service.engine, single_narrator.name):
+                        narrator_db_id = addNarrator(service.engine, single_narrator)
                     else:
-                        narrator_db_id = getNarrator(engine, single_narrator.name).id
+                        narrator_db_id = getNarrator(service.engine, single_narrator.name).id
 
                     # link the narrator in the narrators table to the entry in the Narratorsbooks table
-                    addNarratorMapping(engine, narrator_db_id, db_book_id)
+                    addNarratorMapping(service.engine, narrator_db_id, db_book_id)
 
             #### Series
             # for each narrator of the book
@@ -106,14 +108,14 @@ def refreshAbsData(engine, url, abs_api_key, library_id) -> None:
                 for single_series in series:
                     # check if the series already exists in the series table
                     # if not add the series and get the new series id
-                    if not doesSeriesExist(engine, single_series.name):
-                        series_db_id = addSeries(engine, single_series)
+                    if not doesSeriesExist(service.engine, single_series.name):
+                        series_db_id = addSeries(service.engine, single_series)
                     else:
-                        series_db_id = getSeries(engine, single_series.name).id
+                        series_db_id = getSeries(service.engine, single_series.name).id
 
                     # link the narrator in the narrators table to the entry in the Narratorsbooks table
                     addSeriesMapping(
-                        engine, series_db_id, db_book_id, single_series.sequence
+                        service.engine, series_db_id, db_book_id, single_series.sequence
                     )
 
             #### Genres
@@ -124,10 +126,10 @@ def refreshAbsData(engine, url, abs_api_key, library_id) -> None:
                 for single_genre in genres:
                     # check if the genre already exists in the genres table
                     # if not add the genre and get the new genre id
-                    if not doesGenreExist(engine, single_genre.name):
-                        genre_db_id = addGenre(engine, single_genre)
+                    if not doesGenreExist(service.engine, single_genre.name):
+                        genre_db_id = addGenre(service.engine, single_genre)
                     else:
-                        genre_db_id = getGenre(engine, single_genre.name).id
+                        genre_db_id = getGenre(service.engine, single_genre.name).id
 
                     # link the genre in the genres table to the entry in the Genresbooks table
-                    addGenreMapping(engine, genre_db_id, db_book_id)
+                    addGenreMapping(service.engine, genre_db_id, db_book_id)
