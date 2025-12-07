@@ -40,14 +40,22 @@ def get_background_manager() -> BackgroundTaskManagerService:
 def taskRefreshAbsData(engine, settings, service: SQLiteService = Depends(get_db_service)):
     """refresh all data in database from audiobookshelf"""
     print("Starting taskRefreshAbsData")
+    # Ensure we have a proper service instance
+    if hasattr(service, 'engine'):  # service is already resolved
+        actual_service = service
+    else:  # service is a Depends object, get the actual service
+        actual_service = get_db_service()
+    
     refreshAbsData(
-        settings.abs_url, settings.abs_api_key, settings.abs_library_id, service
+        settings.abs_url, settings.abs_api_key, settings.abs_library_id, actual_service
     )
     print("Completed taskRefreshAbsData")
 
 
 def getMissingAudibleBooks(engine, auth):
     print("Starting getMissingAudibleBooks")
+    # Ensure we have a proper service instance
+    service = get_db_service()
     audible_functions.getMissingBooks(engine, auth)
     print("Completed getMissingAudibleBooks")
 
@@ -55,6 +63,8 @@ def getMissingAudibleBooks(engine, auth):
 # testing audnexus
 def refreshAudnexusData(engine):
     print("Starting backfillAudnexusBookData")
+    # Ensure we have a proper service instance
+    service = get_db_service()
     audnexus_functions.backfillAudnexusBookData(engine)
     print("Completed backfillAudnexusBookData")
 

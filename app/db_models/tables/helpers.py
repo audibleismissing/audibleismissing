@@ -7,10 +7,6 @@ from app.custom_objects.series import Series
 from app.custom_objects.author import Author
 
 from app.services.sqlite import SQLiteService
-from app.db_models.tables.authors import getBookAuthors
-from app.db_models.tables.genres import getBookGenres
-from app.db_models.tables.narrators import getBookNarrators
-from app.db_models.tables.series import getBookSeries
 
 # setup global services
 db_service = None
@@ -25,6 +21,11 @@ def get_db_service() -> SQLiteService:
 
 def returnBookObj(book_table, service: SQLiteService = Depends(get_db_service)) -> Book:
     """Convert a BooksTable object to a Book object"""
+    from app.db_models.tables.authors import getBookAuthors
+    from app.db_models.tables.genres import getBookGenres
+    from app.db_models.tables.narrators import getBookNarrators
+    from app.db_models.tables.series import getBookSeries
+
     book = Book()
 
     # Map the fields from BooksTable to Book

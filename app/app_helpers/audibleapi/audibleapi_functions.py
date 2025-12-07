@@ -14,7 +14,6 @@ from app.custom_objects.book import Book
 from app.custom_objects.genre import Genre
 from app.custom_objects.narrator import Narrator
 from app.custom_objects.series import Series
-from app.services.sqlite import SQLiteService
 
 from app.db_models.tables.authors import (
     addAuthor,
@@ -60,6 +59,19 @@ from app.db_models.tables.seriesmappings import (
     getSeriesMappingByBook,
     getSeriesMappingBySeries,
 )
+
+
+from app.services.sqlite import SQLiteService
+
+# setup global services
+db_service = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
 
 
 # from app.db_models.tables.authorsmappings import addAuthorMapping, getAuthorMappingByBook
