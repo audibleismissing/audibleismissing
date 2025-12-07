@@ -10,36 +10,51 @@ from app.app_helpers.fastapi_utils.fastapi_tasks import (
     refreshAudnexusData,
 )
 from app.app_helpers.audibleapi.audibleapi_api import loadExistingAuth
+
+
 from app.services.sqlite import SQLiteService
+from app.services.task_manager import BackgroundTaskManagerService
+
+# setup global services
+db_service = None
+background_manager = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
+
+def get_background_manager() -> BackgroundTaskManagerService:
+    """Get the background task manager instance."""
+    global background_manager
+    if background_manager is None:
+        background_manager = BackgroundTaskManagerService()
+    return background_manager
+
+
+# service: SQLiteService = Depends(get_db_service)
 
 
 router = api_router.initRouter()
 
 
-# Load settings
 settings = settings.readSettings()
-
-
-# init db connection
-engine = db_helpers.connectToDb()
-
-
-def get_db_service() -> SQLiteService:
-    """Get the database service instance."""
-    return SQLiteService()
 
 
 @router.get("/database/refreshabsdata", tags=[Tags.admin])
 async def refresh_abs_Data(background_task: BackgroundTasks, service: SQLiteService = Depends(get_db_service)):
     """Wipes all data from db and re-import abs data"""
-    background_task.add_task(taskRefreshAbsData, engine, settings, service)
+    background_task.add_task(taskRefreshAbsData, settings, service)
     return {"message": "Refreshing data. This may take a while."}
 
 
 @router.get("/database/resetdb", tags=[Tags.admin])
-async def reset_db(background_task: BackgroundTasks):
+async def reset_db(background_task: BackgroundTasks, service: SQLiteService = Depends(get_db_service)):
     """Drops db and recreates tables"""
-    db_helpers.resetAllData(engine, settings.sqlite_path)
+    service.dropAllTables()
+    service.create_tables()
     return {"message": "Refreshing data. This may take a while."}
 
 

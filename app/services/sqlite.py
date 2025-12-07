@@ -53,3 +53,27 @@ class SQLiteService:
         SQLModel.metadata.create_all(self.engine)
         booksandseries.createBooksAndSeriesView(self.db_path)
         seriesandcounts.createSeriesAndCountsView(self.db_path)
+
+
+    def dropAllTables(self) -> None:
+        import sqlite3
+        try:
+            with sqlite3.connect(self.db_path) as connection:
+                cursor = connection.cursor()
+                cursor.execute("DROP TABLE IF EXISTS books")
+                cursor.execute("DROP TABLE IF EXISTS series")
+                cursor.execute("DROP TABLE IF EXISTS seriesmappings")
+                cursor.execute("DROP TABLE IF EXISTS narrators")
+                cursor.execute("DROP TABLE IF EXISTS narratormappings")
+                cursor.execute("DROP TABLE IF EXISTS authors")
+                cursor.execute("DROP TABLE IF EXISTS authormappings")
+                cursor.execute("DROP TABLE IF EXISTS genres")
+                cursor.execute("DROP TABLE IF EXISTS genremappings")
+                cursor.execute("DROP TABLE IF EXISTS serieswatchlist")
+                cursor.execute("DROP TABLE IF EXISTS bookwishlist")
+                cursor.execute("DROP VIEW IF EXISTS booksandseries")
+                cursor.execute("DROP VIEW IF EXISTS seriesandcounts")
+
+                connection.commit()
+        except sqlite3.Error as error:
+            print("DB conneciton error occured -", error)

@@ -14,6 +14,7 @@ from app.app_helpers.audnexus import audnexus_functions
 from app.services.sqlite import SQLiteService
 from app.services.task_manager import BackgroundTaskManagerService
 
+
 # setup global services
 db_service = None
 background_manager = None
@@ -37,7 +38,7 @@ def get_background_manager() -> BackgroundTaskManagerService:
 
 
 
-def taskRefreshAbsData(engine, settings, service: SQLiteService):
+def taskRefreshAbsData(settings, service: SQLiteService):
     """refresh all data in database from audiobookshelf"""
     print("Starting taskRefreshAbsData")
     refreshAbsData(
