@@ -3,7 +3,7 @@ import json
 import os
 
 
-settings_file = "/config/settings.toml"
+settings_file = "config/settings.toml"
 
 
 class Settings:

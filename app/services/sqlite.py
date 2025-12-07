@@ -6,6 +6,7 @@ from typing import List, Optional, Generator
 from sqlmodel import SQLModel, create_engine, Session, select
 from contextlib import contextmanager
 
+# needed for db table creation
 from app.db_models.tables import (
     authors,
     authorsmappings,
@@ -27,12 +28,11 @@ class SQLiteService:
 
     def __init__(self, database_url: str = None):
         if database_url is None:
-            print
-            db_path = os.path.join(os.getcwd(), "config/audibleismissing.sqlite")
-            database_url = f"sqlite:///{db_path}"
+            self.db_path = os.path.join(os.getcwd(), "config/audibleismissing.sqlite")
+            self.database_url = f"sqlite:///{self.db_path}"
 
         self.engine = create_engine(
-            database_url,
+            self.database_url,
             connect_args={"check_same_thread": False},  # Required for SQLite
             echo=False  # Set to True for debugging
         )
