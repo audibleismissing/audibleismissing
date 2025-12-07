@@ -1,3 +1,4 @@
+from fastapi import Depends
 from app.app_helpers.audimeta import audimeta_api
 
 from app.db_models.tables.authorsmappings import (
@@ -27,10 +28,21 @@ from app.db_models.tables.narratormappings import (
     getNarratorMappingByBook,
 )
 from app.db_models.tables.genremappings import addGenreMapping, getGenreMappingByBook
+from app.services.sqlite import SQLiteService
+
+# setup global services
+db_service = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
 
 
-def getMissingBooks(engine) -> None:
-    all_series = getAllSeries(engine)
+def getMissingBooks(service: SQLiteService = Depends(get_db_service)) -> None:
+    all_series = getAllSeries(service)
 
     for single_series in all_series:
         books_in_series = audimeta_api.getAudimetaSeriesOfBooksAsBooks(
@@ -38,81 +50,81 @@ def getMissingBooks(engine) -> None:
         )
 
         for single_book in books_in_series:
-            if not getBook(engine, single_book.bookAsin):
+            if not getBook(single_book.bookAsin, service):
                 print("-----------------------------------")
                 single_book.isOwned = False
-                addBook(engine, single_book)
+                addBook(single_book, service)
 
                 # series
                 if len(single_book.series) > 0:
                     for single_series in single_book.series:
-                        if getSeries(engine, single_series.name):
-                            library_series = getSeries(engine, single_series.name)
+                        if getSeries(single_series.name, service):
+                            library_series = getSeries(single_series.name, service)
                             single_series.id = library_series.id
 
                             # calculate series rating
                             single_series.rating = calculateSeriesRating(
-                                engine, single_series.id
+                                single_series.id, service
                             )
 
-                            updateSeries(engine, single_series)
+                            updateSeries(single_series, service)
                         else:
-                            single_series.id = addSeries(engine, single_series)
+                            single_series.id = addSeries(single_series, service)
 
                             # calculate series rating
                             single_series.rating = calculateSeriesRating(
-                                engine, single_series.id
+                                single_series.id, service
                             )
-                        if not getSeriesMappingByBook(engine, single_book.id):
+                        if not getSeriesMappingByBook(single_book.id, service):
                             addSeriesMapping(
-                                engine,
                                 single_series.id,
                                 single_book.id,
                                 single_series.sequence,
+                                service,
                             )
 
                 # authors
                 if len(single_book.authors) > 0:
                     for single_authors in single_book.authors:
-                        if getAuthor(engine, single_authors.name):
-                            library_authors = getAuthor(engine, single_authors.name)
+                        if getAuthor(single_authors.name, service):
+                            library_authors = getAuthor(single_authors.name, service)
                             single_authors.id = library_authors.id
-                            updateAuthor(engine, single_authors)
+                            updateAuthor(single_authors, service)
                         else:
-                            single_authors.id = addAuthor(engine, single_authors)
-                            addAuthorMapping(engine, single_authors.id, single_book.id)
+                            single_authors.id = addAuthor(single_authors, service)
+                            addAuthorMapping(single_authors.id, single_book.id, service)
 
-                        if not getAuthorMappingByBook(engine, single_book.id):
-                            addAuthorMapping(engine, single_authors.id, single_book.id)
+                        if not getAuthorMappingByBook(single_book.id, service):
+                            addAuthorMapping(single_authors.id, single_book.id, service)
 
                 # narrators
                 if len(single_book.narrators) > 0:
                     for single_narrators in single_book.narrators:
-                        if getNarrator(engine, single_narrators.name):
+                        if getNarrator(single_narrators.name, service):
                             library_narrators = getNarrator(
-                                engine, single_narrators.name
+                                single_narrators.name, service
                             )
                             single_narrators.id = library_narrators.id
-                            updateNarrator(engine, single_narrators)
+                            updateNarrator(single_narrators, service)
                         else:
-                            single_narrators.id = addNarrator(engine, single_narrators)
+                            single_narrators.id = addNarrator(single_narrators, service)
 
-                        if not getNarratorMappingByBook(engine, single_book.id):
+                        if not getNarratorMappingByBook(single_book.id, service):
                             addNarratorMapping(
-                                engine, single_narrators.id, single_book.id
+                                single_narrators.id, single_book.id, service
                             )
 
                 # genres
                 if len(single_book.genres) > 0:
                     for single_genres in single_book.genres:
-                        if getGenre(engine, single_genres.name):
-                            library_genres = getGenre(engine, single_genres.name)
+                        if getGenre(single_genres.name, service):
+                            library_genres = getGenre(single_genres.name, service)
                             single_genres.id = library_genres.id
-                            updateGenre(engine, single_genres)
+                            updateGenre(single_genres, service)
                         else:
-                            single_genres.id = addGenre(engine, single_genres)
-                        if not getGenreMappingByBook(engine, single_book.id):
-                            addGenreMapping(engine, single_genres.id, single_book.id)
+                            single_genres.id = addGenre(single_genres, service)
+                        if not getGenreMappingByBook(single_book.id, service):
+                            addGenreMapping(single_genres.id, single_book.id, service)
 
-    cleanupDanglingSeries(engine)
-    cleanupDanglingAuthors(engine)
+    cleanupDanglingSeries(service)
+    cleanupDanglingAuthors(service)

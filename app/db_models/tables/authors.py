@@ -1,9 +1,22 @@
 import uuid
+from fastapi import Depends
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, delete
 
 from app.custom_objects.author import Author
 from app.db_models.tables.authorsmappings import AuthorsMappingsTable
+from app.services.sqlite import SQLiteService
+from app.db_models.tables.helpers import returnAuthorObj, returnBookObj, returnGenreObj, returnNarratorObj, returnSeriesObj
+
+# setup global services
+db_service = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
 
 
 class AuthorsTable(SQLModel, table=True):
@@ -14,21 +27,21 @@ class AuthorsTable(SQLModel, table=True):
     authorAsin: str | None = None
 
 
-def addAuthor(engine: create_engine, author: Author) -> str:
+def addAuthor(author: Author, service: SQLiteService = Depends(get_db_service)) -> str:
     """Add author to db"""
     print(f"Adding author: {author.name}")
     row = AuthorsTable(name=author.name, authorAsin=author.authorAsin)
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         session.add(row)
         session.commit()
         session.refresh(row)
         return row.id
 
 
-def getAuthor(engine: create_engine, search_string):
+def getAuthor(search_string, service: SQLiteService = Depends(get_db_service)):
     """Get author from db"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(AuthorsTable).where(
             or_(
                 AuthorsTable.name == search_string,
@@ -43,10 +56,10 @@ def getAuthor(engine: create_engine, search_string):
         return None
 
 
-def updateAuthor(engine: create_engine, author: Author) -> str:
+def updateAuthor(author: Author, service: SQLiteService = Depends(get_db_service)) -> str:
     """Update author in db"""
     print(f"Updating author: {author.name}")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(AuthorsTable).where(AuthorsTable.id == author.id)
         results = session.exec(statement).one()
 
@@ -62,8 +75,8 @@ def deleteAuthor():
     """Delete author from db"""
 
 
-def doesAuthorExist(engine: create_engine, search_string) -> bool:
-    with Session(engine) as session:
+def doesAuthorExist(search_string, service: SQLiteService = Depends(get_db_service)) -> bool:
+    with Session(service.engine) as session:
         statement = select(AuthorsTable).where(
             or_(
                 AuthorsTable.name == search_string,
@@ -79,9 +92,9 @@ def doesAuthorExist(engine: create_engine, search_string) -> bool:
             return False
 
 
-def getBookAuthors(engine: create_engine, book_id) -> list:
+def getBookAuthors(book_id, service: SQLiteService = Depends(get_db_service)) -> list:
     """Get authors by book id"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         # get the authors related to a specific book id
         author_mappings_query = select(AuthorsMappingsTable).where(
             AuthorsMappingsTable.bookId == book_id
@@ -104,18 +117,10 @@ def getBookAuthors(engine: create_engine, book_id) -> list:
     return authors
 
 
-def returnAuthorObj(sql_data) -> Author:
-    author = Author()
-    author.id = sql_data.id
-    author.name = sql_data.name
-    author.authorAsin = sql_data.authorAsin
-    return author
-
-
-def cleanupDanglingAuthors(engine) -> None:
+def cleanupDanglingAuthors(service: SQLiteService = Depends(get_db_service)) -> None:
     """Deletes DB entries from the AuthorsTable and AuthorsMappingsTable that don't have a authorsAsin."""
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         # Find authors that don't have a authorsAsin
         statement = select(AuthorsTable).where(AuthorsTable.authorAsin.is_(None))
         authors_without_asin = session.exec(statement).all()

@@ -6,20 +6,7 @@ from typing import List, Optional, Generator
 from sqlmodel import SQLModel, create_engine, Session, select
 from contextlib import contextmanager
 
-# needed for db table creation
-from app.db_models.tables import (
-    authors,
-    authorsmappings,
-    books,
-    bookwishlist,
-    genremappings,
-    genres,
-    narratormappings,
-    narrators,
-    series,
-    seriesmappings,
-    serieswatchlist,
-)
+
 
 
 
@@ -47,6 +34,20 @@ class SQLiteService:
 
     def create_tables(self):
         """Create all database tables."""
+        # needed for db table creation
+        from app.db_models.tables import (
+            authors,
+            authorsmappings,
+            books,
+            bookwishlist,
+            genremappings,
+            genres,
+            narratormappings,
+            narrators,
+            series,
+            seriesmappings,
+            serieswatchlist,
+        )
         from app.db_models.views import booksandseries, seriesandcounts
         self.logger.info("Creating database tables.")
         SQLModel.metadata.create_all(self.engine)

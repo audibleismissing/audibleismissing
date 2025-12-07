@@ -60,7 +60,7 @@ router = api_router.initRouter()
 )
 async def get_all_books(service: SQLiteService = Depends(get_db_service)):
     """Returns list of all books"""
-    results = books_table.getAllBooks(service.engine)
+    results = books_table.getAllBooks(service)
     if results:
         return results
     return []
@@ -80,7 +80,7 @@ async def get_all_books_view(service: SQLiteService = Depends(get_db_service)):
 )
 async def get_book(book_asin: str, service: SQLiteService = Depends(get_db_service)):
     """Returns single book by asin"""
-    results = books_table.getBook(service.engine, book_asin)
+    results = books_table.getBook(book_asin, service)
     if results:
         return results
     return []

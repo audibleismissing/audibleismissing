@@ -1,4 +1,5 @@
 import audible
+from fastapi import Depends
 from app.app_helpers.audibleapi import (
     audibleapi_helpers as audible_helpers,
 )  # returnListofBookObjs, returnBookObj
@@ -13,6 +14,7 @@ from app.custom_objects.book import Book
 from app.custom_objects.genre import Genre
 from app.custom_objects.narrator import Narrator
 from app.custom_objects.series import Series
+from app.services.sqlite import SQLiteService
 
 from app.db_models.tables.authors import (
     addAuthor,
@@ -71,18 +73,18 @@ from app.db_models.tables.seriesmappings import (
 # from app.db_models.tables.genremappings import addGenreMapping, getGenreMappingByBook
 
 
-def getMissingBooks(engine, auth):
+def getMissingBooks(auth, service: SQLiteService = Depends(get_db_service)):
     """
     Populates missing book, author, genre, narrator, and series information from audible.
     """
 
     # get list of book asins in library, one per series
-    all_series = getAllSeries(engine)
+    all_series = getAllSeries(service)
     library_book_asins = []
     for item in all_series:
         series_id = item.id
-        book_id = getSeriesMappingBySeries(engine, series_id)[0].bookId
-        library_book = getBook(engine, book_id)
+        book_id = getSeriesMappingBySeries(series_id, service)[0].bookId
+        library_book = getBook(book_id, service)
         library_book_asins.append(library_book.bookAsin)
 
     # get list of audible books
@@ -95,11 +97,11 @@ def getMissingBooks(engine, auth):
             audible_books.append(book_in_series)
 
     for single_book in audible_books:
-        if not getBook(engine, single_book.bookAsin):
-            processBook(engine, single_book)
+        if not getBook(single_book.bookAsin, service):
+            processBook(single_book, service)
 
-    # cleanupDanglingSeries(engine)
-    # cleanupDanglingAuthors(engine)
+    # cleanupDanglingSeries(service)
+    # cleanupDanglingAuthors(service)
 
     print("Audible backfill complete.")
 
@@ -124,83 +126,83 @@ def getMissingBooks(engine, auth):
 #         processBook(engine, book_obj)
 
 
-def processBook(engine, single_book) -> None:
+def processBook(single_book, service: SQLiteService = Depends(get_db_service)) -> None:
     """helper function for adding audible book metadata to the database"""
     print(f"---Processing {single_book.title}")
     # books
-    if not doesBookExist(engine, single_book.bookAsin):
+    if not doesBookExist(single_book.bookAsin, service):
         # add new DB entry
         single_book.isOwned = False
-        single_book.id = addBook(engine, single_book)
+        single_book.id = addBook(single_book, service)
     else:
         # update metadata on existing db entry
         book = Book()
-        book = getBook(engine, single_book.bookAsin)
+        book = getBook(single_book.bookAsin, service)
         single_book.id = book.id
         single_book.isOwned = book.isOwned
-        single_book.id = updateBook(engine, single_book)
+        single_book.id = updateBook(single_book, service)
 
     # authors
     for single_author in single_book.authors:
-        if not doesAuthorExist(engine, single_author.name):
+        if not doesAuthorExist(single_author.name, service):
             # add new DB entry
-            single_author.id = addAuthor(engine, single_author)
+            single_author.id = addAuthor(single_author, service)
         else:
             # update metadata on existing db entry
             author = Author()
-            author = getAuthor(engine, single_author.name)
+            author = getAuthor(single_author.name, service)
             single_author.id = author.id
-            updateAuthor(engine, single_author)
-        if not getAuthorMappingByBook(engine, single_book.id):
-            addAuthorMapping(engine, single_author.id, single_book.id)
+            updateAuthor(single_author, service)
+        if not getAuthorMappingByBook(single_book.id, service):
+            addAuthorMapping(single_author.id, single_book.id, service)
 
     # narrators
     for single_narrator in single_book.narrators:
-        if not doesNarratorExist(engine, single_narrator.name):
+        if not doesNarratorExist(single_narrator.name, service):
             # add new DB entry
-            single_narrator.id = addNarrator(engine, single_narrator)
+            single_narrator.id = addNarrator(single_narrator, service)
         else:
             # update metadata on existing db entry
             narrator = Narrator()
-            narrator = getNarrator(engine, single_narrator.name)
+            narrator = getNarrator(single_narrator.name, service)
             single_narrator.id = narrator.id
-            updateNarrator(engine, single_narrator)
-        if not getNarratorMappingByBook(engine, single_book.id):
-            addNarratorMapping(engine, single_narrator.id, single_book.id)
+            updateNarrator(single_narrator, service)
+        if not getNarratorMappingByBook(single_book.id, service):
+            addNarratorMapping(single_narrator.id, single_book.id, service)
 
     # series
     for single_series in single_book.series:
-        if not doesSeriesExist(engine, single_series.name):
+        if not doesSeriesExist(single_series.name, service):
             # add new DB entry
-            single_series.id = addSeries(engine, single_series)
+            single_series.id = addSeries(single_series, service)
 
             # calculate series rating
-            single_series.rating = calculateSeriesRating(engine, single_series.id)
-            updateSeries(engine, single_series)
+            single_series.rating = calculateSeriesRating(single_series.id, service)
+            updateSeries(single_series, service)
         else:
             # update metadata on existing db entry
             series = Series()
-            series = getSeries(engine, single_series.name)
+            series = getSeries(single_series.name, service)
             single_series.id = series.id
             # calculate series rating
-            single_series.rating = calculateSeriesRating(engine, single_series.id)
+            single_series.rating = calculateSeriesRating(single_series.id, service)
 
-            updateSeries(engine, single_series)
-        if not getSeriesMappingByBook(engine, single_book.id):
+            updateSeries(single_series, service)
+        if not getSeriesMappingByBook(single_book.id, service):
             addSeriesMapping(
-                engine, single_series.id, single_book.id, single_series.sequence
+                single_series.id, single_book.id, single_series.sequence, service
             )
 
     # genres
     for single_genre in single_book.genres:
-        if not doesGenreExist(engine, single_genre.name):
+        if not doesGenreExist(single_genre.name, service):
             # add new DB entry
-            single_genre.id = addGenre(engine, single_genre)
+            single_genre.id = addGenre(single_genre, service)
         else:
             # update metadata on existing db entry
             genre = Genre()
-            genre = getGenre(engine, single_genre.name)
+            genre = getGenre(single_genre.name, service)
             single_genre.id = genre.id
-            updateGenre(engine, single_genre)
-        if not getGenreMappingByBook(engine, single_book.id):
-            addGenreMapping(engine, single_genre.id, single_book.id)
+            updateGenre(single_genre, service)
+        if not getGenreMappingByBook(single_book.id, service):
+            addGenreMapping(single_genre.id, single_book.id, service)

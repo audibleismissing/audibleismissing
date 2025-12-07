@@ -1,4 +1,5 @@
 import uuid
+from fastapi import Depends
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
 
@@ -37,14 +38,14 @@ class SeriesWatchListTable(SQLModel, table=True):
     seriesId: str | None
 
 
-def addSeriesWatchListItem(series_id, engine: create_engine) -> str:
+def addSeriesWatchListItem(series_id, service: SQLiteService = Depends(get_db_service)) -> str:
     """Add SeriesWatchListItem"""
     print(f"Adding SeriesWatchListItem: {series_id}")
     row = SeriesWatchListTable(
         seriesId=series_id,
     )
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         session.add(row)
         session.commit()
         session.refresh(row)
@@ -52,11 +53,11 @@ def addSeriesWatchListItem(series_id, engine: create_engine) -> str:
     return None
 
 
-def getSeriesWatchListItem(search_string, engine: create_engine) -> SeriesWatchListItem:
+def getSeriesWatchListItem(search_string, service: SQLiteService = Depends(get_db_service)) -> SeriesWatchListItem:
     """Get SeriesWatchListItem
     returns: SeriesWatchListItem
     """
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesWatchListTable).where(
             or_(
                 SeriesWatchListTable.seriesId == search_string,
@@ -71,13 +72,13 @@ def getSeriesWatchListItem(search_string, engine: create_engine) -> SeriesWatchL
 
 
 def updateSeriesWatchListItem(
-    engine: create_engine, watch_list_item: SeriesWatchListItem
+    watch_list_item: SeriesWatchListItem, service: SQLiteService = Depends(get_db_service)
 ) -> str:
     """Update SeriesWatchListItem
     returns: row id
     """
     print(f"Updating SeriesWatchListItem: {watch_list_item.id}")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesWatchListTable).where(
             SeriesWatchListTable.id == watch_list_item.id
         )
@@ -90,10 +91,10 @@ def updateSeriesWatchListItem(
         return results.id
 
 
-def deleteSeriesWatchListItem(engine: create_engine, watch_list_item_id) -> None:
+def deleteSeriesWatchListItem(watch_list_item_id, service: SQLiteService = Depends(get_db_service)) -> None:
     """Delete SeriesWatchListItem"""
     print(f"Deleting SeriesWatchListItem: {watch_list_item_id}")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesWatchListTable).where(
             SeriesWatchListTable.id == watch_list_item_id
         )
@@ -112,9 +113,9 @@ def returnSeriesWatchListItemObj(sql_data) -> SeriesWatchListItem:
     return item
 
 
-def getAllSeriesWatchListItems(engine) -> list:
+def getAllSeriesWatchListItems(service: SQLiteService = Depends(get_db_service)) -> list:
     """Gets all SeriesWatchListItems"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesWatchListTable)
         results = session.exec(statement).all()
 

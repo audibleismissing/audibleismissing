@@ -1,8 +1,20 @@
 import uuid
+from fastapi import Depends
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
 
 from app.custom_objects import book
+from app.services.sqlite import SQLiteService
+
+# setup global services
+db_service = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
 
 
 class AuthorsMappingsTable(SQLModel, table=True):
@@ -13,12 +25,12 @@ class AuthorsMappingsTable(SQLModel, table=True):
     bookId: str | None = Field(default=None, foreign_key="books.id")
 
 
-def addAuthorMapping(engine: create_engine, author_id, book_id) -> str:
+def addAuthorMapping(author_id, book_id, service: SQLiteService = Depends(get_db_service)) -> str:
     """Add author mapping to db"""
     print(f"Adding author mapping: {author_id} -> {book_id}")
     row = AuthorsMappingsTable(authorId=author_id, bookId=book_id)
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         session.add(row)
         session.commit()
         session.refresh(row)
@@ -26,9 +38,9 @@ def addAuthorMapping(engine: create_engine, author_id, book_id) -> str:
     return None
 
 
-def getAuthorMappingByBook(engine: create_engine, book_id):
+def getAuthorMappingByBook(book_id, service: SQLiteService = Depends(get_db_service)):
     """Get author mapping from db"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(AuthorsMappingsTable).where(
             AuthorsMappingsTable.bookId == book_id
         )

@@ -1,8 +1,20 @@
 import uuid
+from fastapi import Depends
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
 
 from app.custom_objects.bookwishlistitem import BookWishListItem
+from app.services.sqlite import SQLiteService
+
+# setup global services
+db_service = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
 
 
 class BookWishListTable(SQLModel, table=True):
@@ -12,14 +24,14 @@ class BookWishListTable(SQLModel, table=True):
     bookId: str | None
 
 
-def addBookWishListItem(book_id, engine: create_engine) -> str:
+def addBookWishListItem(book_id, service: SQLiteService = Depends(get_db_service)) -> str:
     """Add BookWishListItem"""
     print(f"Adding BookWishListItem: {book_id}")
     row = BookWishListTable(
         bookId=book_id,
     )
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         session.add(row)
         session.commit()
         session.refresh(row)
@@ -27,11 +39,11 @@ def addBookWishListItem(book_id, engine: create_engine) -> str:
     return None
 
 
-def getBookWishListItem(search_string, engine: create_engine) -> BookWishListItem:
+def getBookWishListItem(search_string, service: SQLiteService = Depends(get_db_service)) -> BookWishListItem:
     """Get BookWishListItem
     returns: BookWishListItem
     """
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(BookWishListTable).where(
             or_(
                 BookWishListTable.bookId == search_string,
@@ -46,13 +58,13 @@ def getBookWishListItem(search_string, engine: create_engine) -> BookWishListIte
 
 
 def updateBookWishListItem(
-    wish_list_item: BookWishListItem, engine: create_engine
+    wish_list_item: BookWishListItem, service: SQLiteService = Depends(get_db_service)
 ) -> str:
     """Update BookWishListItem
     returns: row id
     """
     print(f"Updating BookWishListItem: {wish_list_item.id}")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(BookWishListTable).where(
             BookWishListTable.id == wish_list_item.id
         )
@@ -65,10 +77,10 @@ def updateBookWishListItem(
         return results.id
 
 
-def deleteBookWishListItem(wish_list_item_id, engine: create_engine) -> None:
+def deleteBookWishListItem(wish_list_item_id, service: SQLiteService = Depends(get_db_service)) -> None:
     """Delete BookWishListItem"""
     print(f"Deleting BookWishListItem: {wish_list_item_id}")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(BookWishListTable).where(
             BookWishListTable.id == wish_list_item_id
         )
@@ -87,9 +99,9 @@ def returnBookWishListItemObj(sql_data) -> BookWishListItem:
     return item
 
 
-def getAllBookWishListItems(engine) -> list:
+def getAllBookWishListItems(service: SQLiteService = Depends(get_db_service)) -> list:
     """Gets all BookWishListItems"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(BookWishListTable)
         results = session.exec(statement).all()
 
