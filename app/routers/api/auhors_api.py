@@ -18,6 +18,3 @@ router = api_router.initRouter()
 # Load settings
 settings = settings.readSettings()
 
-
-# init db connection
-engine = db_helpers.connectToDb()

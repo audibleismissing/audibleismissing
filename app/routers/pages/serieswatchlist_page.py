@@ -45,11 +45,6 @@ current_dir = dirname(__file__)
 templates_dir = join(current_dir, "../../templates")
 templates = Jinja2Templates(directory=templates_dir)
 
-# init db connection
-# engine = db_helpers.connectToDb()
-
-# # Load settings
-# config = readSettings()
 
 
 @router.get("/user/serieswatchlist/", response_class=HTMLResponse, tags=[Tags.page])

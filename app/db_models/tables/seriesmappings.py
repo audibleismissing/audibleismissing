@@ -5,16 +5,6 @@ from fastapi import Depends
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
 from app.services.sqlite import SQLiteService
 
-# setup global services
-db_service = None
-
-def get_db_service() -> SQLiteService:
-    """Get the database service instance."""
-    global db_service
-    if db_service is None:
-        db_service = SQLiteService()
-    return db_service
-
 
 class SeriesMappingsTable(SQLModel, table=True):
     __tablename__ = "seriesmappings"

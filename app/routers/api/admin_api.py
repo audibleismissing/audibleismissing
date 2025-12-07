@@ -81,15 +81,17 @@ async def get_missingBooks(background_task: BackgroundTasks, service: SQLiteServ
 
 
 @router.get("/database/import", tags=[Tags.admin])
-async def import_test_data(background_task: BackgroundTasks):
+async def import_test_data(background_task: BackgroundTasks, service: SQLiteService = Depends(get_db_service)):
     """Imports the db from a json file. destructive."""
-    db_helpers.resetAllData(engine, settings.sqlite_path)
-    background_task.add_task(db_helpers.importJsonToDb, engine)
+    service.dropAllTables()
+    service.create_tables()
+
+    background_task.add_task(service.importJsonToDb)
     return {"message": "Importing data."}
 
 
 @router.get("/database/export", tags=[Tags.admin])
-async def export_test_data(background_task: BackgroundTasks):
+async def export_test_data(background_task: BackgroundTasks, service: SQLiteService = Depends(get_db_service)):
     """Exports the db to a json file"""
-    background_task.add_task(db_helpers.exportDbToJson, engine)
+    background_task.add_task(service.exportDbToJson)
     return {"message": "Exporting data."}
