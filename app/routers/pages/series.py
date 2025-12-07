@@ -55,10 +55,10 @@ async def page(request: Request, service: SQLiteService = Depends(get_db_service
 @router.get(
     "/series/details/{series_id}", response_class=HTMLResponse, tags=[Tags.page]
 )
-async def details(request: Request, series_id: str):
+async def details(request: Request, series_id: str, service: SQLiteService = Depends(get_db_service)):
     """Render series details page"""
-    counts = await get_series_counts(series_id)
-    table = await get_series_details(series_id)
+    counts = await get_series_counts(series_id, service)
+    table = await get_series_details(series_id, service)
 
     return templates.TemplateResponse(
         request=request,

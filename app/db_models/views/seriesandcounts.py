@@ -53,7 +53,7 @@ def getViewSeriesCounts(service: SQLiteService) -> list:
         return []
 
 
-def getViewSeriesCountsBySeries(service: SQLiteService, series_id) -> list:
+def getViewSeriesCountsBySeries(series_id, service: SQLiteService) -> list:
     """Get single series with series_id using the seriesandcounts view"""
     with sqlite3.connect(service.db_path) as conn:
         cur = conn.cursor()

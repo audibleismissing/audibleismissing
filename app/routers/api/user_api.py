@@ -98,7 +98,7 @@ class SeriesWatchListModel(BaseModel):
 @router.post("/user/addserieswatchlistitem", tags=[Tags.user])
 async def add_watch_list_item(data: Annotated[SeriesWatchListModel, Form()], service: SQLiteService = Depends(get_db_service)):
     """Add item to the watchlist"""
-    item = getSeriesWatchListItem(service, data.series_id)
+    item = getSeriesWatchListItem(data.series_id, service)
 
     if not item:
         addSeriesWatchListItem(data.series_id, service)
@@ -109,7 +109,7 @@ async def add_watch_list_item(data: Annotated[SeriesWatchListModel, Form()], ser
 @router.delete("/user/removeserieswatchlistitem/{series_id}", tags=[Tags.user])
 async def remove_watch_list_item(series_id: str, service: SQLiteService = Depends(get_db_service)):
     """Remove item from the watchlist"""
-    item = getSeriesWatchListItem(service, series_id)
+    item = getSeriesWatchListItem(series_id, service)
 
     if item:
         deleteSeriesWatchListItem(item.id, service)
@@ -153,7 +153,7 @@ class BookWishListModel(BaseModel):
 @router.post("/user/addbookwishlistitem", tags=[Tags.user])
 async def add_book_wish_list_item(data: Annotated[BookWishListModel, Form()], service: SQLiteService = Depends(get_db_service)):
     """Add item to the wish list"""
-    item = getBookWishListItem(service, data.book_id)
+    item = getBookWishListItem(data.book_id, service)
 
     if not item:
         addBookWishListItem(data.book_id, service)
@@ -164,7 +164,7 @@ async def add_book_wish_list_item(data: Annotated[BookWishListModel, Form()], se
 @router.delete("/user/removebookwishlistitem/{book_id}", tags=[Tags.user])
 async def remove_book_wish_list_item(book_id: str, service: SQLiteService = Depends(get_db_service)):
     """Remove item from the wish list"""
-    item = getBookWishListItem(service, book_id)
+    item = getBookWishListItem(book_id, service)
 
     if item:
         deleteBookWishListItem(item.id, service)

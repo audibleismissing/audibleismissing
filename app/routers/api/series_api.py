@@ -79,7 +79,7 @@ async def get_series_details(series_id: str, service: SQLiteService = Depends(ge
 async def get_series_counts(series_id: str, service: SQLiteService = Depends(get_db_service)):
     """Get series counts from view."""
     results = seriesandcounts.getViewSeriesCountsBySeries(
-        service, series_id
+        series_id, service
     )
     if results:
         return results
