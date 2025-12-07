@@ -27,9 +27,6 @@ from app.db_models.views import booksandseries
 
 router = api_router.initRouter()
 
-# Load settings
-settings = settings.readSettings()
-
 
 
 

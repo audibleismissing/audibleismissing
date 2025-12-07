@@ -26,6 +26,31 @@ from app.app_helpers.audiobookshelf.audiobookshelf_api import (
 )
 
 
+from app.services.sqlite import SQLiteService
+from app.services.task_manager import BackgroundTaskManagerService
+
+# setup global services
+db_service = None
+background_manager = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
+
+def get_background_manager() -> BackgroundTaskManagerService:
+    """Get the background task manager instance."""
+    global background_manager
+    if background_manager is None:
+        background_manager = BackgroundTaskManagerService()
+    return background_manager
+
+
+# service: SQLiteService = Depends(get_db_service)
+
+
 def refreshAbsData(engine, url, abs_api_key, library_id) -> None:
     abs_books = []
     abs_books = getLibraryItems(url, abs_api_key, library_id)
