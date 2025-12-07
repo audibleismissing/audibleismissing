@@ -2,7 +2,9 @@ import os
 from os.path import dirname, join
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
+from app.services.task_manager import BackgroundTaskManagerService
 from app.routers.pages import (
     index,
     series,
@@ -14,6 +16,29 @@ from app.routers.pages import (
 from app.routers.api import book_api, series_api, admin_api, settings_api, user_api
 
 from fastapi.staticfiles import StaticFiles
+
+
+
+
+# setup global varables for services
+background_manager = None
+
+# Start the scheduler
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Handle startup and shutdown."""
+    # startup
+    global background_manager
+    background_manager = BackgroundTaskManagerService()
+    await background_manager.start()
+
+    yield
+    
+    # shutdown
+    if background_manager:
+        await background_manager.stop()
+
+
 
 
 # initialize FastAPI app
