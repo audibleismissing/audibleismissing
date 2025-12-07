@@ -25,14 +25,13 @@ def get_background_manager() -> BackgroundTaskManagerService:
 
 # service: SQLiteService = Depends(get_db_service)):
 
-def createBooksAndSeriesView(sqlite_db) -> None:
+def createBooksAndSeriesView(db_path) -> None:
     try:
-        with sqlite3.connect(sqlite_db) as connection:
+        with sqlite3.connect(db_path) as connection:
             cursor = connection.cursor()
             cursor.execute("""
                     CREATE VIEW IF NOT EXISTS booksandseries AS
                         SELECT
-                            /* 1‑BOOK‑LEVEL data – same as before */
                             b.id           AS bookId,
                             b.title,
                             b.bookAsin,
@@ -45,12 +44,10 @@ def createBooksAndSeriesView(sqlite_db) -> None:
                             /* sequence comes from the mapping */
                             sm.sequence,
 
-                            /* SERIES‑LEVEL data – same as before */
                             s.id          AS seriesId,
                             s.name        AS seriesName,
                             s.seriesAsin,
 
-                            /* NEW: counts calculated on the fly */
                             COUNT(*)                         OVER (PARTITION BY s.id)          AS totalBooksInSeries,
                             SUM(CASE WHEN b.isOwned THEN 1 ELSE 0 END)
                                             OVER (PARTITION BY s.id)                     AS totalBooksInLibrary

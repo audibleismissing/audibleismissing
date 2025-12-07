@@ -12,7 +12,7 @@ class BookWishListTable(SQLModel, table=True):
     bookId: str | None
 
 
-def addBookWishListItem(engine: create_engine, book_id) -> str:
+def addBookWishListItem(book_id, engine: create_engine) -> str:
     """Add BookWishListItem"""
     print(f"Adding BookWishListItem: {book_id}")
     row = BookWishListTable(
@@ -27,7 +27,7 @@ def addBookWishListItem(engine: create_engine, book_id) -> str:
     return None
 
 
-def getBookWishListItem(engine: create_engine, search_string) -> BookWishListItem:
+def getBookWishListItem(search_string, engine: create_engine) -> BookWishListItem:
     """Get BookWishListItem
     returns: BookWishListItem
     """
@@ -46,7 +46,7 @@ def getBookWishListItem(engine: create_engine, search_string) -> BookWishListIte
 
 
 def updateBookWishListItem(
-    engine: create_engine, wish_list_item: BookWishListItem
+    wish_list_item: BookWishListItem, engine: create_engine
 ) -> str:
     """Update BookWishListItem
     returns: row id
@@ -65,7 +65,7 @@ def updateBookWishListItem(
         return results.id
 
 
-def deleteBookWishListItem(engine: create_engine, wish_list_item_id) -> None:
+def deleteBookWishListItem(wish_list_item_id, engine: create_engine) -> None:
     """Delete BookWishListItem"""
     print(f"Deleting BookWishListItem: {wish_list_item_id}")
     with Session(engine) as session:

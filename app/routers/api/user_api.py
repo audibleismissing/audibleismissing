@@ -52,7 +52,7 @@ def get_background_manager() -> BackgroundTaskManagerService:
     return background_manager
 
 
-# service: SQLiteService = Depends(get_db_service)):
+# service: SQLiteService = Depends(get_db_service)
 
 
 

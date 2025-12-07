@@ -4,6 +4,31 @@ from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
 
 from app.custom_objects.serieswatchlistitem import SeriesWatchListItem
 
+from app.services.sqlite import SQLiteService
+from app.services.task_manager import BackgroundTaskManagerService
+
+# setup global services
+db_service = None
+background_manager = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
+
+def get_background_manager() -> BackgroundTaskManagerService:
+    """Get the background task manager instance."""
+    global background_manager
+    if background_manager is None:
+        background_manager = BackgroundTaskManagerService()
+    return background_manager
+
+
+# service: SQLiteService = Depends(get_db_service)
+
+
 
 class SeriesWatchListTable(SQLModel, table=True):
     __tablename__ = "serieswatchlist"
@@ -12,7 +37,7 @@ class SeriesWatchListTable(SQLModel, table=True):
     seriesId: str | None
 
 
-def addSeriesWatchListItem(engine: create_engine, series_id) -> str:
+def addSeriesWatchListItem(series_id, engine: create_engine) -> str:
     """Add SeriesWatchListItem"""
     print(f"Adding SeriesWatchListItem: {series_id}")
     row = SeriesWatchListTable(
@@ -27,7 +52,7 @@ def addSeriesWatchListItem(engine: create_engine, series_id) -> str:
     return None
 
 
-def getSeriesWatchListItem(engine: create_engine, search_string) -> SeriesWatchListItem:
+def getSeriesWatchListItem(search_string, engine: create_engine) -> SeriesWatchListItem:
     """Get SeriesWatchListItem
     returns: SeriesWatchListItem
     """
