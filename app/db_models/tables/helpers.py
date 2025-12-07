@@ -19,7 +19,7 @@ def get_db_service() -> SQLiteService:
     return db_service
 
 
-def returnBookObj(book_table, service: SQLiteService = Depends(get_db_service)) -> Book:
+def returnBookObj(book_table, service: SQLiteService) -> Book:
     """Convert a BooksTable object to a Book object"""
     from app.db_models.tables.authors import getBookAuthors
     from app.db_models.tables.genres import getBookGenres

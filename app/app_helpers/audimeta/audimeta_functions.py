@@ -41,7 +41,7 @@ def get_db_service() -> SQLiteService:
     return db_service
 
 
-def getMissingBooks(service: SQLiteService = Depends(get_db_service)) -> None:
+def getMissingBooks(service: SQLiteService) -> None:
     all_series = getAllSeries(service)
 
     for single_series in all_series:

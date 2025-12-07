@@ -68,7 +68,7 @@ class BooksTable(SQLModel, table=True):
     isAudiobook: bool = Field(default=True)
 
 
-def addBook(book: Book, service: SQLiteService = Depends(get_db_service)) -> str:
+def addBook(book: Book, service: SQLiteService) -> str:
     """Add book to db"""
     from bs4 import BeautifulSoup
 
@@ -112,7 +112,7 @@ def addBook(book: Book, service: SQLiteService = Depends(get_db_service)) -> str
         return row.id
 
 
-def getBook(search_string, service: SQLiteService = Depends(get_db_service)) -> Book:
+def getBook(search_string, service: SQLiteService) -> Book:
     """Get book from db"""
     with Session(service.engine) as session:
         statement = select(BooksTable).where(
@@ -129,7 +129,7 @@ def getBook(search_string, service: SQLiteService = Depends(get_db_service)) -> 
         return None
 
 
-def updateBook(book: Book, service: SQLiteService = Depends(get_db_service)) -> str:
+def updateBook(book: Book, service: SQLiteService) -> str:
     """Update book in db"""
     from bs4 import BeautifulSoup
 
@@ -173,7 +173,7 @@ def updateBook(book: Book, service: SQLiteService = Depends(get_db_service)) -> 
         return results.id
 
 
-def deleteBook(search_string, service: SQLiteService = Depends(get_db_service)) -> None:
+def deleteBook(search_string, service: SQLiteService) -> None:
     """Delete book from db by book asin or id"""
     with Session(service.engine) as session:
         statement = select(BooksTable).where(
@@ -183,7 +183,7 @@ def deleteBook(search_string, service: SQLiteService = Depends(get_db_service)) 
         session.delete(results)
 
 
-def doesBookExist(search_string, service: SQLiteService = Depends(get_db_service)):
+def doesBookExist(search_string, service: SQLiteService):
     with Session(service.engine) as session:
         statement = select(BooksTable).where(
             or_(
@@ -200,7 +200,7 @@ def doesBookExist(search_string, service: SQLiteService = Depends(get_db_service
             return False
 
 
-def getAllBooks(service: SQLiteService = Depends(get_db_service)) -> list:
+def getAllBooks(service: SQLiteService) -> list:
     with Session(service.engine) as session:
         statement = select(BooksTable).order_by(BooksTable.title)
         results = session.exec(statement).all()
@@ -215,7 +215,7 @@ def getAllBooks(service: SQLiteService = Depends(get_db_service)) -> list:
         return None
 
 
-def getBooksToBeReleased(time_window, service: SQLiteService = Depends(get_db_service)) -> list:
+def getBooksToBeReleased(time_window, service: SQLiteService) -> list:
     from datetime import datetime
 
     current_date = datetime.now().strftime("%Y-%m-%d")

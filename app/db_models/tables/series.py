@@ -39,7 +39,7 @@ class SeriesTable(SQLModel, table=True):
     rating: Decimal | None = Field(default=0, max_digits=3, decimal_places=2)
 
 
-def addSeries(series: Series, service: SQLiteService = Depends(get_db_service)) -> str:
+def addSeries(series: Series, service: SQLiteService) -> str:
     """Add series to db"""
     print(f"Adding series: {series.name}")
 
@@ -56,7 +56,7 @@ def addSeries(series: Series, service: SQLiteService = Depends(get_db_service)) 
     return None
 
 
-def getSeries(search_string, service: SQLiteService = Depends(get_db_service)):
+def getSeries(search_string, service: SQLiteService):
     """Get series from db"""
     with Session(service.engine) as session:
         statement = select(SeriesTable).where(
@@ -69,7 +69,7 @@ def getSeries(search_string, service: SQLiteService = Depends(get_db_service)):
         return None
 
 
-def updateSeries(series: Series, service: SQLiteService = Depends(get_db_service)) -> str:
+def updateSeries(series: Series, service: SQLiteService) -> str:
     """Update series in db"""
     print(f"Updating series: {series.name}")
     with Session(service.engine) as session:
@@ -85,7 +85,7 @@ def updateSeries(series: Series, service: SQLiteService = Depends(get_db_service
         return results.id
 
 
-def deleteSeries(series_id, service: SQLiteService = Depends(get_db_service)):
+def deleteSeries(series_id, service: SQLiteService):
     """Delete series from db"""
     print(f"Deleting series: {series_id}")
     with Session(service.engine) as session:
@@ -95,7 +95,7 @@ def deleteSeries(series_id, service: SQLiteService = Depends(get_db_service)):
         session.delete(row)
 
 
-def doesSeriesExist(search_string, service: SQLiteService = Depends(get_db_service)) -> bool:
+def doesSeriesExist(search_string, service: SQLiteService) -> bool:
     with Session(service.engine) as session:
         statement = select(SeriesTable).where(
             or_(SeriesTable.name == search_string, SeriesTable.id == search_string)
@@ -108,7 +108,7 @@ def doesSeriesExist(search_string, service: SQLiteService = Depends(get_db_servi
             return False
 
 
-def getBookSeries(book_id, service: SQLiteService = Depends(get_db_service)) -> list:
+def getBookSeries(book_id, service: SQLiteService) -> list:
     """Get series object by book id"""
     with Session(service.engine) as session:
         # get the series related to a specific book id
@@ -134,7 +134,7 @@ def getBookSeries(book_id, service: SQLiteService = Depends(get_db_service)) -> 
         return series_list
 
 
-def getSeriesByBook(search_string, service: SQLiteService = Depends(get_db_service)) -> list:
+def getSeriesByBook(search_string, service: SQLiteService) -> list:
     """Get list of books in a series by book asin or title"""
 
     # import BooksTable and returnBookObj locally to avoid circular import
@@ -179,7 +179,7 @@ def getSeriesByBook(search_string, service: SQLiteService = Depends(get_db_servi
         return series_list
 
 
-def getBooksInSeries(search_string, service: SQLiteService = Depends(get_db_service)) -> list:
+def getBooksInSeries(search_string, service: SQLiteService) -> list:
     """Get list of books in a series by series id or name"""
 
     # import BooksTable and returnBookObj locally to avoid circular import
@@ -218,7 +218,7 @@ def getBooksInSeries(search_string, service: SQLiteService = Depends(get_db_serv
         return books_list
 
 
-def getAllSeries(service: SQLiteService = Depends(get_db_service)) -> list:
+def getAllSeries(service: SQLiteService) -> list:
     """Gets all series"""
     with Session(service.engine) as session:
         statement = select(SeriesTable).order_by(SeriesTable.name)
@@ -232,7 +232,7 @@ def getAllSeries(service: SQLiteService = Depends(get_db_service)) -> list:
         return series_list
 
 
-def calculateSeriesRating(series_id: str, service: SQLiteService = Depends(get_db_service)) -> Decimal:
+def calculateSeriesRating(series_id: str, service: SQLiteService) -> Decimal:
     """Averages ratings of books in a series and updates the series table entry"""
     books_in_series = getBooksInSeries(series_id, service)
 
@@ -247,7 +247,7 @@ def calculateSeriesRating(series_id: str, service: SQLiteService = Depends(get_d
         return rating
 
 
-def cleanupDanglingSeries(service: SQLiteService = Depends(get_db_service)):
+def cleanupDanglingSeries(service: SQLiteService):
     """Deletes DB entries from the SeriesTable and SeriesMappingsTable that don't have a seriesAsin."""
 
     with Session(service.engine) as session:

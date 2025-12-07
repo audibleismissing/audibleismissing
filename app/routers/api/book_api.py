@@ -69,7 +69,7 @@ async def get_all_books(service: SQLiteService = Depends(get_db_service)):
 @router.get("/books/allview", tags=[Tags.book])
 async def get_all_books_view(service: SQLiteService = Depends(get_db_service)):
     """Returns list of all books from booksandseries view"""
-    results = booksandseries.getViewAllBooks(service.db_path)
+    results = booksandseries.getViewAllBooks(service)
     if results:
         return results
     return []
@@ -89,7 +89,7 @@ async def get_book(book_asin: str, service: SQLiteService = Depends(get_db_servi
 @router.get("/book/details/{book_id}", tags=[Tags.book])
 async def get_book_details(book_id: str, service: SQLiteService = Depends(get_db_service)):
     """Returns single book by book id from details view"""
-    results = booksandseries.getViewBookDetails(book_id, service.db_path)
+    results = booksandseries.getViewBookDetails(book_id, service)
     if results:
         return results
     return {}
@@ -112,7 +112,7 @@ async def get_book_release_dates(limit: int, service: SQLiteService = Depends(ge
 )
 async def get_book_authors(book_id: str, service: SQLiteService = Depends(get_db_service)):
     """Returns list of authors for a given book id"""
-    results = authors_table.getBookAuthors(service.engine, book_id)
+    results = authors_table.getBookAuthors(book_id, service)
     if results:
         return results
     return []
@@ -125,7 +125,7 @@ async def get_book_authors(book_id: str, service: SQLiteService = Depends(get_db
 )
 async def get_book_narrators(book_id: str, service: SQLiteService = Depends(get_db_service)):
     """Returns list of narrators for a given book id"""
-    results = narrators_table.getBookNarrators(service.engine, book_id)
+    results = narrators_table.getBookNarrators(book_id, service)
     if results:
         return results
     return []
@@ -138,7 +138,7 @@ async def get_book_narrators(book_id: str, service: SQLiteService = Depends(get_
 )
 async def get_book_genres(book_id: str, service: SQLiteService = Depends(get_db_service)):
     """Returns list of genres for a given book id"""
-    results = genres_table.getBookGenres(service.engine, book_id)
+    results = genres_table.getBookGenres(book_id, service)
     if results:
         return results
     return []

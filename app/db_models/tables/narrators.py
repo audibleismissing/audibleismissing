@@ -25,7 +25,7 @@ class NarratorsTable(SQLModel, table=True):
     name: str
 
 
-def addNarrator(narrator: Narrator, service: SQLiteService = Depends(get_db_service)) -> str:
+def addNarrator(narrator: Narrator, service: SQLiteService) -> str:
     """Add narrator to db"""
     print(f"Adding narrator: {narrator.name}")
     row = NarratorsTable(
@@ -39,7 +39,7 @@ def addNarrator(narrator: Narrator, service: SQLiteService = Depends(get_db_serv
         return row.id
 
 
-def getNarrator(search_string, service: SQLiteService = Depends(get_db_service)):
+def getNarrator(search_string, service: SQLiteService):
     """Get narrator from db"""
     with Session(service.engine) as session:
         statement = select(NarratorsTable).where(
@@ -54,7 +54,7 @@ def getNarrator(search_string, service: SQLiteService = Depends(get_db_service))
         return None
 
 
-def updateNarrator(narrator: Narrator, service: SQLiteService = Depends(get_db_service)) -> str:
+def updateNarrator(narrator: Narrator, service: SQLiteService) -> str:
     """Update narrator in db"""
     print(f"Updating narrator: {narrator.name}")
     with Session(service.engine) as session:
@@ -72,7 +72,7 @@ def deleteNarrator():
     """Delete narrator from db"""
 
 
-def doesNarratorExist(search_string, service: SQLiteService = Depends(get_db_service)) -> bool:
+def doesNarratorExist(search_string, service: SQLiteService) -> bool:
     with Session(service.engine) as session:
         statement = select(NarratorsTable).where(
             or_(
@@ -87,7 +87,7 @@ def doesNarratorExist(search_string, service: SQLiteService = Depends(get_db_ser
             return False
 
 
-def getBookNarrators(book_id, service: SQLiteService = Depends(get_db_service)) -> list:
+def getBookNarrators(book_id, service: SQLiteService) -> list:
     """Get narrators by book id"""
     with Session(service.engine) as session:
         # get the authors related to a specific book id

@@ -46,7 +46,7 @@ router = api_router.initRouter()
 )
 async def get_all_series(service: SQLiteService = Depends(get_db_service)):
     """Returns list of all series"""
-    results = seriesandcounts.getViewSeriesCounts(service.db_path)
+    results = seriesandcounts.getViewSeriesCounts(service)
 
     if results:
         return results
@@ -60,7 +60,7 @@ async def get_all_series(service: SQLiteService = Depends(get_db_service)):
 )
 async def get_series_by_series_id(series_id: str, service: SQLiteService = Depends(get_db_service)):
     """Get list of books in a series by series id"""
-    results = series_table.getBooksInSeries(series_id, service.engine)
+    results = series_table.getBooksInSeries(series_id, service)
     if results:
         return results
     return []
@@ -79,7 +79,7 @@ async def get_series_details(series_id: str, service: SQLiteService = Depends(ge
 async def get_series_counts(series_id: str, service: SQLiteService = Depends(get_db_service)):
     """Get series counts from view."""
     results = seriesandcounts.getViewSeriesCountsBySeries(
-        service.db_path, series_id
+        service, series_id
     )
     if results:
         return results

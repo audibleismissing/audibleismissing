@@ -138,7 +138,7 @@ def getMissingBooks(auth, service: SQLiteService = Depends(get_db_service)):
 #         processBook(engine, book_obj)
 
 
-def processBook(single_book, service: SQLiteService = Depends(get_db_service)) -> None:
+def processBook(single_book, service: SQLiteService) -> None:
     """helper function for adding audible book metadata to the database"""
     print(f"---Processing {single_book.title}")
     # books

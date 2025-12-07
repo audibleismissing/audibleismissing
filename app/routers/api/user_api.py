@@ -61,7 +61,7 @@ def get_background_manager() -> BackgroundTaskManagerService:
 )
 async def get_series_watch_list_items(service: SQLiteService = Depends(get_db_service)):
     """Returns list of all SeriesWatchListItems"""
-    results = getAllSeriesWatchListItems(service.engine)
+    results = getAllSeriesWatchListItems(service)
     if results:
         return results
     return []
@@ -84,7 +84,7 @@ async def get_book_release_dates(limit: int, service: SQLiteService = Depends(ge
 )
 async def get_series_watch_list_item(service: SQLiteService = Depends(get_db_service)):
     """Returns list of all SeriesWatchListItems"""
-    results = getSeriesWatchListItem(service.engine)
+    results = getSeriesWatchListItem(service)
     if results:
         return results
     return {}
@@ -98,10 +98,10 @@ class SeriesWatchListModel(BaseModel):
 @router.post("/user/addserieswatchlistitem", tags=[Tags.user])
 async def add_watch_list_item(data: Annotated[SeriesWatchListModel, Form()], service: SQLiteService = Depends(get_db_service)):
     """Add item to the watchlist"""
-    item = getSeriesWatchListItem(service.engine, data.series_id)
+    item = getSeriesWatchListItem(service, data.series_id)
 
     if not item:
-        addSeriesWatchListItem(service.engine, data.series_id)
+        addSeriesWatchListItem(data.series_id, service)
         return {"message": "Added to watch list"}
     return {"message": "Couldn't add to watch list"}
 
@@ -109,10 +109,10 @@ async def add_watch_list_item(data: Annotated[SeriesWatchListModel, Form()], ser
 @router.delete("/user/removeserieswatchlistitem/{series_id}", tags=[Tags.user])
 async def remove_watch_list_item(series_id: str, service: SQLiteService = Depends(get_db_service)):
     """Remove item from the watchlist"""
-    item = getSeriesWatchListItem(service.engine, series_id)
+    item = getSeriesWatchListItem(service, series_id)
 
     if item:
-        deleteSeriesWatchListItem(service.engine, item.id)
+        deleteSeriesWatchListItem(item.id, service)
         return {"message": "Removed from watch list"}
     return {"message": "Item not in watch list"}
 
@@ -126,7 +126,7 @@ async def remove_watch_list_item(series_id: str, service: SQLiteService = Depend
 )
 async def get_book_wish_list_items(service: SQLiteService = Depends(get_db_service)):
     """Returns list of all SeriesWatchListItems"""
-    results = getAllBookWishListItems(service.engine)
+    results = getAllBookWishListItems(service)
     if results:
         return results
     return []
@@ -139,7 +139,7 @@ async def get_book_wish_list_items(service: SQLiteService = Depends(get_db_servi
 )
 async def get_book_wish_list_item(service: SQLiteService = Depends(get_db_service)):
     """Returns list of all SeriesWatchListItems"""
-    results = getBookWishListItem(service.engine)
+    results = getBookWishListItem(service)
     if results:
         return results
     return {}
@@ -153,10 +153,10 @@ class BookWishListModel(BaseModel):
 @router.post("/user/addbookwishlistitem", tags=[Tags.user])
 async def add_book_wish_list_item(data: Annotated[BookWishListModel, Form()], service: SQLiteService = Depends(get_db_service)):
     """Add item to the wish list"""
-    item = getBookWishListItem(service.engine, data.book_id)
+    item = getBookWishListItem(service, data.book_id)
 
     if not item:
-        addBookWishListItem(service.engine, data.book_id)
+        addBookWishListItem(data.book_id, service)
         return {"message": "Added to wish list"}
     return {"message": "Couldn't add to wish list"}
 
@@ -164,10 +164,10 @@ async def add_book_wish_list_item(data: Annotated[BookWishListModel, Form()], se
 @router.delete("/user/removebookwishlistitem/{book_id}", tags=[Tags.user])
 async def remove_book_wish_list_item(book_id: str, service: SQLiteService = Depends(get_db_service)):
     """Remove item from the wish list"""
-    item = getBookWishListItem(service.engine, book_id)
+    item = getBookWishListItem(service, book_id)
 
     if item:
-        deleteBookWishListItem(service.engine, item.id)
+        deleteBookWishListItem(item.id, service)
         return {"message": "Removed from wish list"}
     return {"message": "Item not in wish list"}
 

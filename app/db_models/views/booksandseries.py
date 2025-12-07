@@ -70,7 +70,7 @@ def createBooksAndSeriesView(db_path) -> None:
         print("DB conneciton error occured -", error)
 
 
-def getViewAllBooks(service: SQLiteService = Depends(get_db_service)) -> list:
+def getViewAllBooks(service: SQLiteService) -> list:
     with sqlite3.connect(service.db_path) as conn:
         """Get all books using the booksandseries view"""
         cur = conn.cursor()
@@ -87,7 +87,7 @@ def getViewAllBooks(service: SQLiteService = Depends(get_db_service)) -> list:
         return []
 
 
-def getViewSeriesDetails(series_id, service: SQLiteService = Depends(get_db_service)) -> list:
+def getViewSeriesDetails(series_id, service: SQLiteService) -> list:
     """Get all books with series_id using the booksandseries view"""
     with sqlite3.connect(service.db_path) as conn:
         cur = conn.cursor()
@@ -103,7 +103,7 @@ def getViewSeriesDetails(series_id, service: SQLiteService = Depends(get_db_serv
         return []
 
 
-def getViewBookDetails(book_id, service: SQLiteService = Depends(get_db_service)):
+def getViewBookDetails(book_id, service: SQLiteService):
     """Get book details from booksandseriesview."""
     with sqlite3.connect(service.db_path) as conn:
         cur = conn.cursor()
@@ -115,8 +115,9 @@ def getViewBookDetails(book_id, service: SQLiteService = Depends(get_db_service)
             return book_dict
         return {}
 
+
 #adfhasldfhaslkdjflkajshdflkjashdlfjhaslkdjfhlasdf
-def getViewReleaseDates(time_window, service: SQLiteService = Depends(get_db_service)) -> list:
+def getViewReleaseDates(time_window, service: SQLiteService) -> list:
     """Get upcoming book releases using the booksandseries view"""
     from datetime import datetime
 
@@ -139,7 +140,7 @@ def getViewReleaseDates(time_window, service: SQLiteService = Depends(get_db_ser
         return []
 
 
-def getViewWatchListReleaseDates(time_window, service: SQLiteService = Depends(get_db_service)) -> list:
+def getViewWatchListReleaseDates(time_window, service: SQLiteService) -> list:
     """Get upcoming book releases that are in series on the series watch list. Returns list."""
     from datetime import datetime
 

@@ -27,7 +27,7 @@ class AuthorsTable(SQLModel, table=True):
     authorAsin: str | None = None
 
 
-def addAuthor(author: Author, service: SQLiteService = Depends(get_db_service)) -> str:
+def addAuthor(author: Author, service: SQLiteService) -> str:
     """Add author to db"""
     print(f"Adding author: {author.name}")
     row = AuthorsTable(name=author.name, authorAsin=author.authorAsin)
@@ -39,7 +39,7 @@ def addAuthor(author: Author, service: SQLiteService = Depends(get_db_service)) 
         return row.id
 
 
-def getAuthor(search_string, service: SQLiteService = Depends(get_db_service)):
+def getAuthor(search_string, service: SQLiteService):
     """Get author from db"""
     with Session(service.engine) as session:
         statement = select(AuthorsTable).where(
@@ -56,7 +56,7 @@ def getAuthor(search_string, service: SQLiteService = Depends(get_db_service)):
         return None
 
 
-def updateAuthor(author: Author, service: SQLiteService = Depends(get_db_service)) -> str:
+def updateAuthor(author: Author, service: SQLiteService) -> str:
     """Update author in db"""
     print(f"Updating author: {author.name}")
     with Session(service.engine) as session:
@@ -75,7 +75,7 @@ def deleteAuthor():
     """Delete author from db"""
 
 
-def doesAuthorExist(search_string, service: SQLiteService = Depends(get_db_service)) -> bool:
+def doesAuthorExist(search_string, service: SQLiteService) -> bool:
     with Session(service.engine) as session:
         statement = select(AuthorsTable).where(
             or_(
@@ -92,7 +92,7 @@ def doesAuthorExist(search_string, service: SQLiteService = Depends(get_db_servi
             return False
 
 
-def getBookAuthors(book_id, service: SQLiteService = Depends(get_db_service)) -> list:
+def getBookAuthors(book_id, service: SQLiteService) -> list:
     """Get authors by book id"""
     with Session(service.engine) as session:
         # get the authors related to a specific book id
@@ -117,7 +117,7 @@ def getBookAuthors(book_id, service: SQLiteService = Depends(get_db_service)) ->
     return authors
 
 
-def cleanupDanglingAuthors(service: SQLiteService = Depends(get_db_service)) -> None:
+def cleanupDanglingAuthors(service: SQLiteService) -> None:
     """Deletes DB entries from the AuthorsTable and AuthorsMappingsTable that don't have a authorsAsin."""
 
     with Session(service.engine) as session:

@@ -25,7 +25,7 @@ class GenresTable(SQLModel, table=True):
     name: str | None
 
 
-def addGenre(genre: Genre, service: SQLiteService = Depends(get_db_service)) -> str:
+def addGenre(genre: Genre, service: SQLiteService) -> str:
     """Add genre to db"""
     print(f"Adding genre: {genre.name}")
     row = GenresTable(
@@ -39,7 +39,7 @@ def addGenre(genre: Genre, service: SQLiteService = Depends(get_db_service)) -> 
         return row.id
 
 
-def getGenre(search_string, service: SQLiteService = Depends(get_db_service)):
+def getGenre(search_string, service: SQLiteService):
     """Get genre from db"""
     with Session(service.engine) as session:
         statement = select(GenresTable).where(
@@ -52,7 +52,7 @@ def getGenre(search_string, service: SQLiteService = Depends(get_db_service)):
         return None
 
 
-def updateGenre(genre: Genre, service: SQLiteService = Depends(get_db_service)) -> str:
+def updateGenre(genre: Genre, service: SQLiteService) -> str:
     """Update genre in db"""
     print(f"Updating genre: {genre.name}")
     with Session(service.engine) as session:
@@ -70,7 +70,7 @@ def deleteGenre():
     """Delete genre from db"""
 
 
-def doesGenreExist(search_string, service: SQLiteService = Depends(get_db_service)) -> bool:
+def doesGenreExist(search_string, service: SQLiteService) -> bool:
     with Session(service.engine) as session:
         statement = select(GenresTable).where(
             or_(GenresTable.name == search_string, GenresTable.id == search_string)
@@ -83,7 +83,7 @@ def doesGenreExist(search_string, service: SQLiteService = Depends(get_db_servic
             return False
 
 
-def getBookGenres(book_id, service: SQLiteService = Depends(get_db_service)) -> list:
+def getBookGenres(book_id, service: SQLiteService) -> list:
     """Get genres by book id"""
     with Session(service.engine) as session:
         # get the authors related to a specific book id

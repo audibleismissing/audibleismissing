@@ -25,7 +25,7 @@ class SeriesMappingsTable(SQLModel, table=True):
     bookId: str | None = Field(default=None, foreign_key="books.id")
 
 
-def addSeriesMapping(series_id, book_id, sequence, service: SQLiteService = Depends(get_db_service)) -> str:
+def addSeriesMapping(series_id, book_id, sequence, service: SQLiteService) -> str:
     """Add series mapping to db"""
     print(f"Adding series mapping: {series_id} -> {book_id}")
     row = SeriesMappingsTable(seriesId=series_id, bookId=book_id, sequence=sequence)
@@ -38,7 +38,7 @@ def addSeriesMapping(series_id, book_id, sequence, service: SQLiteService = Depe
     return None
 
 
-def getSeriesMappingByBook(book_id, service: SQLiteService = Depends(get_db_service)):
+def getSeriesMappingByBook(book_id, service: SQLiteService):
     """Get book id from series mapping from db by series id"""
     with Session(service.engine) as session:
         statement = select(SeriesMappingsTable).where(
@@ -51,7 +51,7 @@ def getSeriesMappingByBook(book_id, service: SQLiteService = Depends(get_db_serv
         return None
 
 
-def getSeriesMappingBySeries(series_id, service: SQLiteService = Depends(get_db_service)):
+def getSeriesMappingBySeries(series_id, service: SQLiteService):
     """Get book id from series mapping from db by series id"""
     with Session(service.engine) as session:
         statement = select(SeriesMappingsTable).where(
@@ -68,7 +68,7 @@ def updateSeriesMapping():
     """Update series mapping in db"""
 
 
-def deleteSeriesMapping(series_id, service: SQLiteService = Depends(get_db_service)):
+def deleteSeriesMapping(series_id, service: SQLiteService):
     """Delete series mapping from db"""
     print(f"Deleting series mapping: {series_id}")
     with Session(service.engine) as session:

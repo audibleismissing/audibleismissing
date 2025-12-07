@@ -34,7 +34,7 @@ def get_db_service() -> SQLiteService:
     return db_service
 
 
-def backfillAudnexusBookData(service: SQLiteService = Depends(get_db_service)) -> None:
+def backfillAudnexusBookData(service: SQLiteService) -> None:
     """
     Populates missing book, author, genre, narrator, and series information from audimeta.
     """

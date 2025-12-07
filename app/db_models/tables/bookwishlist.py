@@ -24,7 +24,7 @@ class BookWishListTable(SQLModel, table=True):
     bookId: str | None
 
 
-def addBookWishListItem(book_id, service: SQLiteService = Depends(get_db_service)) -> str:
+def addBookWishListItem(book_id, service: SQLiteService) -> str:
     """Add BookWishListItem"""
     print(f"Adding BookWishListItem: {book_id}")
     row = BookWishListTable(
@@ -39,7 +39,7 @@ def addBookWishListItem(book_id, service: SQLiteService = Depends(get_db_service
     return None
 
 
-def getBookWishListItem(search_string, service: SQLiteService = Depends(get_db_service)) -> BookWishListItem:
+def getBookWishListItem(search_string, service: SQLiteService) -> BookWishListItem:
     """Get BookWishListItem
     returns: BookWishListItem
     """
@@ -58,7 +58,7 @@ def getBookWishListItem(search_string, service: SQLiteService = Depends(get_db_s
 
 
 def updateBookWishListItem(
-    wish_list_item: BookWishListItem, service: SQLiteService = Depends(get_db_service)
+    wish_list_item: BookWishListItem, service: SQLiteService
 ) -> str:
     """Update BookWishListItem
     returns: row id
@@ -77,7 +77,7 @@ def updateBookWishListItem(
         return results.id
 
 
-def deleteBookWishListItem(wish_list_item_id, service: SQLiteService = Depends(get_db_service)) -> None:
+def deleteBookWishListItem(wish_list_item_id, service: SQLiteService) -> None:
     """Delete BookWishListItem"""
     print(f"Deleting BookWishListItem: {wish_list_item_id}")
     with Session(service.engine) as session:
@@ -99,7 +99,7 @@ def returnBookWishListItemObj(sql_data) -> BookWishListItem:
     return item
 
 
-def getAllBookWishListItems(service: SQLiteService = Depends(get_db_service)) -> list:
+def getAllBookWishListItems(service: SQLiteService) -> list:
     """Gets all BookWishListItems"""
     with Session(service.engine) as session:
         statement = select(BookWishListTable)

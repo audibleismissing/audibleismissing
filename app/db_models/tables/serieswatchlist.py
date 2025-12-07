@@ -38,7 +38,7 @@ class SeriesWatchListTable(SQLModel, table=True):
     seriesId: str | None
 
 
-def addSeriesWatchListItem(series_id, service: SQLiteService = Depends(get_db_service)) -> str:
+def addSeriesWatchListItem(series_id, service: SQLiteService) -> str:
     """Add SeriesWatchListItem"""
     print(f"Adding SeriesWatchListItem: {series_id}")
     row = SeriesWatchListTable(
@@ -53,7 +53,7 @@ def addSeriesWatchListItem(series_id, service: SQLiteService = Depends(get_db_se
     return None
 
 
-def getSeriesWatchListItem(search_string, service: SQLiteService = Depends(get_db_service)) -> SeriesWatchListItem:
+def getSeriesWatchListItem(search_string, service: SQLiteService) -> SeriesWatchListItem:
     """Get SeriesWatchListItem
     returns: SeriesWatchListItem
     """
@@ -72,7 +72,7 @@ def getSeriesWatchListItem(search_string, service: SQLiteService = Depends(get_d
 
 
 def updateSeriesWatchListItem(
-    watch_list_item: SeriesWatchListItem, service: SQLiteService = Depends(get_db_service)
+    watch_list_item: SeriesWatchListItem, service: SQLiteService
 ) -> str:
     """Update SeriesWatchListItem
     returns: row id
@@ -91,7 +91,7 @@ def updateSeriesWatchListItem(
         return results.id
 
 
-def deleteSeriesWatchListItem(watch_list_item_id, service: SQLiteService = Depends(get_db_service)) -> None:
+def deleteSeriesWatchListItem(watch_list_item_id, service: SQLiteService) -> None:
     """Delete SeriesWatchListItem"""
     print(f"Deleting SeriesWatchListItem: {watch_list_item_id}")
     with Session(service.engine) as session:
@@ -113,7 +113,7 @@ def returnSeriesWatchListItemObj(sql_data) -> SeriesWatchListItem:
     return item
 
 
-def getAllSeriesWatchListItems(service: SQLiteService = Depends(get_db_service)) -> list:
+def getAllSeriesWatchListItems(service: SQLiteService) -> list:
     """Gets all SeriesWatchListItems"""
     with Session(service.engine) as session:
         statement = select(SeriesWatchListTable)

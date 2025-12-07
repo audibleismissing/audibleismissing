@@ -23,7 +23,7 @@ class GenreMappingsTable(SQLModel, table=True):
     bookId: str | None = Field(default=None, foreign_key="books.id")
 
 
-def addGenreMapping(genre_id, book_id, service: SQLiteService = Depends(get_db_service)) -> str:
+def addGenreMapping(genre_id, book_id, service: SQLiteService) -> str:
     """Add genre mapping to db"""
     print(f"Adding genre mapping: {genre_id} -> {book_id}")
     row = GenreMappingsTable(
@@ -39,7 +39,7 @@ def addGenreMapping(genre_id, book_id, service: SQLiteService = Depends(get_db_s
     return None
 
 
-def getGenreMappingByBook(book_id, service: SQLiteService = Depends(get_db_service)):
+def getGenreMappingByBook(book_id, service: SQLiteService):
     """Get genre mapping from db"""
     with Session(service.engine) as session:
         statement = select(GenreMappingsTable).where(

@@ -25,7 +25,7 @@ class AuthorsMappingsTable(SQLModel, table=True):
     bookId: str | None = Field(default=None, foreign_key="books.id")
 
 
-def addAuthorMapping(author_id, book_id, service: SQLiteService = Depends(get_db_service)) -> str:
+def addAuthorMapping(author_id, book_id, service: SQLiteService) -> str:
     """Add author mapping to db"""
     print(f"Adding author mapping: {author_id} -> {book_id}")
     row = AuthorsMappingsTable(authorId=author_id, bookId=book_id)
@@ -38,7 +38,7 @@ def addAuthorMapping(author_id, book_id, service: SQLiteService = Depends(get_db
     return None
 
 
-def getAuthorMappingByBook(book_id, service: SQLiteService = Depends(get_db_service)):
+def getAuthorMappingByBook(book_id, service: SQLiteService):
     """Get author mapping from db"""
     with Session(service.engine) as session:
         statement = select(AuthorsMappingsTable).where(
