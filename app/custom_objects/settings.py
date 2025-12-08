@@ -3,6 +3,7 @@ import json
 import os
 
 settings_file = os.path.join(os.getcwd(), "config/settings.toml")
+audible_auth_file = os.path.join(os.getcwd(), "config/audible_auth")
 
 
 class Settings:
@@ -12,7 +13,7 @@ class Settings:
         self.abs_url: str
         self.abs_api_key: str
         self.abs_library_id: str
-        self.audible_auth_file: str
+        self.audible_auth_file = audible_auth_file
 
 
 def saveSettings() -> None:
@@ -40,29 +41,19 @@ def readSettings() -> toml:
 
 def getSettingsObj(toml_config) -> Settings:
     settings = Settings()
-    settings.sqlite_path = toml_config["database"]["sqlite"]["sqlite_file"]
     settings.abs_url = toml_config["audiobookshelf"]["url"]
     settings.abs_api_key = toml_config["audiobookshelf"]["api_key"]
     settings.abs_library_id = toml_config["audiobookshelf"]["library_id"]
-    settings.audible_auth_file = toml_config["audible"]["auth_file"]
     return settings
 
 
 def createDefaultSettingsFile():
     """Creates a default settings file"""
     config = {
-        "database": {
-            "sqlite": {
-                "sqlite_file": "/config/audibleismissing.sqlite",
-            }
-        },
         "audiobookshelf": {
             "url": "https://abs.example.com",
             "api_key": "Bearer somekey...",
             "library_id": "id-234234jkjdhfkjdf",
-        },
-        "audible": {
-            "auth_file": "/config/audible_auth",
         },
     }
     with open(settings_file, "w") as file:
