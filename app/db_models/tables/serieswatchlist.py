@@ -1,8 +1,34 @@
 import uuid
+from fastapi import Depends
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
 
 from app.custom_objects.serieswatchlistitem import SeriesWatchListItem
+
+from app.services.sqlite import SQLiteService
+from app.services.task_manager import BackgroundTaskManagerService
+
+# setup global services
+db_service = None
+background_manager = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
+
+def get_background_manager() -> BackgroundTaskManagerService:
+    """Get the background task manager instance."""
+    global background_manager
+    if background_manager is None:
+        background_manager = BackgroundTaskManagerService()
+    return background_manager
+
+
+# service: SQLiteService = Depends(get_db_service)
+
 
 
 class SeriesWatchListTable(SQLModel, table=True):
@@ -12,14 +38,14 @@ class SeriesWatchListTable(SQLModel, table=True):
     seriesId: str | None
 
 
-def addSeriesWatchListItem(engine: create_engine, series_id) -> str:
+def addSeriesWatchListItem(series_id, service: SQLiteService) -> str:
     """Add SeriesWatchListItem"""
     print(f"Adding SeriesWatchListItem: {series_id}")
     row = SeriesWatchListTable(
         seriesId=series_id,
     )
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         session.add(row)
         session.commit()
         session.refresh(row)
@@ -27,11 +53,11 @@ def addSeriesWatchListItem(engine: create_engine, series_id) -> str:
     return None
 
 
-def getSeriesWatchListItem(engine: create_engine, search_string) -> SeriesWatchListItem:
+def getSeriesWatchListItem(search_string, service: SQLiteService) -> SeriesWatchListItem:
     """Get SeriesWatchListItem
     returns: SeriesWatchListItem
     """
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesWatchListTable).where(
             or_(
                 SeriesWatchListTable.seriesId == search_string,
@@ -46,13 +72,13 @@ def getSeriesWatchListItem(engine: create_engine, search_string) -> SeriesWatchL
 
 
 def updateSeriesWatchListItem(
-    engine: create_engine, watch_list_item: SeriesWatchListItem
+    watch_list_item: SeriesWatchListItem, service: SQLiteService
 ) -> str:
     """Update SeriesWatchListItem
     returns: row id
     """
     print(f"Updating SeriesWatchListItem: {watch_list_item.id}")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesWatchListTable).where(
             SeriesWatchListTable.id == watch_list_item.id
         )
@@ -65,10 +91,10 @@ def updateSeriesWatchListItem(
         return results.id
 
 
-def deleteSeriesWatchListItem(engine: create_engine, watch_list_item_id) -> None:
+def deleteSeriesWatchListItem(watch_list_item_id, service: SQLiteService) -> None:
     """Delete SeriesWatchListItem"""
     print(f"Deleting SeriesWatchListItem: {watch_list_item_id}")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesWatchListTable).where(
             SeriesWatchListTable.id == watch_list_item_id
         )
@@ -87,9 +113,9 @@ def returnSeriesWatchListItemObj(sql_data) -> SeriesWatchListItem:
     return item
 
 
-def getAllSeriesWatchListItems(engine) -> list:
+def getAllSeriesWatchListItems(service: SQLiteService) -> list:
     """Gets all SeriesWatchListItems"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesWatchListTable)
         results = session.exec(statement).all()
 

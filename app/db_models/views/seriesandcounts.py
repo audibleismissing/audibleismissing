@@ -1,4 +1,5 @@
 import sqlite3
+from app.services.sqlite import SQLiteService
 
 
 def createSeriesAndCountsView(sqlite_db) -> None:
@@ -36,8 +37,8 @@ def createSeriesAndCountsView(sqlite_db) -> None:
         print("DB conneciton error occured -", error)
 
 
-def getViewSeriesCounts(sqlite_path) -> list:
-    with sqlite3.connect(sqlite_path) as conn:
+def getViewSeriesCounts(service: SQLiteService) -> list:
+    with sqlite3.connect(service.db_path) as conn:
         """Get all books using the seriesandcounts view"""
         cur = conn.cursor()
         cur.execute("select * from seriesandcounts")
@@ -52,9 +53,9 @@ def getViewSeriesCounts(sqlite_path) -> list:
         return []
 
 
-def getViewSeriesCountsBySeries(sqlite_path, series_id) -> list:
+def getViewSeriesCountsBySeries(series_id, service: SQLiteService) -> list:
     """Get single series with series_id using the seriesandcounts view"""
-    with sqlite3.connect(sqlite_path) as conn:
+    with sqlite3.connect(service.db_path) as conn:
         cur = conn.cursor()
         cur.execute("select * from seriesandcounts where seriesId = ?", (series_id,))
         results = cur.fetchall()
@@ -68,9 +69,9 @@ def getViewSeriesCountsBySeries(sqlite_path, series_id) -> list:
         return []
 
 
-def getViewSeriesCountsSingleSeries(sqlite_path, series_id):
+def getViewSeriesCountsSingleSeries(service: SQLiteService, series_id):
     """Get single series with series_id using the seriesandcounts view"""
-    with sqlite3.connect(sqlite_path) as conn:
+    with sqlite3.connect(service.db_path) as conn:
         cur = conn.cursor()
         cur.execute("select * from seriesandcounts where seriesId = ?", (series_id,))
         results = cur.fetchone()

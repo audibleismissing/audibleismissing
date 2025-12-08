@@ -1,8 +1,21 @@
 import uuid
+from fastapi import Depends
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
 from app.custom_objects.narrator import Narrator
 from app.db_models.tables.narratormappings import NarratorMappingsTable
+from app.services.sqlite import SQLiteService
+from app.db_models.tables.helpers import returnAuthorObj, returnBookObj, returnGenreObj, returnNarratorObj, returnSeriesObj
+
+# setup global services
+db_service = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
 
 
 class NarratorsTable(SQLModel, table=True):
@@ -12,23 +25,23 @@ class NarratorsTable(SQLModel, table=True):
     name: str
 
 
-def addNarrator(engine: create_engine, narrator: Narrator) -> str:
+def addNarrator(narrator: Narrator, service: SQLiteService) -> str:
     """Add narrator to db"""
     print(f"Adding narrator: {narrator.name}")
     row = NarratorsTable(
         name=narrator.name,
     )
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         session.add(row)
         session.commit()
         session.refresh(row)
         return row.id
 
 
-def getNarrator(engine: create_engine, search_string):
+def getNarrator(search_string, service: SQLiteService):
     """Get narrator from db"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(NarratorsTable).where(
             or_(
                 NarratorsTable.name == search_string, NarratorsTable.id == search_string
@@ -41,10 +54,10 @@ def getNarrator(engine: create_engine, search_string):
         return None
 
 
-def updateNarrator(engine: create_engine, narrator: Narrator) -> str:
+def updateNarrator(narrator: Narrator, service: SQLiteService) -> str:
     """Update narrator in db"""
     print(f"Updating narrator: {narrator.name}")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(NarratorsTable).where(NarratorsTable.id == narrator.id)
         results = session.exec(statement).one()
 
@@ -59,8 +72,8 @@ def deleteNarrator():
     """Delete narrator from db"""
 
 
-def doesNarratorExist(engine: create_engine, search_string) -> bool:
-    with Session(engine) as session:
+def doesNarratorExist(search_string, service: SQLiteService) -> bool:
+    with Session(service.engine) as session:
         statement = select(NarratorsTable).where(
             or_(
                 NarratorsTable.name == search_string, NarratorsTable.id == search_string
@@ -74,9 +87,9 @@ def doesNarratorExist(engine: create_engine, search_string) -> bool:
             return False
 
 
-def getBookNarrators(engine: create_engine, book_id) -> list:
+def getBookNarrators(book_id, service: SQLiteService) -> list:
     """Get narrators by book id"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         # get the authors related to a specific book id
         narrator_mappings_query = select(NarratorMappingsTable).where(
             NarratorMappingsTable.bookId == book_id
@@ -96,10 +109,3 @@ def getBookNarrators(engine: create_engine, book_id) -> list:
             narrators.append(narrator)
 
         return narrators
-
-
-def returnNarratorObj(sql_data) -> Narrator:
-    narrator = Narrator()
-    narrator.id = sql_data.id
-    narrator.name = sql_data.name
-    return narrator

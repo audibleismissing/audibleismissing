@@ -1,7 +1,9 @@
 from re import S
 import uuid
+from fastapi import Depends
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
+from app.services.sqlite import SQLiteService
 
 
 class SeriesMappingsTable(SQLModel, table=True):
@@ -13,12 +15,12 @@ class SeriesMappingsTable(SQLModel, table=True):
     bookId: str | None = Field(default=None, foreign_key="books.id")
 
 
-def addSeriesMapping(engine: create_engine, series_id, book_id, sequence) -> str:
+def addSeriesMapping(series_id, book_id, sequence, service: SQLiteService) -> str:
     """Add series mapping to db"""
     print(f"Adding series mapping: {series_id} -> {book_id}")
     row = SeriesMappingsTable(seriesId=series_id, bookId=book_id, sequence=sequence)
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         session.add(row)
         session.commit()
         session.refresh(row)
@@ -26,9 +28,9 @@ def addSeriesMapping(engine: create_engine, series_id, book_id, sequence) -> str
     return None
 
 
-def getSeriesMappingByBook(engine: create_engine, book_id):
+def getSeriesMappingByBook(book_id, service: SQLiteService):
     """Get book id from series mapping from db by series id"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesMappingsTable).where(
             SeriesMappingsTable.bookId == book_id
         )
@@ -39,9 +41,9 @@ def getSeriesMappingByBook(engine: create_engine, book_id):
         return None
 
 
-def getSeriesMappingBySeries(engine: create_engine, series_id):
+def getSeriesMappingBySeries(series_id, service: SQLiteService):
     """Get book id from series mapping from db by series id"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesMappingsTable).where(
             SeriesMappingsTable.seriesId == series_id
         )
@@ -56,10 +58,10 @@ def updateSeriesMapping():
     """Update series mapping in db"""
 
 
-def deleteSeriesMapping(engine: create_engine, series_id):
+def deleteSeriesMapping(series_id, service: SQLiteService):
     """Delete series mapping from db"""
     print(f"Deleting series mapping: {series_id}")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesMappingsTable).where(
             SeriesMappingsTable.seriesId == series_id
         )

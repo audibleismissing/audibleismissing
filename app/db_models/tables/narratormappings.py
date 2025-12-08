@@ -1,8 +1,20 @@
 import uuid
+from fastapi import Depends
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
 
 from app.db_models.tables.genremappings import GenreMappingsTable
+from app.services.sqlite import SQLiteService
+
+# setup global services
+db_service = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
 
 
 class NarratorMappingsTable(SQLModel, table=True):
@@ -13,12 +25,12 @@ class NarratorMappingsTable(SQLModel, table=True):
     bookId: str = Field(default=None, foreign_key="books.id")
 
 
-def addNarratorMapping(engine: create_engine, narrator_id, book_id) -> str:
+def addNarratorMapping(narrator_id, book_id, service: SQLiteService) -> str:
     """Add narrator mapping to db"""
     print(f"Adding narrator mapping: {narrator_id} -> {book_id}")
     row = NarratorMappingsTable(narratorId=narrator_id, bookId=book_id)
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         session.add(row)
         session.commit()
         session.refresh(row)
@@ -26,9 +38,9 @@ def addNarratorMapping(engine: create_engine, narrator_id, book_id) -> str:
     return None
 
 
-def getNarratorMappingByBook(engine: create_engine, book_id):
+def getNarratorMappingByBook(book_id, service: SQLiteService):
     """Get narrator mapping from db"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(NarratorMappingsTable).where(
             NarratorMappingsTable.bookId == book_id
         )

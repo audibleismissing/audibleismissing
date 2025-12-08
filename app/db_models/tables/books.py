@@ -3,12 +3,36 @@ from decimal import Decimal
 
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, and_
+from fastapi import Depends
 
 from app.custom_objects.book import Book
 
-from app.db_models.tables.authors import getBookAuthors
-from app.db_models.tables.genres import getBookGenres
-from app.db_models.tables.narrators import getBookNarrators
+from app.db_models.tables.helpers import returnAuthorObj, returnBookObj, returnGenreObj, returnNarratorObj, returnSeriesObj
+
+
+from app.services.sqlite import SQLiteService
+from app.services.task_manager import BackgroundTaskManagerService
+
+# setup global services
+db_service = None
+background_manager = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
+
+def get_background_manager() -> BackgroundTaskManagerService:
+    """Get the background task manager instance."""
+    global background_manager
+    if background_manager is None:
+        background_manager = BackgroundTaskManagerService()
+    return background_manager
+
+
+# service: SQLiteService = Depends(get_db_service)
 
 
 class BooksTable(SQLModel, table=True):
@@ -44,7 +68,7 @@ class BooksTable(SQLModel, table=True):
     isAudiobook: bool = Field(default=True)
 
 
-def addBook(engine, book: Book) -> str:
+def addBook(book: Book, service: SQLiteService) -> str:
     """Add book to db"""
     from bs4 import BeautifulSoup
 
@@ -81,16 +105,16 @@ def addBook(engine, book: Book) -> str:
         isAudiobook=book.isAudiobook,
     )
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         session.add(row)
         session.commit()
         session.refresh(row)
         return row.id
 
 
-def getBook(engine: create_engine, search_string) -> Book:
+def getBook(search_string, service: SQLiteService) -> Book:
     """Get book from db"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(BooksTable).where(
             or_(
                 BooksTable.title == search_string,
@@ -101,11 +125,11 @@ def getBook(engine: create_engine, search_string) -> Book:
 
         results = session.exec(statement).first()
         if results:
-            return returnBookObj(engine, results)
+            return returnBookObj(results, service)
         return None
 
 
-def updateBook(engine: create_engine, book: Book) -> str:
+def updateBook(book: Book, service: SQLiteService) -> str:
     """Update book in db"""
     from bs4 import BeautifulSoup
 
@@ -117,7 +141,7 @@ def updateBook(engine: create_engine, book: Book) -> str:
         clean_description = "No desciption available."
 
     print(f"Updating book: {book.title}")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(BooksTable).where(BooksTable.id == book.id)
         results = session.exec(statement).one()
 
@@ -149,9 +173,9 @@ def updateBook(engine: create_engine, book: Book) -> str:
         return results.id
 
 
-def deleteBook(engine: create_engine, search_string) -> None:
+def deleteBook(search_string, service: SQLiteService) -> None:
     """Delete book from db by book asin or id"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(BooksTable).where(
             or_(BooksTable.bookAsin == search_string, BooksTable.id == search_string)
         )
@@ -159,8 +183,8 @@ def deleteBook(engine: create_engine, search_string) -> None:
         session.delete(results)
 
 
-def doesBookExist(engine, search_string):
-    with Session(engine) as session:
+def doesBookExist(search_string, service: SQLiteService):
+    with Session(service.engine) as session:
         statement = select(BooksTable).where(
             or_(
                 BooksTable.title == search_string,
@@ -176,26 +200,26 @@ def doesBookExist(engine, search_string):
             return False
 
 
-def getAllBooks(engine) -> list:
-    with Session(engine) as session:
+def getAllBooks(service: SQLiteService) -> list:
+    with Session(service.engine) as session:
         statement = select(BooksTable).order_by(BooksTable.title)
         results = session.exec(statement).all()
 
         if results:
             all_books = []
             for item in results:
-                book = returnBookObj(engine, item)
+                book = returnBookObj(item, service)
                 all_books.append(book)
 
             return all_books
         return None
 
 
-def getBooksToBeReleased(engine, time_window) -> list:
+def getBooksToBeReleased(time_window, service: SQLiteService) -> list:
     from datetime import datetime
 
     current_date = datetime.now().strftime("%Y-%m-%d")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = (
             select(BooksTable)
             .where(BooksTable.releaseDate > current_date)
@@ -207,47 +231,10 @@ def getBooksToBeReleased(engine, time_window) -> list:
         if results:
             all_books = []
             for item in results:
-                book = returnBookObj(engine, item)
+                book = returnBookObj(item, service)
                 all_books.append(book)
 
             return all_books
         return None
 
 
-def returnBookObj(engine, book_table) -> Book:
-    """Convert a BooksTable object to a Book object"""
-    book = Book()
-
-    # Map the fields from BooksTable to Book
-    book.id = book_table.id
-    book.title = book_table.title
-    book.subtitle = book_table.subtitle
-    book.publisher = book_table.publisher
-    book.copyright = book_table.copyright
-    book.description = book_table.description
-    book.summary = book_table.summary
-    book.isbn = book_table.isbn
-    book.bookAsin = book_table.bookAsin
-    book.region = book_table.region
-    book.language = book_table.language
-    book.isExplicit = book_table.isExplicit
-    book.isAbridged = book_table.isAbridged
-    book.releaseDate = book_table.releaseDate
-    book.link = book_table.link
-    book.imageUrl = book_table.imageUrl
-    book.isOwned = book_table.isOwned
-    book.audibleOverallAvgRating = book_table.audibleOverallAvgRating
-    book.audiblePerformanceAvgRating = book_table.audiblePerformanceAvgRating
-    book.audibleStoryAvgRating = book_table.audibleStoryAvgRating
-    book.lengthMinutes = book_table.lengthMinutes
-    book.isAudiobook = book_table.isAudiobook
-
-    book.authors = getBookAuthors(engine, book_table.id)
-    book.genres = getBookGenres(engine, book_table.id)
-    # import here to avoid circular import at module import time
-    from app.db_models.tables.series import getBookSeries
-
-    book.series = getBookSeries(engine, book_table.id)
-    book.narrators = getBookNarrators(engine, book_table.id)
-
-    return book

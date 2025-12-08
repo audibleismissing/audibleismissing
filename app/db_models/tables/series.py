@@ -1,5 +1,6 @@
 from decimal import Decimal
 import uuid
+from fastapi import Depends
 
 from sqlmodel import (
     Field,
@@ -15,6 +16,18 @@ from sqlmodel import (
 from app.custom_objects.series import Series
 from app.db_models.tables import books
 from app.db_models.tables.seriesmappings import SeriesMappingsTable
+from app.services.sqlite import SQLiteService
+from app.db_models.tables.helpers import returnAuthorObj, returnBookObj, returnGenreObj, returnNarratorObj, returnSeriesObj
+
+# setup global services
+db_service = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
 
 
 class SeriesTable(SQLModel, table=True):
@@ -26,7 +39,7 @@ class SeriesTable(SQLModel, table=True):
     rating: Decimal | None = Field(default=0, max_digits=3, decimal_places=2)
 
 
-def addSeries(engine: create_engine, series: Series) -> str:
+def addSeries(series: Series, service: SQLiteService) -> str:
     """Add series to db"""
     print(f"Adding series: {series.name}")
 
@@ -34,7 +47,7 @@ def addSeries(engine: create_engine, series: Series) -> str:
         name=series.name, seriesAsin=series.seriesAsin, rating=series.rating
     )
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         session.add(row)
         session.commit()
         session.refresh(row)
@@ -43,9 +56,9 @@ def addSeries(engine: create_engine, series: Series) -> str:
     return None
 
 
-def getSeries(engine: create_engine, search_string):
+def getSeries(search_string, service: SQLiteService):
     """Get series from db"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesTable).where(
             or_(SeriesTable.name == search_string, SeriesTable.id == search_string)
         )
@@ -56,10 +69,10 @@ def getSeries(engine: create_engine, search_string):
         return None
 
 
-def updateSeries(engine: create_engine, series: Series) -> str:
+def updateSeries(series: Series, service: SQLiteService) -> str:
     """Update series in db"""
     print(f"Updating series: {series.name}")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesTable).where(SeriesTable.id == series.id)
         results = session.exec(statement).one()
 
@@ -72,18 +85,18 @@ def updateSeries(engine: create_engine, series: Series) -> str:
         return results.id
 
 
-def deleteSeries(engine: create_engine, series_id):
+def deleteSeries(series_id, service: SQLiteService):
     """Delete series from db"""
     print(f"Deleting series: {series_id}")
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesTable).where(SeriesTable.id == series_id)
         results = session.exec(statement)
         row = results.one()
         session.delete(row)
 
 
-def doesSeriesExist(engine: create_engine, search_string) -> bool:
-    with Session(engine) as session:
+def doesSeriesExist(search_string, service: SQLiteService) -> bool:
+    with Session(service.engine) as session:
         statement = select(SeriesTable).where(
             or_(SeriesTable.name == search_string, SeriesTable.id == search_string)
         )
@@ -95,9 +108,9 @@ def doesSeriesExist(engine: create_engine, search_string) -> bool:
             return False
 
 
-def getBookSeries(engine: create_engine, book_id) -> list:
+def getBookSeries(book_id, service: SQLiteService) -> list:
     """Get series object by book id"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         # get the series related to a specific book id
         series_mappings_query = select(SeriesMappingsTable).where(
             SeriesMappingsTable.bookId == book_id
@@ -121,13 +134,13 @@ def getBookSeries(engine: create_engine, book_id) -> list:
         return series_list
 
 
-def getSeriesByBook(engine: create_engine, search_string) -> list:
+def getSeriesByBook(search_string, service: SQLiteService) -> list:
     """Get list of books in a series by book asin or title"""
 
     # import BooksTable and returnBookObj locally to avoid circular import
     from app.db_models.tables.books import BooksTable, returnBookObj
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         # find the book row by asin
         book_row = session.exec(
             select(BooksTable).where(
@@ -161,18 +174,18 @@ def getSeriesByBook(engine: create_engine, search_string) -> list:
                 select(BooksTable).where(BooksTable.id == mapping.bookId)
             ).one_or_none()
             if book_row:
-                series_list.append(returnBookObj(engine, book_row))
+                series_list.append(returnBookObj(book_row, service))
 
         return series_list
 
 
-def getBooksInSeries(engine: create_engine, search_string) -> list:
+def getBooksInSeries(search_string, service: SQLiteService) -> list:
     """Get list of books in a series by series id or name"""
 
     # import BooksTable and returnBookObj locally to avoid circular import
     from app.db_models.tables.books import BooksTable, returnBookObj
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         # find the series id in case name is provided
         series_id = session.exec(
             select(SeriesTable.id).where(
@@ -200,14 +213,14 @@ def getBooksInSeries(engine: create_engine, search_string) -> list:
             ).all()
             if book_results:
                 for book_row in book_results:
-                    books_list.append(returnBookObj(engine, book_row))
+                    books_list.append(returnBookObj(book_row, service))
 
         return books_list
 
 
-def getAllSeries(engine) -> list:
+def getAllSeries(service: SQLiteService) -> list:
     """Gets all series"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(SeriesTable).order_by(SeriesTable.name)
         results = session.exec(statement).all()
 
@@ -219,9 +232,9 @@ def getAllSeries(engine) -> list:
         return series_list
 
 
-def calculateSeriesRating(engine, series_id: str) -> Decimal:
+def calculateSeriesRating(series_id: str, service: SQLiteService) -> Decimal:
     """Averages ratings of books in a series and updates the series table entry"""
-    books_in_series = getBooksInSeries(engine, series_id)
+    books_in_series = getBooksInSeries(series_id, service)
 
     if books_in_series:
         total = 0
@@ -234,21 +247,10 @@ def calculateSeriesRating(engine, series_id: str) -> Decimal:
         return rating
 
 
-def returnSeriesObj(sql_data) -> Series:
-    series = Series()
-    series.id = sql_data.id
-    series.name = sql_data.name
-    series.seriesAsin = sql_data.seriesAsin
-    if hasattr(sql_data, "sequence"):
-        series.sequence = sql_data.sequence
-    series.rating = sql_data.rating
-    return series
-
-
-def cleanupDanglingSeries(engine: create_engine):
+def cleanupDanglingSeries(service: SQLiteService):
     """Deletes DB entries from the SeriesTable and SeriesMappingsTable that don't have a seriesAsin."""
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         # Find series that don't have a seriesAsin
         statement = select(SeriesTable).where(SeriesTable.seriesAsin.is_(None))
         series_without_asin = session.exec(statement).all()

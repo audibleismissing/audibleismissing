@@ -8,11 +8,11 @@ from app.custom_objects.book import Book
 
 
 # get book and return book object
-def getAudibleBook(auth, asin) -> Book:
+async def getAudibleBook(auth, asin) -> Book:
     from app.app_helpers.audibleapi.audibleapi_helpers import returnBookObj
 
-    with audible.Client(auth) as client:
-        item = client.get(
+    async with audible.AsyncClient(auth) as client:
+        item = await client.get(
             f"1.0/catalog/products/{asin}",
             response_groups="product_desc, product_details, series, contributors, rating, category_ladders, relationships, media",
         )
@@ -23,11 +23,11 @@ def getAudibleBook(auth, asin) -> Book:
     return None
 
 
-def getAudibleBooksInSeries(auth, asin) -> Dict[str, Any]:
+async def getAudibleBooksInSeries(auth, asin) -> Dict[str, Any]:
     from app.app_helpers.audibleapi.audibleapi_helpers import returnListofBookObjs
 
-    with audible.Client(auth) as client:
-        item = client.get(
+    async with audible.AsyncClient(auth) as client:
+        item = await client.get(
             f"/1.0/catalog/products/{asin}/sims",
             response_groups="product_desc, product_details, series, contributors, rating, media",
             similarity_type="InTheSameSeries",

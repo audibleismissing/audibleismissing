@@ -1,6 +1,18 @@
 import uuid
+from fastapi import Depends
 
 from sqlmodel import Field, SQLModel, Session, create_engine, or_, select
+from app.services.sqlite import SQLiteService
+
+# setup global services
+db_service = None
+
+def get_db_service() -> SQLiteService:
+    """Get the database service instance."""
+    global db_service
+    if db_service is None:
+        db_service = SQLiteService()
+    return db_service
 
 
 class GenreMappingsTable(SQLModel, table=True):
@@ -11,7 +23,7 @@ class GenreMappingsTable(SQLModel, table=True):
     bookId: str | None = Field(default=None, foreign_key="books.id")
 
 
-def addGenreMapping(engine: create_engine, genre_id, book_id) -> str:
+def addGenreMapping(genre_id, book_id, service: SQLiteService) -> str:
     """Add genre mapping to db"""
     print(f"Adding genre mapping: {genre_id} -> {book_id}")
     row = GenreMappingsTable(
@@ -19,7 +31,7 @@ def addGenreMapping(engine: create_engine, genre_id, book_id) -> str:
         bookId=book_id,
     )
 
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         session.add(row)
         session.commit()
         session.refresh(row)
@@ -27,9 +39,9 @@ def addGenreMapping(engine: create_engine, genre_id, book_id) -> str:
     return None
 
 
-def getGenreMappingByBook(engine: create_engine, book_id):
+def getGenreMappingByBook(book_id, service: SQLiteService):
     """Get genre mapping from db"""
-    with Session(engine) as session:
+    with Session(service.engine) as session:
         statement = select(GenreMappingsTable).where(
             GenreMappingsTable.bookId == book_id
         )
