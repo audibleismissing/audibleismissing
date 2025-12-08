@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from app.services.task_manager import BackgroundTaskManagerService
+from app.services.sqlite import SQLiteService
 from app.routers.pages import (
     index,
     series,
@@ -22,6 +23,7 @@ from fastapi.staticfiles import StaticFiles
 
 # setup global varables for services
 background_manager = None
+database = None
 
 # Start the scheduler
 @asynccontextmanager
@@ -29,7 +31,9 @@ async def lifespan(app: FastAPI):
     """Handle startup and shutdown."""
     # startup
     global background_manager
+    global database
     background_manager = BackgroundTaskManagerService()
+    database = SQLiteService()
     await background_manager.start()
 
     yield

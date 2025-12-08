@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import UTC, datetime, timezone
+from datetime import UTC
 from typing import Optional
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -9,19 +9,23 @@ from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor
 
 from app.services.sqlite import SQLiteService
-from app.custom_objects.settings import Settings
+from app.custom_objects.settings import readSettings
 
 
 class BackgroundTaskManagerService:
     """Manager for background tasks."""
 
-    def __init__(self, games_directory: Optional[str] = None):
-        self.games_directory = games_directory
+    def __init__(self):
         self.scheduler = None
-        self.db_service = SQLiteService() # This will initalize the database
-        self.settings = Settings()
-        self.job_stores = MemoryJobStore()
-        self.executors = ThreadPoolExecutor()
+        # self.db_service = SQLiteService() # This will initalize the database
+        self.db_service = SQLiteService()
+        self.settings = readSettings()
+        self.job_stores = {
+            "default": MemoryJobStore()
+        }
+        self.executors = {
+            "default": ThreadPoolExecutor()
+        }
         self.job_defaults = {
             
         }
@@ -58,8 +62,6 @@ class BackgroundTaskManagerService:
             id='job_refresh_audiobookshelf_data ',
             name='Audiobookshelf data refresh daily',
             replace_existing=True,
-            jobstore=self.job_stores,
-            # executor=self.executor,
         )
         
         self.logger.info("Background task manager started with update checker scheduled")
@@ -82,7 +84,7 @@ class BackgroundTaskManagerService:
             
             self.logger.info("Starting scheduled new book check...")
             
-            audibleapi_functions.getMissingBooks(self.settings.audible_auth_file, self.db_service.engine)
+            audibleapi_functions.getMissingBooks(self.settings.audible_auth_file, self)
                 
             self.logger.info("New book check completed")
             
@@ -119,8 +121,8 @@ class BackgroundTaskManagerService:
 
             self.logger.info("Starting scheduled audiobookshelf data refresh...")
 
-            refreshAbsData(
-                self.settings.abs_url, self.settings.abs_api_key, self.settings.abs_library_id, self.db_service.service
+            await refreshAbsData(
+                self.settings.abs_url, self.settings.abs_api_key, self.settings.abs_library_id, self.db_service.engine
             )
 
             self.logger.info("Audiobookshelf data refresh completed")

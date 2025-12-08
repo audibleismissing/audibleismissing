@@ -3,11 +3,6 @@ from fastapi import BackgroundTasks, Depends
 from app.routers.api import api_router
 from app.routers.route_tags import Tags
 from app.custom_objects import settings
-# from app.app_helpers.fastapi_utils.fastapi_tasks import (
-#     taskRefreshAbsData,
-#     getMissingAudibleBooks,
-#     refreshAudnexusData,
-# )
 from app.app_helpers.audibleapi.audibleapi_api import loadExistingAuth
 
 
@@ -15,15 +10,15 @@ from app.services.sqlite import SQLiteService
 from app.services.task_manager import BackgroundTaskManagerService
 
 # setup global services
-db_service = None
+database = None
 background_manager = None
 
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
-    global db_service
-    if db_service is None:
-        db_service = SQLiteService()
-    return db_service
+    global database
+    if database is None:
+        database = SQLiteService()
+    return database
 
 def get_background_manager() -> BackgroundTaskManagerService:
     """Get the background task manager instance."""
@@ -44,8 +39,12 @@ settings = settings.readSettings()
 
 @router.get("/database/refreshabsdata", tags=[Tags.admin])
 async def refresh_abs_Data(background_task: BackgroundTasks, service: SQLiteService = Depends(get_db_service)):
-    """Wipes all data from db and re-import abs data"""
-    background_task.add_task(taskRefreshAbsData, settings, service)
+    """Import abs data"""
+    # background_task.add_task(taskRefreshAbsData, settings, service)
+    task_manager = get_background_manager()
+    await task_manager.job_refresh_audiobookshelf_data()
+
+
     return {"message": "Refreshing data. This may take a while."}
 
 

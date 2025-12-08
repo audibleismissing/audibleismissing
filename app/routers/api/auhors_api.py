@@ -6,7 +6,6 @@ from app.routers.route_tags import Tags
 from app.response_models import book_response, series_response, series_view
 from app.custom_objects import settings
 from app.db_models import db_helpers
-from app.app_helpers.fastapi_utils.fastapi_tasks import taskRefreshAbsData
 
 from app.db_models.tables import authors as authors_table
 from app.db_models.views import booksandseries, seriesandcounts

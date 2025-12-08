@@ -20,40 +20,15 @@ from app.db_models.tables.authors import getAuthor
 from app.db_models.tables.genres import getGenre
 from app.db_models.tables.narrators import getNarrator
 from app.db_models.tables.series import getSeries
-
-
 from app.app_helpers.audiobookshelf.audiobookshelf_api import (
     getLibraryItem,
     getLibraryItems,
 )
-
-
 from app.services.sqlite import SQLiteService
-from app.services.task_manager import BackgroundTaskManagerService
-
-# setup global services
-db_service = None
-background_manager = None
-
-def get_db_service() -> SQLiteService:
-    """Get the database service instance."""
-    global db_service
-    if db_service is None:
-        db_service = SQLiteService()
-    return db_service
-
-def get_background_manager() -> BackgroundTaskManagerService:
-    """Get the background task manager instance."""
-    global background_manager
-    if background_manager is None:
-        background_manager = BackgroundTaskManagerService()
-    return background_manager
 
 
-# service: SQLiteService = Depends(get_db_service)
 
-
-def refreshAbsData(url, abs_api_key, library_id, service: SQLiteService) -> None:
+async def refreshAbsData(url, abs_api_key, library_id, service: SQLiteService) -> None:
     abs_books = []
     abs_books = getLibraryItems(url, abs_api_key, library_id)
 

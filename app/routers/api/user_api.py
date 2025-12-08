@@ -1,4 +1,4 @@
-from fastapi import BackgroundTasks, Query, Form, Depends
+from fastapi import Query, Form, Depends
 from typing import Annotated, List
 from pydantic import BaseModel
 
@@ -31,15 +31,15 @@ router = api_router.initRouter()
 
 
 # setup global services
-db_service = None
+database = None
 background_manager = None
 
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
-    global db_service
-    if db_service is None:
-        db_service = SQLiteService()
-    return db_service
+    global database
+    if database is None:
+        database = SQLiteService()
+    return database
 
 def get_background_manager() -> BackgroundTaskManagerService:
     """Get the background task manager instance."""
