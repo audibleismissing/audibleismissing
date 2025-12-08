@@ -2,8 +2,14 @@ import toml
 import json
 import os
 
-settings_file = os.path.join(os.getcwd(), "config/settings.toml")
-audible_auth_file = os.path.join(os.getcwd(), "config/audible_auth")
+# settings_file = os.path.join(os.getcwd(), "config/settings.toml")
+# audible_auth_file = os.path.join(os.getcwd(), "config/audible_auth")
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
+
+settings_file = os.environ.get("SETTINGS_FILE", os.path.join(PROJECT_ROOT, "config", "settings.toml"))
+audible_auth_file = os.environ.get("AUDIBLE_AUTH_FILE", os.path.join(PROJECT_ROOT, "config", "audible_auth"))
 
 
 class Settings:
@@ -33,9 +39,6 @@ def readSettings() -> toml:
         with open(settings_file) as file:
             config = toml.load(file)
 
-    # print("Using settings:")
-    # print(json.dumps(config, indent=4))
-
     return getSettingsObj(config)
 
 
@@ -44,6 +47,7 @@ def getSettingsObj(toml_config) -> Settings:
     settings.abs_url = toml_config["audiobookshelf"]["url"]
     settings.abs_api_key = toml_config["audiobookshelf"]["api_key"]
     settings.abs_library_id = toml_config["audiobookshelf"]["library_id"]
+    settings.audible_auth_file = audible_auth_file
     return settings
 
 

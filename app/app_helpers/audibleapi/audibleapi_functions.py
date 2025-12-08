@@ -218,3 +218,4 @@ def processBook(single_book, service: SQLiteService) -> None:
             updateGenre(single_genre, service)
         if not getGenreMappingByBook(single_book.id, service):
             addGenreMapping(single_genre.id, single_book.id, service)
+
