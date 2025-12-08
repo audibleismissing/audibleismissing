@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional, Union
 
-import requests
+import httpx
 
 # def make_api_request(
 #     method: str,
@@ -62,7 +62,7 @@ import requests
 #         raise requests.exceptions.RequestException(f"API request failed: {e}")
 
 
-def make_api_request(
+async def make_api_request(
     method: str,
     url: str,
     headers: Optional[Dict[str, str]] = None,
@@ -71,7 +71,6 @@ def make_api_request(
     json_data: Optional[Dict[str, Any]] = None,
     timeout: int = 30,
     allow_redirects: bool = True,
-    verify_ssl: bool = True,
 ) -> Dict[str, Any]:
     """
     Make a REST API request and return JSON as a Python object.
@@ -96,30 +95,30 @@ def make_api_request(
     """
 
     # Make the request
-    response = requests.request(
-        method=method.upper(),
-        url=url,
-        headers=headers,
-        params=params,
-        data=data,
-        json=json_data,
-        timeout=timeout,
-        allow_redirects=allow_redirects,
-        verify=verify_ssl,
-    )
+    async with httpx.AsyncClient() as client:
+        response = await client.request(
+            method=method.upper(),
+            url=url,
+            headers=headers,
+            params=params,
+            data=data,
+            json=json_data,
+            timeout=timeout,
+            follow_redirects=allow_redirects,
+        )
 
-    # we want to allow 40x codes since they may just be that the item wasn't found
-    if response:
-        return response.json()
-    else:
-        if response.status_code == "404":
-            print(f"Not found: {response.status_code()}")
-        if response.status_code == "403":
-            print(f"Forbidden: {response.status_code()}")
-        return None
+        # we want to allow 40x codes since they may just be that the item wasn't found
+        if response.is_success:
+            return response.json()
+        else:
+            if response.status_code == 404:
+                print(f"Not found: {response.status_code}")
+            if response.status_code == 403:
+                print(f"Forbidden: {response.status_code}")
+            return None
 
 
-def get_json_from_api(
+async def get_json_from_api(
     url: str,
     headers: Optional[Dict[str, str]] = None,
     params: Optional[Dict[str, Any]] = None,
@@ -137,12 +136,12 @@ def get_json_from_api(
     Returns:
         Dictionary containing the JSON response
     """
-    return make_api_request(
+    return await make_api_request(
         method="GET", url=url, headers=headers, params=params, timeout=timeout
     )
 
 
-def post_json_to_api(
+async def post_json_to_api(
     url: str,
     data: Dict[str, Any],
     headers: Optional[Dict[str, str]] = None,
@@ -160,6 +159,6 @@ def post_json_to_api(
     Returns:
         Dictionary containing the JSON response
     """
-    return make_api_request(
+    return await make_api_request(
         method="POST", url=url, headers=headers, json_data=data, timeout=timeout
     )

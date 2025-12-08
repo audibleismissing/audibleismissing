@@ -15,7 +15,7 @@ def getHeaders(api_key: str):
 
 
 # gets all library items (books)
-def getLibraryItems(url, api_key, library_id) -> Dict[str, Any]:
+async def getLibraryItems(url, api_key, library_id) -> Dict[str, Any]:
     """Retrieves library items from a specified library API endpoint.
 
     Parameters:
@@ -31,13 +31,13 @@ def getLibraryItems(url, api_key, library_id) -> Dict[str, Any]:
     headers = getHeaders(api_key)
 
     try:
-        return rest.get_json_from_api(url, headers)
+        return await rest.get_json_from_api(url, headers)
     except ValueError as e:
         raise ValueError(f"getLibraryItems(): {e}")
 
 
 # gets single library item (book)
-def getLibraryItem(url, api_key, item_id) -> Dict[str, Any]:
+async def getLibraryItem(url, api_key, item_id) -> Dict[str, Any]:
     """Retrieves a specific library item and converts it to a Book object.
 
     Parameters:
@@ -53,7 +53,7 @@ def getLibraryItem(url, api_key, item_id) -> Dict[str, Any]:
     headers = getHeaders(api_key)
 
     try:
-        book = rest.get_json_from_api(url, headers)
+        book = await rest.get_json_from_api(url, headers)
         return returnBookObj(book)
     except ValueError as e:
         raise ValueError(f"getLibraryItem(): {e}")

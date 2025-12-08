@@ -122,7 +122,7 @@ class BackgroundTaskManagerService:
             self.logger.info("Starting scheduled audiobookshelf data refresh...")
 
             await refreshAbsData(
-                self.settings.abs_url, self.settings.abs_api_key, self.settings.abs_library_id, self.db_service.engine
+                self.settings.abs_url, self.settings.abs_api_key, self.settings.abs_library_id, self.db_service
             )
 
             self.logger.info("Audiobookshelf data refresh completed")

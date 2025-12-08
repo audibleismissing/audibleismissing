@@ -30,12 +30,12 @@ from app.services.sqlite import SQLiteService
 
 async def refreshAbsData(url, abs_api_key, library_id, service: SQLiteService) -> None:
     abs_books = []
-    abs_books = getLibraryItems(url, abs_api_key, library_id)
+    abs_books = await getLibraryItems(url, abs_api_key, library_id)
 
     for abs_book in abs_books["results"]:
         if not doesBookExist(abs_book["id"], service):
             book = Book()
-            book = getLibraryItem(url, abs_api_key, abs_book["id"])
+            book = await getLibraryItem(url, abs_api_key, abs_book["id"])
 
             if not doesBookExist(book.bookAsin, service) and book.bookAsin is not None:
                 db_book_id = addBook(book, service)
