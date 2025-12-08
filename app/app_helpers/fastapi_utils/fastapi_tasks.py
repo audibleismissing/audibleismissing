@@ -47,16 +47,16 @@ def taskRefreshAbsData(settings, service: SQLiteService):
     print("Completed taskRefreshAbsData")
 
 
-def getMissingAudibleBooks(engine, auth, service: SQLiteService):
+def getMissingAudibleBooks(auth, service: SQLiteService):
     print("Starting getMissingAudibleBooks")
-    audible_functions.getMissingBooks(engine, auth)
+    audible_functions.getMissingBooks(auth, service)
     print("Completed getMissingAudibleBooks")
 
 
 # testing audnexus
-def refreshAudnexusData(engine, service: SQLiteService):
+def refreshAudnexusData(service: SQLiteService):
     print("Starting backfillAudnexusBookData")
-    audnexus_functions.backfillAudnexusBookData(engine)
+    audnexus_functions.backfillAudnexusBookData(service.engine)
     print("Completed backfillAudnexusBookData")
 
 

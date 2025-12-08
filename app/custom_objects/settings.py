@@ -45,7 +45,7 @@ def getSettingsObj(toml_config) -> Settings:
     settings.abs_url = toml_config["audiobookshelf"]["url"]
     settings.abs_api_key = toml_config["audiobookshelf"]["api_key"]
     settings.abs_library_id = toml_config["audiobookshelf"]["library_id"]
-    settings.audible_auth = toml_config["audible"]["auth_file"]
+    settings.audible_auth_file = toml_config["audible"]["auth_file"]
     return settings
 
 

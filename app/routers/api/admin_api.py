@@ -61,7 +61,7 @@ async def reset_db(background_task: BackgroundTasks, service: SQLiteService = De
 @router.get("/database/backfill_audible", tags=[Tags.admin])
 async def backfill_audible(background_task: BackgroundTasks, service: SQLiteService = Depends(get_db_service)):
     """Gets missing info from audible. Run /abs/resetdb endpoint first"""
-    auth = loadExistingAuth(settings.audible_auth)
+    auth = loadExistingAuth(settings.audible_auth_file)
     if auth:
         # background_task.add_task(refreshAudibleData, engine, auth)
         # background_task.add_task(refreshAudimetaData, service) # testing audimeta
@@ -73,7 +73,7 @@ async def backfill_audible(background_task: BackgroundTasks, service: SQLiteServ
 @router.get("/database/get_missing_books", tags=[Tags.admin])
 async def get_missingBooks(background_task: BackgroundTasks, service: SQLiteService = Depends(get_db_service)):
     """Gets missing books from audible."""
-    auth = loadExistingAuth(settings.audible_auth)
+    auth = loadExistingAuth(settings.audible_auth_file)
     if auth:
         background_task.add_task(getMissingAudibleBooks, auth, service)
         return {"message": "Refreshing data. This may take a while."}

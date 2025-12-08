@@ -85,7 +85,7 @@ def get_db_service() -> SQLiteService:
 # from app.db_models.tables.genremappings import addGenreMapping, getGenreMappingByBook
 
 
-def getMissingBooks(auth, service: SQLiteService = Depends(get_db_service)):
+def getMissingBooks(auth, service: SQLiteService):
     """
     Populates missing book, author, genre, narrator, and series information from audible.
     """
