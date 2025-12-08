@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import datetime, time
+from datetime import UTC, datetime, timezone
 from typing import Optional
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -20,8 +20,11 @@ class BackgroundTaskManagerService:
         self.scheduler = None
         self.db_service = SQLiteService() # This will initalize the database
         self.settings = Settings()
-        self.job_store = MemoryJobStore()
-        self.executor = ThreadPoolExecutor()
+        self.job_stores = MemoryJobStore()
+        self.executors = ThreadPoolExecutor()
+        self.job_defaults = {
+            
+        }
 
 
         # logging config
@@ -32,7 +35,11 @@ class BackgroundTaskManagerService:
     async def start(self):
         """Start the background task manager."""
         if not self.scheduler:
-            self.scheduler = AsyncIOScheduler()
+            self.scheduler = AsyncIOScheduler(
+                jobstores=self.job_stores,
+                executors=self.executors,
+                timezone=UTC,
+            )
             self.scheduler.start()
         
         self.logger.info("Starting background tasks...")
@@ -44,15 +51,15 @@ class BackgroundTaskManagerService:
         #     name='Check for new books every day',
         #     replace_existing=True
         # )
-        
+
         self.scheduler.add_job(
             self.job_refresh_audiobookshelf_data,
-            CronTrigger(day=0),
+            trigger=CronTrigger(hour=0),
             id='job_refresh_audiobookshelf_data ',
             name='Audiobookshelf data refresh daily',
             replace_existing=True,
-            jobstore=self.job_store,
-            executor=self.executor,
+            jobstore=self.job_stores,
+            # executor=self.executor,
         )
         
         self.logger.info("Background task manager started with update checker scheduled")
@@ -60,9 +67,10 @@ class BackgroundTaskManagerService:
     async def stop(self):
         """Stop the background task manager."""
         if self.scheduler:
-            self.scheduler.shutdown()
+            self.scheduler.shutdown(wait=False)
         self.logger.info("Background task manager stopped")
     
+
     async def job_check_for_new_books(self):
         """
         Background task to check for updates to all book series in the database.

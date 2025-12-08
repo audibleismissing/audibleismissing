@@ -48,6 +48,7 @@ app = FastAPI(
     description="""
     fill this out later
     """,
+    lifespan=lifespan,
 )
 
 
