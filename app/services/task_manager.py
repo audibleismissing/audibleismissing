@@ -8,9 +8,8 @@ from apscheduler.triggers.cron import CronTrigger
 from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor
 
-from sqlmodel import Session, select
-
 from app.services.sqlite import SQLiteService
+from app.custom_objects.settings import Settings
 
 
 class BackgroundTaskManagerService:
@@ -20,6 +19,10 @@ class BackgroundTaskManagerService:
         self.games_directory = games_directory
         self.scheduler = None
         self.db_service = SQLiteService() # This will initalize the database
+        self.settings = Settings()
+        self.job_store = MemoryJobStore()
+        self.executor = ThreadPoolExecutor()
+
 
         # logging config
         logging.basicConfig(level=logging.INFO)
@@ -32,14 +35,25 @@ class BackgroundTaskManagerService:
             self.scheduler = AsyncIOScheduler()
             self.scheduler.start()
         
-        # # Schedule the update check task to run every hour
+        self.logger.info("Starting background tasks...")
+
         # self.scheduler.add_job(
-        #     self.check_for_game_updates,
+        #     self.job_check_for_new_books,
         #     CronTrigger(day=0),
-        #     id='refresh ',
-        #     name='Check for game updates every hour',
+        #     id='job_check_for_new_books',
+        #     name='Check for new books every day',
         #     replace_existing=True
         # )
+        
+        self.scheduler.add_job(
+            self.job_refresh_audiobookshelf_data,
+            CronTrigger(day=0),
+            id='job_refresh_audiobookshelf_data ',
+            name='Audiobookshelf data refresh daily',
+            replace_existing=True,
+            jobstore=self.job_store,
+            executor=self.executor,
+        )
         
         self.logger.info("Background task manager started with update checker scheduled")
     
@@ -49,43 +63,59 @@ class BackgroundTaskManagerService:
             self.scheduler.shutdown()
         self.logger.info("Background task manager stopped")
     
-    # async def check_for_game_updates(self):
-    #     """
-    #     Background task to check for updates to all games in the database.
-    #     Updates the update_available column for each game.
-    #     """
-    #     try:
-    #         self.logger.info("Starting scheduled game update check...")
+    async def job_check_for_new_books(self):
+        """
+        Background task to check for updates to all book series in the database.
+        Adds new books if they are available.
+        """
+        
+        try:
+            from app.app_helpers.audibleapi import audibleapi_functions
             
-    #         # Get all games from the database
-    #         with Session(self.db_service.engine) as session:
-    #             games = session.exec(select(GogGames)).all()
-                
-    #             if not games:
-    #                 self.logger.info("No games found in database")
-    #                 return
-                
-    #             self.logger.info(f"Checking {len(games)} games for updates...")
-                
-    #             # Check each game for updates
-    #             for game in games:
-    #                 try:
-    #                     has_update = await self.gog_service.check_game_update_available(game.slug)
-                        
-    #                     # Update the game record if the update status has changed
-    #                     if game.update_available != has_update:
-    #                         game.update_available = has_update
-    #                         session.add(game)
-    #                         self.logger.info(f"Updated {game.title}: update_available = {has_update}")
-                        
-    #                 except Exception as e:
-    #                     self.logger.error(f"Error checking update for {game.title}: {e}")
-    #                     continue
-                
-    #             # Commit all changes
-    #             session.commit()
-                
-    #         self.logger.info("Game update check completed")
+            self.logger.info("Starting scheduled new book check...")
             
-    #     except Exception as e:
-    #         self.logger.error(f"Error in game update checker: {e}")
+            audibleapi_functions.getMissingBooks(self.settings.audible_auth_file, self.db_service.engine)
+                
+            self.logger.info("New book check completed")
+            
+        except Exception as e:
+            self.logger.error(f"Error in new book checker: {e}")
+
+
+    async def job_refresh_book_metadata(self):
+        """
+        Background task to refresh book metadata.
+        updates book metadata.
+        """
+        
+        try:
+            from app.app_helpers.audnexus import audnexus_functions
+            
+            self.logger.info("Starting scheduled book metadata update...")
+            
+            audnexus_functions.backfillAudnexusBookData(self.db_service.engine)
+                
+            self.logger.info("Book metadata update completed")
+            
+        except Exception as e:
+            self.logger.error(f"Error in book metadata updater: {e}")
+
+
+    async def job_refresh_audiobookshelf_data(self):
+        """
+        Background task to get new books from audiobookshelf.
+        """
+
+        try:
+            from app.app_helpers.audiobookshelf.audiobookshelf_functions import refreshAbsData
+
+            self.logger.info("Starting scheduled audiobookshelf data refresh...")
+
+            refreshAbsData(
+                self.settings.abs_url, self.settings.abs_api_key, self.settings.abs_library_id, self.db_service.service
+            )
+
+            self.logger.info("Audiobookshelf data refresh completed")
+
+        except Exception as e:
+            self.logger.error(f"Error in audiobookshelf data refresher: {e}")

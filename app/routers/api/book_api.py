@@ -9,9 +9,6 @@ from app.response_models import (
     narrator_response,
     genre_response,
 )
-from app.custom_objects import narrator, settings
-from app.db_models import db_helpers
-from app.app_helpers.fastapi_utils.fastapi_tasks import taskRefreshAbsData
 
 from app.db_models.tables import books as books_table
 from app.db_models.tables import series as series_table

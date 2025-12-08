@@ -3,12 +3,11 @@ from fastapi import BackgroundTasks, Depends
 from app.routers.api import api_router
 from app.routers.route_tags import Tags
 from app.custom_objects import settings
-from app.db_models import db_helpers
-from app.app_helpers.fastapi_utils.fastapi_tasks import (
-    taskRefreshAbsData,
-    getMissingAudibleBooks,
-    refreshAudnexusData,
-)
+# from app.app_helpers.fastapi_utils.fastapi_tasks import (
+#     taskRefreshAbsData,
+#     getMissingAudibleBooks,
+#     refreshAudnexusData,
+# )
 from app.app_helpers.audibleapi.audibleapi_api import loadExistingAuth
 
 
