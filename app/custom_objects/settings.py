@@ -2,8 +2,7 @@ import toml
 import json
 import os
 
-
-settings_file = "/config/settings.toml"
+settings_file = os.path.join(os.getcwd(), "config/settings.toml")
 
 
 class Settings:
