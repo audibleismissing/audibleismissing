@@ -34,7 +34,7 @@ def get_db_service() -> SQLiteService:
     return db_service
 
 
-def backfillAudnexusBookData(service: SQLiteService) -> None:
+async def backfillAudnexusBookData(service: SQLiteService) -> None:
     """
     Populates missing book, author, genre, narrator, and series information from audimeta.
     """
@@ -43,7 +43,7 @@ def backfillAudnexusBookData(service: SQLiteService) -> None:
 
     for single_book in all_books:
         print("-----------------------------------")
-        audnexus_book = audnexus_api.getAudnexusBookAsBook(single_book.bookAsin)
+        audnexus_book = await audnexus_api.getAudnexusBookAsBook(single_book.bookAsin)
 
         if audnexus_book is None:
             continue  # Skip this book

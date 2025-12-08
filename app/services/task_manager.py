@@ -23,9 +23,6 @@ class BackgroundTaskManagerService:
         self.job_stores = {
             "default": MemoryJobStore()
         }
-        self.executors = {
-            "default": ThreadPoolExecutor()
-        }
         self.job_defaults = {
             
         }
@@ -41,26 +38,33 @@ class BackgroundTaskManagerService:
         if not self.scheduler:
             self.scheduler = AsyncIOScheduler(
                 jobstores=self.job_stores,
-                executors=self.executors,
                 timezone=UTC,
             )
             self.scheduler.start()
         
         self.logger.info("Starting background tasks...")
 
-        # self.scheduler.add_job(
-        #     self.job_check_for_new_books,
-        #     CronTrigger(day=0),
-        #     id='job_check_for_new_books',
-        #     name='Check for new books every day',
-        #     replace_existing=True
-        # )
-
         self.scheduler.add_job(
             self.job_refresh_audiobookshelf_data,
             trigger=CronTrigger(hour=0),
             id='job_refresh_audiobookshelf_data ',
             name='Audiobookshelf data refresh daily',
+            replace_existing=True,
+        )
+
+        self.scheduler.add_job(
+            self.job_refresh_book_metadata,
+            trigger=CronTrigger(hour=1),
+            id='job_refresh_book_metadata ',
+            name='Metadata refresh',
+            replace_existing=True,
+        )
+
+        self.scheduler.add_job(
+            self.job_check_for_new_books,
+            trigger=CronTrigger(hour=2),
+            id='job_check_for_new_books ',
+            name='New book check',
             replace_existing=True,
         )
         
@@ -81,15 +85,19 @@ class BackgroundTaskManagerService:
         
         try:
             from app.app_helpers.audibleapi import audibleapi_functions
+            from app.app_helpers.audibleapi.audibleapi_api import loadExistingAuth
             
             self.logger.info("Starting scheduled new book check...")
             
-            audibleapi_functions.getMissingBooks(self.settings.audible_auth_file, self)
+            auth = loadExistingAuth(self.settings.audible_auth_file)
+
+            if auth:
+                await audibleapi_functions.getMissingBooks(auth, self.db_service)
                 
-            self.logger.info("New book check completed")
+                self.logger.info("New book check completed")
             
         except Exception as e:
-            self.logger.error(f"Error in new book checker: {e}")
+            self.logger.error(f"Audible not authenticated. New book checker failed: {e}")
 
 
     async def job_refresh_book_metadata(self):
@@ -103,7 +111,7 @@ class BackgroundTaskManagerService:
             
             self.logger.info("Starting scheduled book metadata update...")
             
-            audnexus_functions.backfillAudnexusBookData(self.db_service.engine)
+            await audnexus_functions.backfillAudnexusBookData(self.db_service)
                 
             self.logger.info("Book metadata update completed")
             
