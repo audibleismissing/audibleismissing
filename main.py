@@ -31,8 +31,11 @@ async def lifespan(app: FastAPI):
     # startup
     global background_manager
     global database
-    background_manager = BackgroundTaskManagerService()
+
     database = SQLiteService()
+    database.create_tables()
+
+    background_manager = BackgroundTaskManagerService()
     await background_manager.start()
 
     yield
