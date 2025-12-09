@@ -1,67 +1,13 @@
-from typing import Any, Dict, Optional, Union
-
 import httpx
-
-# def make_api_request(
-#     method: str,
-#     url: str,
-#     headers: Optional[Dict[str, str]] = None,
-#     params: Optional[Dict[str, Any]] = None,
-#     data: Optional[Union[Dict[str, Any], str]] = None,
-#     json_data: Optional[Dict[str, Any]] = None,
-#     timeout: int = 30,
-#     allow_redirects: bool = True,
-#     verify_ssl: bool = True
-# ) -> Dict[str, Any]:
-#     """
-#     Make a REST API request and return JSON as a Python object.
-
-#     Args:
-#         method: HTTP method (GET, POST, PUT, PATCH, DELETE, etc.)
-#         url: The URL to make the request to
-#         headers: Optional dictionary of HTTP headers
-#         params: Optional dictionary of URL parameters
-#         data: Optional data to send in the request body (form data)
-#         json_data: Optional JSON data to send in the request body
-#         timeout: Request timeout in seconds (default: 30)
-#         allow_redirects: Whether to allow redirects (default: True)
-#         verify_ssl: Whether to verify SSL certificates (default: True)
-
-#     Returns:
-#         Dictionary containing the JSON response
-
-#     Raises:
-#         requests.exceptions.RequestException: If the request fails
-#         ValueError: If the response is not valid JSON
-#     """
-#     try:
-#         # Make the request
-#         response = requests.request(
-#             method=method.upper(),
-#             url=url,
-#             headers=headers,
-#             params=params,
-#             data=data,
-#             json=json_data,
-#             timeout=timeout,
-#             allow_redirects=allow_redirects,
-#             verify=verify_ssl
-#         )
+from typing import Any, Dict, Optional, Union
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_random_exponential,
+)
 
 
-#         # Raise an exception for bad status codes (4xx or 5xx)
-#         response.raise_for_status()
-
-#         # Parse and return JSON response
-#         try:
-#             return response.json()
-#         except ValueError as e:
-#             raise ValueError(f"Invalid JSON response: {e}")
-
-#     except requests.exceptions.RequestException as e:
-#         raise requests.exceptions.RequestException(f"API request failed: {e}")
-
-
+@retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
 async def make_api_request(
     method: str,
     url: str,

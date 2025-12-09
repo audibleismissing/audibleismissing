@@ -85,19 +85,15 @@ class BackgroundTaskManagerService:
         
         try:
             from app.app_helpers.audibleapi import audibleapi_functions
-            from app.app_helpers.audibleapi.audibleapi_api import loadExistingAuth
             
             self.logger.info("Starting scheduled new book check...")
             
-            auth = loadExistingAuth(self.settings.audible_auth_file)
-
-            if auth:
-                await audibleapi_functions.getMissingBooks(auth, self.db_service)
+            await audibleapi_functions.getMissingBooks(self.db_service)
                 
-                self.logger.info("New book check completed")
+            self.logger.info("New book check completed")
             
         except Exception as e:
-            self.logger.error(f"Audible not authenticated. New book checker failed: {e}")
+            self.logger.error(f"New book checker failed: {e}")
 
 
     async def job_refresh_book_metadata(self):

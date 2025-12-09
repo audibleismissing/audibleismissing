@@ -12,8 +12,16 @@ class SQLiteService:
 
     def __init__(self, database_url: str = None):
         if database_url is None:
-            self.db_path = os.path.join(os.getcwd(), "config/audibleismissing.sqlite")
+            # Get project root (two levels up from this file: services/sqlite.py)
+            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+            PROJECT_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
+            
+            # Use project-relative path
+            self.db_path = os.path.join(PROJECT_ROOT, "config", "audibleismissing.sqlite")
             self.database_url = f"sqlite:///{self.db_path}"
+        else:
+            self.database_url = database_url
+
 
         self.engine = create_engine(
             self.database_url,
