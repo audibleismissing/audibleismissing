@@ -8,12 +8,14 @@ from app.services.task_manager import BackgroundTaskManagerService
 db_service = None
 background_manager = None
 
+
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
     global db_service
     if db_service is None:
         db_service = SQLiteService()
     return db_service
+
 
 def get_background_manager() -> BackgroundTaskManagerService:
     """Get the background task manager instance."""
@@ -24,6 +26,7 @@ def get_background_manager() -> BackgroundTaskManagerService:
 
 
 # service: SQLiteService = Depends(get_db_service)):
+
 
 def createBooksAndSeriesView(db_path) -> None:
     try:
@@ -116,7 +119,7 @@ def getViewBookDetails(book_id, service: SQLiteService):
         return {}
 
 
-#adfhasldfhaslkdjflkajshdflkjashdlfjhaslkdjfhlasdf
+# adfhasldfhaslkdjflkajshdflkjashdlfjhaslkdjfhlasdf
 def getViewReleaseDates(time_window, service: SQLiteService) -> list:
     """Get upcoming book releases using the booksandseries view"""
     from datetime import datetime

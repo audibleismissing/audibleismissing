@@ -144,19 +144,18 @@ def get_auth_expration_date() -> str:
     from app.custom_objects.settings import readSettings
 
     config = readSettings()
-    
-    with open(config.audible_auth_file, 'r') as f:
+
+    with open(config.audible_auth_file, "r") as f:
         auth_json = json.load(f)
 
-
     # Your expires value from audible_auth
-    expires_timestamp = auth_json['expires']
+    expires_timestamp = auth_json["expires"]
 
     # Convert to datetime object
     expiration_date = datetime.fromtimestamp(expires_timestamp)
 
     # Format as yyyy-MM-dd
-    expiration_date_formatted = expiration_date.strftime('%Y-%m-%d')
+    expiration_date_formatted = expiration_date.strftime("%Y-%m-%d")
 
     print(f"Expiration date: {expiration_date_formatted}")
     print(f"Full expiration datetime: {expiration_date}")

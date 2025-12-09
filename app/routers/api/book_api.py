@@ -18,7 +18,6 @@ from app.db_models.tables import genres as genres_table
 from app.db_models.views import booksandseries
 
 
-
 from app.services.sqlite import SQLiteService
 from app.services.task_manager import BackgroundTaskManagerService
 
@@ -26,12 +25,14 @@ from app.services.task_manager import BackgroundTaskManagerService
 database = None
 background_manager = None
 
+
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
     global database
     if database is None:
         database = SQLiteService()
     return database
+
 
 def get_background_manager() -> BackgroundTaskManagerService:
     """Get the background task manager instance."""
@@ -45,11 +46,6 @@ def get_background_manager() -> BackgroundTaskManagerService:
 
 
 router = api_router.initRouter()
-
-
-
-
-
 
 
 @router.get(
@@ -84,7 +80,9 @@ async def get_book(book_asin: str, service: SQLiteService = Depends(get_db_servi
 
 
 @router.get("/book/details/{book_id}", tags=[Tags.book])
-async def get_book_details(book_id: str, service: SQLiteService = Depends(get_db_service)):
+async def get_book_details(
+    book_id: str, service: SQLiteService = Depends(get_db_service)
+):
     """Returns single book by book id from details view"""
     results = booksandseries.getViewBookDetails(book_id, service)
     if results:
@@ -93,7 +91,9 @@ async def get_book_details(book_id: str, service: SQLiteService = Depends(get_db
 
 
 @router.get("/book/releasedates/{limit}", tags=[Tags.book])
-async def get_book_release_dates(limit: int, service: SQLiteService = Depends(get_db_service)):
+async def get_book_release_dates(
+    limit: int, service: SQLiteService = Depends(get_db_service)
+):
     """Gets books to be released. results limit."""
     results = booksandseries.getViewReleaseDates(limit, service)
 
@@ -107,7 +107,9 @@ async def get_book_release_dates(limit: int, service: SQLiteService = Depends(ge
     tags=[Tags.book],
     response_model=List[author_response.AuthorResponse],
 )
-async def get_book_authors(book_id: str, service: SQLiteService = Depends(get_db_service)):
+async def get_book_authors(
+    book_id: str, service: SQLiteService = Depends(get_db_service)
+):
     """Returns list of authors for a given book id"""
     results = authors_table.getBookAuthors(book_id, service)
     if results:
@@ -120,7 +122,9 @@ async def get_book_authors(book_id: str, service: SQLiteService = Depends(get_db
     tags=[Tags.book],
     response_model=List[narrator_response.NarratorResponse],
 )
-async def get_book_narrators(book_id: str, service: SQLiteService = Depends(get_db_service)):
+async def get_book_narrators(
+    book_id: str, service: SQLiteService = Depends(get_db_service)
+):
     """Returns list of narrators for a given book id"""
     results = narrators_table.getBookNarrators(book_id, service)
     if results:
@@ -133,7 +137,9 @@ async def get_book_narrators(book_id: str, service: SQLiteService = Depends(get_
     tags=[Tags.book],
     response_model=List[genre_response.GenreResponse],
 )
-async def get_book_genres(book_id: str, service: SQLiteService = Depends(get_db_service)):
+async def get_book_genres(
+    book_id: str, service: SQLiteService = Depends(get_db_service)
+):
     """Returns list of genres for a given book id"""
     results = genres_table.getBookGenres(book_id, service)
     if results:

@@ -6,10 +6,17 @@ from sqlmodel import Field, SQLModel, Session, create_engine, or_, select, delet
 from app.custom_objects.author import Author
 from app.db_models.tables.authorsmappings import AuthorsMappingsTable
 from app.services.sqlite import SQLiteService
-from app.db_models.tables.helpers import returnAuthorObj, returnBookObj, returnGenreObj, returnNarratorObj, returnSeriesObj
+from app.db_models.tables.helpers import (
+    returnAuthorObj,
+    returnBookObj,
+    returnGenreObj,
+    returnNarratorObj,
+    returnSeriesObj,
+)
 
 # setup global services
 db_service = None
+
 
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""

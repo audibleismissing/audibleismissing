@@ -16,4 +16,3 @@ router = api_router.initRouter()
 
 # Load settings
 settings = settings.readSettings()
-

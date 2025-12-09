@@ -18,12 +18,14 @@ from app.services.task_manager import BackgroundTaskManagerService
 db_service = None
 background_manager = None
 
+
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
     global db_service
     if db_service is None:
         db_service = SQLiteService()
     return db_service
+
 
 def get_background_manager() -> BackgroundTaskManagerService:
     """Get the background task manager instance."""
@@ -55,7 +57,9 @@ async def page(request: Request, service: SQLiteService = Depends(get_db_service
 @router.get(
     "/series/details/{series_id}", response_class=HTMLResponse, tags=[Tags.page]
 )
-async def details(request: Request, series_id: str, service: SQLiteService = Depends(get_db_service)):
+async def details(
+    request: Request, series_id: str, service: SQLiteService = Depends(get_db_service)
+):
     """Render series details page"""
     counts = await get_series_counts(series_id, service)
     table = await get_series_details(series_id, service)

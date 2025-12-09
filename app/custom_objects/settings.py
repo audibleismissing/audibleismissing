@@ -8,8 +8,12 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
 
-settings_file = os.environ.get("SETTINGS_FILE", os.path.join(PROJECT_ROOT, "config", "settings.toml"))
-audible_auth_file = os.environ.get("AUDIBLE_AUTH_FILE", os.path.join(PROJECT_ROOT, "config", "audible_auth"))
+settings_file = os.environ.get(
+    "SETTINGS_FILE", os.path.join(PROJECT_ROOT, "config", "settings.toml")
+)
+audible_auth_file = os.environ.get(
+    "AUDIBLE_AUTH_FILE", os.path.join(PROJECT_ROOT, "config", "audible_auth")
+)
 
 
 class Settings:

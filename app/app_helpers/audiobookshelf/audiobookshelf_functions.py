@@ -27,7 +27,6 @@ from app.app_helpers.audiobookshelf.audiobookshelf_api import (
 from app.services.sqlite import SQLiteService
 
 
-
 async def refreshAbsData(url, abs_api_key, library_id, service: SQLiteService) -> None:
     abs_books = []
     abs_books = await getLibraryItems(url, abs_api_key, library_id)

@@ -16,12 +16,14 @@ from app.services.task_manager import BackgroundTaskManagerService
 database = None
 background_manager = None
 
+
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
     global database
     if database is None:
         database = SQLiteService()
     return database
+
 
 def get_background_manager() -> BackgroundTaskManagerService:
     """Get the background task manager instance."""
@@ -55,7 +57,9 @@ async def get_all_series(service: SQLiteService = Depends(get_db_service)):
     tags=[Tags.series],
     response_model=List[book_response.BookResponse],
 )
-async def get_series_by_series_id(series_id: str, service: SQLiteService = Depends(get_db_service)):
+async def get_series_by_series_id(
+    series_id: str, service: SQLiteService = Depends(get_db_service)
+):
     """Get list of books in a series by series id"""
     results = series_table.getBooksInSeries(series_id, service)
     if results:
@@ -64,7 +68,9 @@ async def get_series_by_series_id(series_id: str, service: SQLiteService = Depen
 
 
 @router.get("/series/details/{series_id}", tags=[Tags.series])
-async def get_series_details(series_id: str, service: SQLiteService = Depends(get_db_service)):
+async def get_series_details(
+    series_id: str, service: SQLiteService = Depends(get_db_service)
+):
     """Get series details from view."""
     results = booksandseries.getViewSeriesDetails(series_id, service)
     if results:
@@ -73,11 +79,11 @@ async def get_series_details(series_id: str, service: SQLiteService = Depends(ge
 
 
 @router.get("/series/counts/{series_id}", tags=[Tags.series])
-async def get_series_counts(series_id: str, service: SQLiteService = Depends(get_db_service)):
+async def get_series_counts(
+    series_id: str, service: SQLiteService = Depends(get_db_service)
+):
     """Get series counts from view."""
-    results = seriesandcounts.getViewSeriesCountsBySeries(
-        series_id, service
-    )
+    results = seriesandcounts.getViewSeriesCountsBySeries(series_id, service)
     if results:
         return results
     return []

@@ -16,12 +16,14 @@ from app.services.task_manager import BackgroundTaskManagerService
 db_service = None
 background_manager = None
 
+
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
     global db_service
     if db_service is None:
         db_service = SQLiteService()
     return db_service
+
 
 def get_background_manager() -> BackgroundTaskManagerService:
     """Get the background task manager instance."""

@@ -33,6 +33,7 @@ from app.services.sqlite import SQLiteService
 # setup global services
 db_service = None
 
+
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
     global db_service

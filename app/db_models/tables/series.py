@@ -17,10 +17,17 @@ from app.custom_objects.series import Series
 from app.db_models.tables import books
 from app.db_models.tables.seriesmappings import SeriesMappingsTable
 from app.services.sqlite import SQLiteService
-from app.db_models.tables.helpers import returnAuthorObj, returnBookObj, returnGenreObj, returnNarratorObj, returnSeriesObj
+from app.db_models.tables.helpers import (
+    returnAuthorObj,
+    returnBookObj,
+    returnGenreObj,
+    returnNarratorObj,
+    returnSeriesObj,
+)
 
 # setup global services
 db_service = None
+
 
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""

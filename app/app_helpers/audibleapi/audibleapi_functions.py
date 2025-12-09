@@ -66,13 +66,13 @@ from app.services.sqlite import SQLiteService
 # setup global services
 db_service = None
 
+
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
     global db_service
     if db_service is None:
         db_service = SQLiteService()
     return db_service
-
 
 
 async def getMissingBooks(service: SQLiteService):
@@ -213,4 +213,3 @@ def processBook(single_book, service: SQLiteService) -> None:
             updateGenre(single_genre, service)
         if not getGenreMappingByBook(single_book.id, service):
             addGenreMapping(single_genre.id, single_book.id, service)
-

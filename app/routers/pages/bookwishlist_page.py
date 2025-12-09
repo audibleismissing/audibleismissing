@@ -20,12 +20,14 @@ from app.services.task_manager import BackgroundTaskManagerService
 db_service = None
 background_manager = None
 
+
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
     global db_service
     if db_service is None:
         db_service = SQLiteService()
     return db_service
+
 
 def get_background_manager() -> BackgroundTaskManagerService:
     """Get the background task manager instance."""
@@ -43,8 +45,6 @@ router = app_router.initRouter()
 current_dir = dirname(__file__)
 templates_dir = join(current_dir, "../../templates")
 templates = Jinja2Templates(directory=templates_dir)
-
-
 
 
 @router.get("/user/bookwishlist/", response_class=HTMLResponse, tags=[Tags.page])

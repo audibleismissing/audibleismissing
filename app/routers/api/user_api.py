@@ -28,11 +28,10 @@ from app.db_models.views import booksandseries
 router = api_router.initRouter()
 
 
-
-
 # setup global services
 database = None
 background_manager = None
+
 
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
@@ -40,6 +39,7 @@ def get_db_service() -> SQLiteService:
     if database is None:
         database = SQLiteService()
     return database
+
 
 def get_background_manager() -> BackgroundTaskManagerService:
     """Get the background task manager instance."""
@@ -50,7 +50,6 @@ def get_background_manager() -> BackgroundTaskManagerService:
 
 
 # service: SQLiteService = Depends(get_db_service)
-
 
 
 # Series watch list
@@ -68,7 +67,9 @@ async def get_series_watch_list_items(service: SQLiteService = Depends(get_db_se
 
 
 @router.get("/user/serieswatchlist/releasedates/{limit}", tags=[Tags.user])
-async def get_book_release_dates(limit: int, service: SQLiteService = Depends(get_db_service)):
+async def get_book_release_dates(
+    limit: int, service: SQLiteService = Depends(get_db_service)
+):
     """Gets books to be released on wachlist. results limit."""
     results = booksandseries.getViewWatchListReleaseDates(limit, service)
 
@@ -96,7 +97,10 @@ class SeriesWatchListModel(BaseModel):
 
 
 @router.post("/user/addserieswatchlistitem", tags=[Tags.user])
-async def add_watch_list_item(data: Annotated[SeriesWatchListModel, Form()], service: SQLiteService = Depends(get_db_service)):
+async def add_watch_list_item(
+    data: Annotated[SeriesWatchListModel, Form()],
+    service: SQLiteService = Depends(get_db_service),
+):
     """Add item to the watchlist"""
     item = getSeriesWatchListItem(data.series_id, service)
 
@@ -107,7 +111,9 @@ async def add_watch_list_item(data: Annotated[SeriesWatchListModel, Form()], ser
 
 
 @router.delete("/user/removeserieswatchlistitem/{series_id}", tags=[Tags.user])
-async def remove_watch_list_item(series_id: str, service: SQLiteService = Depends(get_db_service)):
+async def remove_watch_list_item(
+    series_id: str, service: SQLiteService = Depends(get_db_service)
+):
     """Remove item from the watchlist"""
     item = getSeriesWatchListItem(series_id, service)
 
@@ -151,7 +157,10 @@ class BookWishListModel(BaseModel):
 
 
 @router.post("/user/addbookwishlistitem", tags=[Tags.user])
-async def add_book_wish_list_item(data: Annotated[BookWishListModel, Form()], service: SQLiteService = Depends(get_db_service)):
+async def add_book_wish_list_item(
+    data: Annotated[BookWishListModel, Form()],
+    service: SQLiteService = Depends(get_db_service),
+):
     """Add item to the wish list"""
     item = getBookWishListItem(data.book_id, service)
 
@@ -162,7 +171,9 @@ async def add_book_wish_list_item(data: Annotated[BookWishListModel, Form()], se
 
 
 @router.delete("/user/removebookwishlistitem/{book_id}", tags=[Tags.user])
-async def remove_book_wish_list_item(book_id: str, service: SQLiteService = Depends(get_db_service)):
+async def remove_book_wish_list_item(
+    book_id: str, service: SQLiteService = Depends(get_db_service)
+):
     """Remove item from the wish list"""
     item = getBookWishListItem(book_id, service)
 

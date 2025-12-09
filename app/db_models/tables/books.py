@@ -7,7 +7,13 @@ from fastapi import Depends
 
 from app.custom_objects.book import Book
 
-from app.db_models.tables.helpers import returnAuthorObj, returnBookObj, returnGenreObj, returnNarratorObj, returnSeriesObj
+from app.db_models.tables.helpers import (
+    returnAuthorObj,
+    returnBookObj,
+    returnGenreObj,
+    returnNarratorObj,
+    returnSeriesObj,
+)
 
 
 from app.services.sqlite import SQLiteService
@@ -17,12 +23,14 @@ from app.services.task_manager import BackgroundTaskManagerService
 db_service = None
 background_manager = None
 
+
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
     global db_service
     if db_service is None:
         db_service = SQLiteService()
     return db_service
+
 
 def get_background_manager() -> BackgroundTaskManagerService:
     """Get the background task manager instance."""
@@ -239,5 +247,3 @@ def getBooksToBeReleased(time_window, service: SQLiteService) -> list:
 
             return all_books
         return None
-
-

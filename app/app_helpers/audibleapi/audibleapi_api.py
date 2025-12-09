@@ -12,7 +12,6 @@ from app.custom_objects.book import Book
 async def getAudibleBook(auth, asin) -> Book:
     from app.app_helpers.audibleapi.audibleapi_helpers import returnBookObj
 
-   
     auth = loadExistingAuth()
 
     async with audible.AsyncClient(auth) as client:
@@ -39,7 +38,7 @@ async def getAudibleBooksInSeries(asin) -> Dict[str, Any]:
             similarity_type="InTheSameSeries",
             num_results=50,
         )
-        
+
         if item:
             # print(json.dumps(item, indent=4)) # friendly json view
             # return item

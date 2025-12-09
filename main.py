@@ -19,11 +19,10 @@ from app.routers.api import book_api, series_api, admin_api, settings_api, user_
 from fastapi.staticfiles import StaticFiles
 
 
-
-
 # setup global varables for services
 background_manager = None
 database = None
+
 
 # Start the scheduler
 @asynccontextmanager
@@ -37,12 +36,10 @@ async def lifespan(app: FastAPI):
     await background_manager.start()
 
     yield
-    
+
     # shutdown
     if background_manager:
         await background_manager.stop()
-
-
 
 
 # initialize FastAPI app

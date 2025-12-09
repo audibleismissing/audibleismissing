@@ -20,12 +20,14 @@ from app.services.task_manager import BackgroundTaskManagerService
 db_service = None
 background_manager = None
 
+
 def get_db_service() -> SQLiteService:
     """Get the database service instance."""
     global db_service
     if db_service is None:
         db_service = SQLiteService()
     return db_service
+
 
 def get_background_manager() -> BackgroundTaskManagerService:
     """Get the background task manager instance."""
@@ -38,13 +40,11 @@ def get_background_manager() -> BackgroundTaskManagerService:
 # service: SQLiteService = Depends(get_db_service)):
 
 
-
 router = app_router.initRouter()
 
 current_dir = dirname(__file__)
 templates_dir = join(current_dir, "../../templates")
 templates = Jinja2Templates(directory=templates_dir)
-
 
 
 @router.get("/user/serieswatchlist/", response_class=HTMLResponse, tags=[Tags.page])
@@ -56,9 +56,7 @@ async def page(request: Request, service: SQLiteService = Depends(get_db_service
     if watchlist_items:
         watchlist_table = []
         for item in watchlist_items:
-            single_series = getViewSeriesCountsSingleSeries(
-                service, item.seriesId
-            )
+            single_series = getViewSeriesCountsSingleSeries(service, item.seriesId)
             watchlist_table.append(single_series)
     else:
         watchlist_table = []

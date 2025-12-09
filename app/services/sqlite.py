@@ -6,7 +6,6 @@ from typing import List, Optional, Generator
 from sqlmodel import SQLModel, create_engine, Session, select
 
 
-
 class SQLiteService:
     """Service for managing SQLite database operations."""
 
@@ -15,24 +14,25 @@ class SQLiteService:
             # Get project root (two levels up from this file: services/sqlite.py)
             BASE_DIR = os.path.dirname(os.path.abspath(__file__))
             PROJECT_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
-            
+
             # Use project-relative path
-            self.db_path = os.path.join(PROJECT_ROOT, "config", "audibleismissing.sqlite")
+            self.db_path = os.path.join(
+                PROJECT_ROOT, "config", "audibleismissing.sqlite"
+            )
             self.database_url = f"sqlite:///{self.db_path}"
         else:
             self.database_url = database_url
 
-
         self.engine = create_engine(
             self.database_url,
             connect_args={"check_same_thread": False},  # Required for SQLite
-            echo=False  # Set to True for debugging
+            echo=False,  # Set to True for debugging
         )
 
         # logging config
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
-        
+
         # Create tables
         self.create_tables()
 
@@ -53,14 +53,15 @@ class SQLiteService:
             serieswatchlist,
         )
         from app.db_models.views import booksandseries, seriesandcounts
+
         self.logger.info("Creating database tables.")
         SQLModel.metadata.create_all(self.engine)
         booksandseries.createBooksAndSeriesView(self.db_path)
         seriesandcounts.createSeriesAndCountsView(self.db_path)
 
-
     def dropAllTables(self) -> None:
         import sqlite3
+
         try:
             with sqlite3.connect(self.db_path) as connection:
                 cursor = connection.cursor()
@@ -81,8 +82,6 @@ class SQLiteService:
                 connection.commit()
         except sqlite3.Error as error:
             print("DB conneciton error occured -", error)
-
-
 
     def exportDbToJson(self):
         """Export all database tables to a JSON file."""
@@ -121,32 +120,36 @@ class SQLiteService:
 
             # Export mapping tables
             data["authormappings"] = [
-                row.model_dump() for row in session.exec(select(AuthorsMappingsTable)).all()
+                row.model_dump()
+                for row in session.exec(select(AuthorsMappingsTable)).all()
             ]
             data["genremappings"] = [
-                row.model_dump() for row in session.exec(select(GenreMappingsTable)).all()
+                row.model_dump()
+                for row in session.exec(select(GenreMappingsTable)).all()
             ]
             data["narratormappings"] = [
                 row.model_dump()
                 for row in session.exec(select(NarratorMappingsTable)).all()
             ]
             data["seriesmappings"] = [
-                row.model_dump() for row in session.exec(select(SeriesMappingsTable)).all()
+                row.model_dump()
+                for row in session.exec(select(SeriesMappingsTable)).all()
             ]
 
             # Export wishlist tables
             data["bookwishlist"] = [
-                row.model_dump() for row in session.exec(select(BookWishListTable)).all()
+                row.model_dump()
+                for row in session.exec(select(BookWishListTable)).all()
             ]
             data["serieswatchlist"] = [
-                row.model_dump() for row in session.exec(select(SeriesWatchListTable)).all()
+                row.model_dump()
+                for row in session.exec(select(SeriesWatchListTable)).all()
             ]
 
         with open(json_file, "w") as f:
             json.dump(
                 data, f, indent=2, default=str
             )  # default=str to handle Decimal and datetime
-
 
     def importJsonToDb(self):
         """Import JSON data from file into the database, replacing existing data."""
@@ -164,7 +167,7 @@ class SQLiteService:
         from app.db_models.tables.serieswatchlist import SeriesWatchListTable
 
         json_file = "config/db_dump.json"
-        
+
         with open(json_file, "r") as f:
             data = json.load(f)
 

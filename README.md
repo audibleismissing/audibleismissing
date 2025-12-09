@@ -32,6 +32,7 @@ Series Details             |  Book Details
 - Series watch list.
 - Book wish list.
 - Import/Export database to json
+- Manual or scheduled refresh cycle. (scheduled is currently between 12am - 2am utc)
 
 
 ### Possible Features
@@ -72,21 +73,11 @@ services:
 - uv
 
 
-### Steps
+### Mirroring
 ```
-mkdir audibleismissing-fastapi
-cd audibleismissing-fastapi
-
-uv init
-
-uv add ruff
-uv add fastapi --extra standard
-uv add audible
-uv add requests
-uv add sqlmodel
-uv add toml
-uv add jinja2
-uv add beautifulsoup4
+git clone https://github.com/audibleismissing/audibleismissing.git
+cd audibleismissing
+uv sync
 ```
 
 ### Running
