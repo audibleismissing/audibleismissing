@@ -12,6 +12,9 @@ from app.custom_objects.book import Book
 async def getAudibleBook(auth, asin) -> Book:
     from app.app_helpers.audibleapi.audibleapi_helpers import returnBookObj
 
+   
+    auth = loadExistingAuth()
+
     async with audible.AsyncClient(auth) as client:
         item = await client.get(
             f"1.0/catalog/products/{asin}",
@@ -24,8 +27,10 @@ async def getAudibleBook(auth, asin) -> Book:
     return None
 
 
-async def getAudibleBooksInSeries(auth, asin) -> Dict[str, Any]:
+async def getAudibleBooksInSeries(asin) -> Dict[str, Any]:
     from app.app_helpers.audibleapi.audibleapi_helpers import returnListofBookObjs
+
+    auth = loadExistingAuth()
 
     async with audible.AsyncClient(auth) as client:
         item = await client.get(
@@ -54,9 +59,11 @@ def createDeviceAuth(username, password, country_code, auth_file):
     auth.to_file(auth_file)
 
 
-def loadExistingAuth(auth_file) -> audible.Client:
+def loadExistingAuth() -> audible.Client:
     from app.custom_objects.settings import readSettings
+
     config = readSettings()
+
     if doesAuthExist(config.audible_auth_file):
         return audible.Authenticator.from_file(config.audible_auth_file)
     else:

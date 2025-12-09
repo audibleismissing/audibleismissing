@@ -1,3 +1,4 @@
+from os import read
 import audible
 from fastapi import Depends
 from app.app_helpers.audibleapi import (
@@ -60,7 +61,6 @@ from app.db_models.tables.seriesmappings import (
     getSeriesMappingBySeries,
 )
 
-
 from app.services.sqlite import SQLiteService
 
 # setup global services
@@ -74,48 +74,43 @@ def get_db_service() -> SQLiteService:
     return db_service
 
 
-# from app.db_models.tables.authorsmappings import addAuthorMapping, getAuthorMappingByBook
-# from app.db_models.tables.books import addBook, getBook
-# from app.db_models.tables.series import addSeries, updateSeries, getSeries, cleanupDanglingSeries, calculateSeriesRating, getAllSeries
-# from app.db_models.tables.seriesmappings import addSeriesMapping, getSeriesMappingByBook, getSeriesMappingBySeries
-# from app.db_models.tables.authors import addAuthor, updateAuthor, getAuthor, cleanupDanglingAuthors
-# from app.db_models.tables.genres import addGenre, updateGenre, getGenre
-# from app.db_models.tables.narrators import addNarrator, updateNarrator, getNarrator
-# from app.db_models.tables.narratormappings import addNarratorMapping, getNarratorMappingByBook
-# from app.db_models.tables.genremappings import addGenreMapping, getGenreMappingByBook
 
-
-async def getMissingBooks(auth, service: SQLiteService):
+async def getMissingBooks(service: SQLiteService):
     """
     Populates missing book, author, genre, narrator, and series information from audible.
     """
+    try:
+        # get list of book asins in library, one per series
+        all_series = getAllSeries(service)
+        library_book_asins = []
+        for item in all_series:
+            series_id = item.id
+            series_mappings = getSeriesMappingBySeries(series_id, service)
+            if series_mappings:
+                book_id = series_mappings[0].bookId
+                library_book = getBook(book_id, service)
+                if library_book:
+                    library_book_asins.append(library_book.bookAsin)
 
-    # get list of book asins in library, one per series
-    all_series = getAllSeries(service)
-    library_book_asins = []
-    for item in all_series:
-        series_id = item.id
-        book_id = getSeriesMappingBySeries(series_id, service)[0].bookId
-        library_book = getBook(book_id, service)
-        library_book_asins.append(library_book.bookAsin)
+        # get list of audible books
+        audible_books = []
+        for library_book_asin in library_book_asins:
+            audible_books_in_series = []
+            audible_books_in_series = await getAudibleBooksInSeries(library_book_asin)
 
-    # get list of audible books
-    audible_books = []
-    for library_book_asin in library_book_asins:
-        audible_books_in_series = []
-        audible_books_in_series = await getAudibleBooksInSeries(auth, library_book_asin)
+            for book_in_series in audible_books_in_series:
+                audible_books.append(book_in_series)
 
-        for book_in_series in audible_books_in_series:
-            audible_books.append(book_in_series)
+        for single_book in audible_books:
+            if not getBook(single_book.bookAsin, service):
+                processBook(single_book, service)
 
-    for single_book in audible_books:
-        if not getBook(single_book.bookAsin, service):
-            processBook(single_book, service)
+        # cleanupDanglingSeries(service)
+        # cleanupDanglingAuthors(service)
 
-    # cleanupDanglingSeries(service)
-    # cleanupDanglingAuthors(service)
-
-    print("Audible backfill complete.")
+        print("Audible backfill complete.")
+    except Exception as e:
+        print(f"Exception: {e}")
 
 
 # def backfillAudibleDataMissedBooks(engine, auth):

@@ -73,7 +73,7 @@ async def backfill_audible(background_task: BackgroundTasks, service: SQLiteServ
 @router.get("/database/get_missing_books", tags=[Tags.admin])
 async def get_missingBooks(background_task: BackgroundTasks, service: SQLiteService = Depends(get_db_service)):
     """Gets missing books from audible."""
-    auth = loadExistingAuth(settings.audible_auth_file)
+    auth = loadExistingAuth()
     
     if auth:
         job_manager = get_background_manager()

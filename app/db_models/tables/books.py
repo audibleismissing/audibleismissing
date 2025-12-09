@@ -114,19 +114,22 @@ def addBook(book: Book, service: SQLiteService) -> str:
 
 def getBook(search_string, service: SQLiteService) -> Book:
     """Get book from db"""
-    with Session(service.engine) as session:
-        statement = select(BooksTable).where(
-            or_(
-                BooksTable.title == search_string,
-                BooksTable.bookAsin == search_string,
-                BooksTable.id == search_string,
+    try:
+        with Session(service.engine) as session:
+            statement = select(BooksTable).where(
+                or_(
+                    BooksTable.title == search_string,
+                    BooksTable.bookAsin == search_string,
+                    BooksTable.id == search_string,
+                )
             )
-        )
 
-        results = session.exec(statement).first()
-        if results:
-            return returnBookObj(results, service)
-        return None
+            results = session.exec(statement).first()
+            if results:
+                return returnBookObj(results, service)
+            return None
+    except Exception as e:
+        print(e)
 
 
 def updateBook(book: Book, service: SQLiteService) -> str:
