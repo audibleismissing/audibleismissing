@@ -16,6 +16,7 @@
                     <div>Series: <a href='/series/details/{{ details.seriesId }}/'>{{ details.seriesName }}</a></div>
                     <div>Sequence: {{ details.sequence }}</div>
                     <div>Books in Series: {{ details.totalBooksInSeries }}</div>
+                    <div>Audible Rating: {{ details.audibleOverallAvgRating }}</div>
                     <div>
                         Series ASIN: <a href="https://www.audible.com/series/{{ details.seriesAsin }}" target="_blank">{{ details.seriesAsin }}</a>
                         <button class="btn btn-sm btn-outline-primary watch-btn" data-series-id="{{ details.seriesId }}"></button>
