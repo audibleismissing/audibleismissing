@@ -66,7 +66,7 @@ uv run fastapi dev main.py # Start dev server with auto-reload
 ### Settings & Configuration
 - Configuration via `config/settings.toml` (TOML format, see `app/custom_objects/settings.py`)
 - Environment variables override file paths: `SETTINGS_FILE`, `AUDIBLE_AUTH_FILE`
-- Settings are read-once on service startup; changes require manual reload or restart
+- Settings are read fresh on each background job execution via `readSettings()` to pick up configuration changes without restart
 
 ### Async Patterns
 - All API calls are async (`async def` with `await`)

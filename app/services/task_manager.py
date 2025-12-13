@@ -19,7 +19,6 @@ class BackgroundTaskManagerService:
         self.scheduler = None
         # self.db_service = SQLiteService() # This will initalize the database
         self.db_service = SQLiteService()
-        self.settings = readSettings()
         self.job_stores = {"default": MemoryJobStore()}
         self.job_defaults = {}
 
@@ -111,6 +110,7 @@ class BackgroundTaskManagerService:
     async def job_refresh_audiobookshelf_data(self):
         """
         Background task to get new books from audiobookshelf.
+        Reads settings fresh each execution to pick up configuration changes.
         """
 
         try:
@@ -118,12 +118,15 @@ class BackgroundTaskManagerService:
                 refreshAbsData,
             )
 
+            # Read settings fresh each job execution (not cached at startup)
+            settings = readSettings()
+
             self.logger.info("Starting scheduled audiobookshelf data refresh...")
 
             await refreshAbsData(
-                self.settings.abs_url,
-                self.settings.abs_api_key,
-                self.settings.abs_library_id,
+                settings.abs_url,
+                settings.abs_api_key,
+                settings.abs_library_id,
                 self.db_service,
             )
 
