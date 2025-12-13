@@ -29,11 +29,11 @@ class Settings:
         self.audible_auth_file = audible_auth_file
 
 
-def saveSettings() -> None:
+def saveSettings(settings_data: dict) -> None:
     """Saves settings to toml file"""
     with open(settings_file, "w") as file:
         logger.info("Saving settings to file")
-        toml.dump(settings_file, file)
+        toml.dump(settings_data, file)
 
 
 def readSettings() -> toml:
