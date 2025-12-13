@@ -3,7 +3,7 @@ from fastapi import Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from app.custom_objects.settings import readSettings, saveSettings
+from app.custom_objects.settings import readSettings
 from app.routers.route_tags import Tags
 from app.routers.pages import app_router
 
