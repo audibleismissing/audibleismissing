@@ -32,7 +32,7 @@ class Settings:
 def saveSettings() -> None:
     """Saves settings to toml file"""
     with open(settings_file, "w") as file:
-        logger.info("Creating settings file")
+        logger.info("Saving settings to file")
         toml.dump(settings_file, file)
 
 
