@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
     htmlElement.setAttribute('data-bs-theme', currentTheme);
     switchElement.checked = currentTheme === 'dark';
 
+    // Remove preload class to enable transitions after theme is set
+    setTimeout(() => {
+        document.body.classList.remove('preload');
+    }, 100);
+
     switchElement.addEventListener('change', function () {
         const newTheme = this.checked ? 'dark' : 'light';
         htmlElement.setAttribute('data-bs-theme', newTheme);

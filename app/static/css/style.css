@@ -1,0 +1,275 @@
+/* Custom Color Scheme for Audible is Missing */
+
+/* Light Mode - Warm, comfortable reading colors */
+[data-bs-theme="light"] {
+    --bs-body-bg: #f8f9fa;
+    --bs-body-color: #1a1a1a;
+    --bs-primary: #2563eb;
+    --bs-secondary: #64748b;
+    --bs-success: #16a34a;
+    --bs-info: #0891b2;
+    --bs-warning: #ea580c;
+    --bs-danger: #dc2626;
+    --bs-light: #f1f5f9;
+    --bs-dark: #0f172a;
+    
+    /* Custom variables */
+    --navbar-bg: #ffffff;
+    --navbar-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --card-bg: #ffffff;
+    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    --card-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --border-color: #e2e8f0;
+    --link-color: #2563eb;
+    --link-hover-color: #1d4ed8;
+    --footer-bg: #f1f5f9;
+    --table-bg: #ffffff;
+    --table-striped-bg: #f8fafc;
+    --table-hover-bg: #f1f5f9;
+    --input-bg: #ffffff;
+    --input-border: #cbd5e1;
+    --switch-bg: #cbd5e1;
+}
+
+/* Dark Mode - Easy on the eyes, high contrast where needed */
+[data-bs-theme="dark"] {
+    --bs-body-bg: #0f172a;
+    --bs-body-color: #e2e8f0;
+    --bs-primary: #3b82f6;
+    --bs-secondary: #94a3b8;
+    --bs-success: #22c55e;
+    --bs-info: #06b6d4;
+    --bs-warning: #f97316;
+    --bs-danger: #ef4444;
+    --bs-light: #1e293b;
+    --bs-dark: #f8fafc;
+    
+    /* Custom variables */
+    --navbar-bg: #1e293b;
+    --navbar-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --card-bg: #1e293b;
+    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --card-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --border-color: #334155;
+    --link-color: #60a5fa;
+    --link-hover-color: #93c5fd;
+    --footer-bg: #1e293b;
+    --table-bg: #1e293b;
+    --table-striped-bg: #334155;
+    --table-hover-bg: #475569;
+    --input-bg: #334155;
+    --input-border: #475569;
+    --switch-bg: #475569;
+}
+
+/* Global styles */
+body {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Navbar styling */
+.navbar {
+    background-color: var(--navbar-bg) !important;
+    box-shadow: var(--navbar-shadow);
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    color: var(--bs-primary) !important;
+    font-size: 1.25rem;
+}
+
+.nav-link {
+    color: var(--bs-body-color) !important;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: var(--bs-primary) !important;
+}
+
+/* Cards and containers */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: var(--card-hover-shadow);
+}
+
+/* Tables */
+.table {
+    background-color: var(--table-bg);
+    color: var(--bs-body-color);
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: var(--table-striped-bg);
+}
+
+.table-hover > tbody > tr:hover > * {
+    background-color: var(--table-hover-bg);
+}
+
+.table thead {
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+}
+
+/* Buttons */
+.btn {
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.btn-primary:hover {
+    filter: brightness(1.1);
+}
+
+/* Forms */
+.form-control,
+.form-select {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--bs-body-color);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--input-bg);
+    border-color: var(--bs-primary);
+    color: var(--bs-body-color);
+    box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+}
+
+/* Dark mode switch styling */
+.form-check-input {
+    background-color: var(--switch-bg);
+    border-color: var(--border-color);
+}
+
+.form-check-input:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+/* Links */
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--link-hover-color);
+    text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--footer-bg);
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+}
+
+/* Bootstrap table overrides */
+.bootstrap-table .fixed-table-container {
+    background-color: var(--table-bg);
+}
+
+.bootstrap-table .fixed-table-toolbar {
+    background-color: var(--card-bg);
+}
+
+/* Icons in navbar */
+.bi-sun-fill,
+.bi-moon-fill {
+    color: var(--bs-body-color);
+    transition: color 0.3s ease;
+}
+
+/* Improve contrast for badges */
+.badge {
+    font-weight: 600;
+}
+
+/* Modal improvements */
+.modal-content {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+.modal-header {
+    border-bottom-color: var(--border-color);
+}
+
+.modal-footer {
+    border-top-color: var(--border-color);
+}
+
+/* Smooth transitions for theme changes */
+* {
+    transition-property: background-color, border-color, color, box-shadow;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+}
+
+/* Prevent transition on page load */
+.preload * {
+    transition: none !important;
+}
+
+/* Scrollbar styling for dark mode */
+[data-bs-theme="dark"] ::-webkit-scrollbar {
+    width: 12px;
+}
+
+[data-bs-theme="dark"] ::-webkit-scrollbar-track {
+    background: #1e293b;
+}
+
+[data-bs-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 6px;
+}
+
+[data-bs-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Light mode scrollbar */
+[data-bs-theme="light"] ::-webkit-scrollbar {
+    width: 12px;
+}
+
+[data-bs-theme="light"] ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+[data-bs-theme="light"] ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 6px;
+}
+
+[data-bs-theme="light"] ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
