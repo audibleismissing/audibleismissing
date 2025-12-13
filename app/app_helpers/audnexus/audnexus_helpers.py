@@ -5,7 +5,7 @@ from app.custom_objects.book import Book
 from app.custom_objects.genre import Genre
 from app.custom_objects.narrator import Narrator
 from app.custom_objects.series import Series
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 
 def returnAuthorObj(api_author: dict) -> Author:
@@ -96,7 +96,7 @@ def returnBookObj(api_book: dict) -> Book:
     if api_book.get("rating"):
         try:
             book.audibleOverallAvgRating = Decimal(str(api_book["rating"]))
-        except:
+        except (ValueError, TypeError, InvalidOperation):
             book.audibleOverallAvgRating = None
 
     # Length

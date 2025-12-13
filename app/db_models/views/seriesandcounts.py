@@ -1,5 +1,8 @@
 import sqlite3
+import logging
 from app.services.sqlite import SQLiteService
+
+logger = logging.getLogger(__name__)
 
 
 def createSeriesAndCountsView(sqlite_db) -> None:
@@ -34,7 +37,7 @@ def createSeriesAndCountsView(sqlite_db) -> None:
                 """)
             connection.commit()
     except sqlite3.Error as error:
-        print("DB conneciton error occured -", error)
+        logger.error(f"DB connection error occurred - {error}")
 
 
 def getViewSeriesCounts(service: SQLiteService) -> list:

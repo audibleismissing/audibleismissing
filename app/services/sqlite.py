@@ -79,7 +79,7 @@ class SQLiteService:
 
                 connection.commit()
         except sqlite3.Error as error:
-            print("DB conneciton error occured -", error)
+            self.logger.error(f"DB connection error occurred - {error}")
 
     def exportDbToJson(self):
         """Export all database tables to a JSON file."""

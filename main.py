@@ -19,7 +19,7 @@ from app.routers.api import book_api, series_api, admin_api, settings_api, user_
 from fastapi.staticfiles import StaticFiles
 
 
-# setup global varables for services
+# setup global variables for services
 background_manager = None
 database = None
 

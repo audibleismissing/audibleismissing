@@ -1,4 +1,5 @@
 import sqlite3
+import logging
 from fastapi import Depends
 
 from app.services.sqlite import SQLiteService
@@ -7,6 +8,8 @@ from app.services.task_manager import BackgroundTaskManagerService
 # setup global services
 db_service = None
 background_manager = None
+
+logger = logging.getLogger(__name__)
 
 
 def get_db_service() -> SQLiteService:
@@ -70,7 +73,7 @@ def createBooksAndSeriesView(db_path) -> None:
                 """)
             connection.commit()
     except sqlite3.Error as error:
-        print("DB conneciton error occured -", error)
+        logger.error(f"DB connection error occurred - {error}")
 
 
 def getViewAllBooks(service: SQLiteService) -> list:

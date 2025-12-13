@@ -40,7 +40,7 @@ class BackgroundTaskManagerService:
         self.scheduler.add_job(
             self.job_refresh_audiobookshelf_data,
             trigger=CronTrigger(hour=0),
-            id="job_refresh_audiobookshelf_data ",
+            id="job_refresh_audiobookshelf_data",
             name="Audiobookshelf data refresh daily",
             replace_existing=True,
         )
@@ -48,7 +48,7 @@ class BackgroundTaskManagerService:
         self.scheduler.add_job(
             self.job_refresh_book_metadata,
             trigger=CronTrigger(hour=1),
-            id="job_refresh_book_metadata ",
+            id="job_refresh_book_metadata",
             name="Metadata refresh",
             replace_existing=True,
         )
@@ -56,7 +56,7 @@ class BackgroundTaskManagerService:
         self.scheduler.add_job(
             self.job_check_for_new_books,
             trigger=CronTrigger(hour=2),
-            id="job_check_for_new_books ",
+            id="job_check_for_new_books",
             name="New book check",
             replace_existing=True,
         )

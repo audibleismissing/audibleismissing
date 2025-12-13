@@ -1,6 +1,9 @@
 import toml
 import json
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 # settings_file = os.path.join(os.getcwd(), "config/settings.toml")
 # audible_auth_file = os.path.join(os.getcwd(), "config/audible_auth")
@@ -29,7 +32,7 @@ class Settings:
 def saveSettings() -> None:
     """Saves settings to toml file"""
     with open(settings_file, "w") as file:
-        print("creating DB")
+        logger.info("Creating settings file")
         toml.dump(settings_file, file)
 
 
