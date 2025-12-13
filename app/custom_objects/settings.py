@@ -60,6 +60,10 @@ def getSettingsObj(toml_config) -> Settings:
 
 def createDefaultSettingsFile():
     """Creates a default settings file"""
+    # Ensure the config directory exists
+    config_dir = os.path.dirname(settings_file)
+    os.makedirs(config_dir, exist_ok=True)
+
     config = {
         "audiobookshelf": {
             "url": "https://abs.example.com",
@@ -69,3 +73,4 @@ def createDefaultSettingsFile():
     }
     with open(settings_file, "w") as file:
         toml.dump(config, file)
+    logger.info(f"Created default settings file at {settings_file}")

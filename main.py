@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 
 from app.services.task_manager import BackgroundTaskManagerService
 from app.services.sqlite import SQLiteService
+from app.custom_objects.settings import readSettings
 from app.routers.pages import (
     index,
     series,
@@ -31,6 +32,9 @@ async def lifespan(app: FastAPI):
     # startup
     global background_manager
     global database
+
+    # Initialize settings file if it doesn't exist
+    readSettings()
 
     database = SQLiteService()
     database.create_tables()
