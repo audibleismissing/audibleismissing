@@ -33,7 +33,6 @@ class SQLiteService:
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
 
-
     def create_tables(self):
         """Create all database tables."""
         # needed for db table creation
