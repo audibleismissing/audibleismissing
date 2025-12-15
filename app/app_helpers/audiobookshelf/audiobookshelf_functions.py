@@ -4,7 +4,7 @@ from app.custom_objects.book import Book
 
 from app.db_models.tables.authors import addAuthor
 from app.db_models.tables.authorsmappings import addAuthorMapping
-from app.db_models.tables.books import addBook
+from app.db_models.tables.books import addBook, getBook, updateBook
 from app.db_models.tables.genres import addGenre
 from app.db_models.tables.genremappings import addGenreMapping
 from app.db_models.tables.narrators import addNarrator
@@ -36,10 +36,21 @@ async def refreshAbsData(url, abs_api_key, library_id, service: SQLiteService) -
             book = Book()
             book = await getLibraryItem(url, abs_api_key, abs_book["id"])
 
+            #### Books
+            # check if the book already exists in the books table
+            # if not add the book and get the new book id
+            # if the book exists but is not owned, update the existing record to owned
             if not doesBookExist(book.bookAsin, service) and book.bookAsin is not None:
                 db_book_id = addBook(book, service)
+                print(f"Added book {book.title} to database")
+            elif book.isOwned is False:
+                existing_book = getBook(book.bookAsin, service)
+                book.id = existing_book.id
+                book.isOwned = True
+                db_book_id = existing_book.id
+                updateBook(book, service)
+                print(f"Updated book {book.title} to owned in database")
             else:
-                print(f"duplicate book or missing asin: {book.title} {book.bookAsin}")
                 continue
 
             #### Authors
