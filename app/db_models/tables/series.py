@@ -246,7 +246,10 @@ def calculateSeriesRating(series_id: str, service: SQLiteService) -> Decimal:
     if books_in_series:
         total = 0
         for single_book in books_in_series:
-            if single_book.audibleOverallAvgRating != 0:
+            if (
+                single_book.audibleOverallAvgRating is not None
+                and single_book.audibleOverallAvgRating != 0
+            ):
                 total += single_book.audibleOverallAvgRating
 
         rating = round(total / len(books_in_series), 2)
