@@ -11,11 +11,13 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
 
+config_dir = os.getenv("CONFIG_DIR", os.path.join(PROJECT_ROOT, "config"))
+
 settings_file = os.environ.get(
-    "SETTINGS_FILE", os.path.join(PROJECT_ROOT, "config", "settings.toml")
+    "SETTINGS_FILE", os.path.join(config_dir, "settings.toml")
 )
 audible_auth_file = os.environ.get(
-    "AUDIBLE_AUTH_FILE", os.path.join(PROJECT_ROOT, "config", "audible_auth")
+    "AUDIBLE_AUTH_FILE", os.path.join(config_dir, "audible_auth")
 )
 
 

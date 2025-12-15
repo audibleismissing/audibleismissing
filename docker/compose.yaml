@@ -7,6 +7,5 @@ services:
     volumes:
       - ../config:/config
     environment:
-      - ALLOWED_ORIGINS="https://aim.example.com" # Set if running on something other than localhost or 127.0.0.1
-      - SETTINGS_FILE=/config/settings.toml
-      - AUDIBLE_AUTH_FILE=/config/audible_auth
+      - ALLOWED_ORIGINS="https://aim.example.com"
+      - CONFIG_DIR=/config

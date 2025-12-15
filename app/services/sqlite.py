@@ -11,14 +11,11 @@ class SQLiteService:
 
     def __init__(self, database_url: str = None):
         if database_url is None:
-            # Get project root (two levels up from this file: services/sqlite.py)
+            # Use environment variable for config path, default to project config directory
             BASE_DIR = os.path.dirname(os.path.abspath(__file__))
             PROJECT_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
-
-            # Use project-relative path
-            self.db_path = os.path.join(
-                PROJECT_ROOT, "config", "audibleismissing.sqlite"
-            )
+            config_dir = os.getenv("CONFIG_DIR", os.path.join(PROJECT_ROOT, "config"))
+            self.db_path = os.path.join(config_dir, "audibleismissing.sqlite")
             self.database_url = f"sqlite:///{self.db_path}"
         else:
             self.database_url = database_url
