@@ -32,89 +32,90 @@ async def refreshAbsData(url, abs_api_key, library_id, service: SQLiteService) -
     abs_books = await getLibraryItems(url, abs_api_key, library_id)
 
     for abs_book in abs_books["results"]:
-        if not doesBookExist(abs_book["id"], service):
-            book = Book()
-            book = await getLibraryItem(url, abs_api_key, abs_book["id"])
+        book = Book()
+        book = await getLibraryItem(url, abs_api_key, abs_book["id"])
 
-            #### Books
-            # check if the book already exists in the books table
-            # if not add the book and get the new book id
-            # if the book exists but is not owned, update the existing record to owned
-            if not doesBookExist(book.bookAsin, service) and book.bookAsin is not None:
-                db_book_id = addBook(book, service)
-                print(f"Added book {book.title} to database")
-            elif book.isOwned is False:
-                existing_book = getBook(book.bookAsin, service)
+        #### Books
+        # check if the book already exists in the books table
+        # if not add the book and get the new book id
+        if not doesBookExist(book.bookAsin, service):
+            db_book_id = addBook(book, service)
+            print(f"Added book {book.title} to database")
+        # if the book exists, check if it's not owned and update it to owned
+        else:
+            existing_book = getBook(book.bookAsin, service)
+            # if the existing book is not owned, update it to owned
+            if not existing_book.isOwned:
                 book.id = existing_book.id
                 book.isOwned = True
-                db_book_id = existing_book.id
                 updateBook(book, service)
                 print(f"Updated book {book.title} to owned in database")
-            else:
-                continue
+            # book already exists and is already owned, skip to next book
+            continue
 
-            #### Authors
-            authors = []
-            authors = book.authors
-            # for each author of the book
-            if authors:
-                for single_author in authors:
-                    # check if the author already exists in the authors table
-                    # if not add the author and get the new author id
-                    if not doesAuthorExist(single_author.name, service):
-                        author_db_id = addAuthor(single_author, service)
-                    else:
-                        author_db_id = getAuthor(single_author.name, service).id
+        #### Authors
+        authors = []
+        authors = book.authors
+        # for each author of the book
+        if authors:
+            for single_author in authors:
+                # check if the author already exists in the authors table
+                # if not add the author and get the new author id
+                if not doesAuthorExist(single_author.name, service):
+                    author_db_id = addAuthor(single_author, service)
+                # otherwise get the existing author id
+                else:
+                    author_db_id = getAuthor(single_author.name, service).id
 
-                    # link the author in the authors table to the entry in the authorsbooks table
-                    addAuthorMapping(author_db_id, db_book_id, service)
+                # link the author in the authors table to the entry in the authorsbooks table
+                addAuthorMapping(author_db_id, db_book_id, service)
 
-            #### Narrators
-            narrators = []
-            narrators = book.narrators
-            # for each narrator of the book
-            if narrators:
-                for single_narrator in narrators:
-                    # check if the narrator already exists in the narrators table
-                    # if not add the narrator and get the new narrator id
-                    if not doesNarratorExist(single_narrator.name, service):
-                        narrator_db_id = addNarrator(single_narrator, service)
-                    else:
-                        narrator_db_id = getNarrator(single_narrator.name, service).id
+        #### Narrators
+        narrators = []
+        narrators = book.narrators
+        # for each narrator of the book
+        if narrators:
+            for single_narrator in narrators:
+                # check if the narrator already exists in the narrators table
+                # if not add the narrator and get the new narrator id
+                if not doesNarratorExist(single_narrator.name, service):
+                    narrator_db_id = addNarrator(single_narrator, service)
+                else:
+                    narrator_db_id = getNarrator(single_narrator.name, service).id
 
-                    # link the narrator in the narrators table to the entry in the Narratorsbooks table
-                    addNarratorMapping(narrator_db_id, db_book_id, service)
+                # link the narrator in the narrators table to the entry in the Narratorsbooks table
+                addNarratorMapping(narrator_db_id, db_book_id, service)
 
-            #### Series
-            # for each narrator of the book
-            series = []
-            series = book.series
-            if series:
-                for single_series in series:
-                    # check if the series already exists in the series table
-                    # if not add the series and get the new series id
-                    if not doesSeriesExist(single_series.name, service):
-                        series_db_id = addSeries(single_series, service)
-                    else:
-                        series_db_id = getSeries(single_series.name, service).id
+        #### Series
+        # for each narrator of the book
+        series = []
+        series = book.series
+        if series:
+            for single_series in series:
+                # check if the series already exists in the series table
+                # if not add the series and get the new series id
+                if not doesSeriesExist(single_series.name, service):
+                    series_db_id = addSeries(single_series, service)
+                else:
+                    series_db_id = getSeries(single_series.name, service).id
 
-                    # link the narrator in the narrators table to the entry in the Narratorsbooks table
-                    addSeriesMapping(
-                        series_db_id, db_book_id, single_series.sequence, service
-                    )
+                # link the narrator in the narrators table to the entry in the Narratorsbooks table
+                addSeriesMapping(
+                    series_db_id, db_book_id, single_series.sequence, service
+                )
 
-            #### Genres
-            genres = []
-            genres = book.genres
-            # for each genre of the book
-            if genres:
-                for single_genre in genres:
-                    # check if the genre already exists in the genres table
-                    # if not add the genre and get the new genre id
-                    if not doesGenreExist(single_genre.name, service):
-                        genre_db_id = addGenre(single_genre, service)
-                    else:
-                        genre_db_id = getGenre(single_genre.name, service).id
+        #### Genres
+        genres = []
+        genres = book.genres
+        # for each genre of the book
+        if genres:
+            for single_genre in genres:
+                # check if the genre already exists in the genres table
+                # if not add the genre and get the new genre id
+                if not doesGenreExist(single_genre.name, service):
+                    genre_db_id = addGenre(single_genre, service)
+                else:
+                    genre_db_id = getGenre(single_genre.name, service).id
 
-                    # link the genre in the genres table to the entry in the Genresbooks table
-                    addGenreMapping(genre_db_id, db_book_id, service)
+                # link the genre in the genres table to the entry in the Genresbooks table
+                addGenreMapping(genre_db_id, db_book_id, service)

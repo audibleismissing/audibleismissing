@@ -38,8 +38,8 @@ def returnBookObj(abs_book: Dict) -> Book:
     book.bookAsin = abs_book["media"]["metadata"]["asin"]
     book.region = None
     book.language = abs_book["media"]["metadata"]["language"]
-    book.explicit = abs_book["media"]["metadata"]["explicit"]
-    book.abridged = abs_book["media"]["metadata"]["abridged"]
+    book.isExplicit = abs_book["media"]["metadata"]["explicit"]
+    book.isAbridged = abs_book["media"]["metadata"]["abridged"]
     book.releaseDate = abs_book["media"]["metadata"]["publishedYear"]
 
     if len(abs_book["media"]["tags"]) > 0:
@@ -61,7 +61,7 @@ def returnBookObj(abs_book: Dict) -> Book:
     else:
         book.series = None
 
-    book.owned = True
+    book.isOwned = True
     book.audibleOverallAvgRating = None
     book.audiblePerformanceAvgRating = None
     book.audibleStoryAvgRating = None
