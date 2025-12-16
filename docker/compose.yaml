@@ -5,7 +5,7 @@ services:
     ports:
       - 8192:8000
     volumes:
-      - ${CONFIG_PATH}:/config
+      - ${CONFIG_PATH}:${CONFIG_DIR}
     environment:
-      - ALLOWED_ORIGINS="https://aim.example.com"
-      - CONFIG_DIR=/config
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+      - CONFIG_DIR=${CONFIG_DIR}
