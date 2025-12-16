@@ -56,11 +56,12 @@ services:
     container_name: audibleismissing
     image: ghcr.io/audibleismissing/audibleismissing:latest
     ports:
-      - 8000:8000
+      - 8192:8000
     volumes:
-      - ../config:/config
+      - ${CONFIG_PATH}:/config
     environment:
-      - ALLOWED_ORIGINS="https://aim.example.com" # Set if running on something other than localhost or 127.0.0.1
+      - ALLOWED_ORIGINS="https://aim.example.com"
+      - CONFIG_DIR=/config
 ```
 
 ## Tech Stack
