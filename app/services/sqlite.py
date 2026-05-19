@@ -19,6 +19,13 @@ class SQLiteService:
             self.database_url = f"sqlite:///{self.db_path}"
         else:
             self.database_url = database_url
+            # Extract db_path from database_url for in-memory or custom paths
+            if database_url.startswith("sqlite:///"):
+                self.db_path = database_url.replace("sqlite:///", "")
+            elif database_url == "sqlite:///:memory:":
+                self.db_path = ":memory:"
+            else:
+                self.db_path = None
 
         self.engine = create_engine(
             self.database_url,
